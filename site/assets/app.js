@@ -277,6 +277,16 @@ function renderUpdates() {
         .join("")}</tbody></table></div>` : ""}`
     : `${sectionError("patchTuesday", "The Security Update Guide")}<div class="card"><p>Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.</p></div>`;
 
+  const q = data("qualys");
+  const qualysBody = q
+    ? `<div class="card">
+        <p>${esc(q.qids.length)} Qualys QIDs detect the ${esc(q.month)} Patch Tuesday fixes. Paste the query into Qualys VMDR to find unpatched hosts.</p>
+        <div class="policy"><dl class="kv"><dt>Query</dt><dd><code>${esc(q.query)}</code><button type="button" class="btn small" data-copy="${esc(q.query)}">Copy</button></dd></dl></div>
+        <p class="meta" style="margin-top:8px">Scraped from Qualys ThreatPROTECT, a third-party blog. Check the review if the list looks short.</p>
+        ${source(q.url, "Qualys Patch Tuesday review")}
+      </div>`
+    : `<div class="card"><p class="meta">${esc(sec("qualys")?.detail || "Not checked yet.")} Qualys usually posts its review on Patch Tuesday evening, US time.</p></div>`;
+
   const kev = (data("kev")?.rows || []).filter((r) => osOk(r.os));
   // Hand-kept entries whose link failed the weekly check are hidden until fixed.
   const incidents = (state.curated?.incidents || []).filter((i) => !state.failedUrls?.has(i.url));
@@ -323,6 +333,7 @@ function renderUpdates() {
 
   return [
     section("patch-tuesday", "Patch Tuesday", ptBody, "patchTuesday"),
+    section("qualys", "Qualys QIDs for this Patch Tuesday", qualysBody, "qualys"),
     section("exploited", "Exploited and zero-day", kevBody, "kev"),
     section("known-issues", "Known issues", issuesBody, "knownIssues"),
     section("channels", "Update channels", channels),
@@ -357,19 +368,34 @@ function renderIntune() {
     section("compliance", "Intune compliance: antivirus, versions and BitLocker", compliance),
     section("intune-weekly", "Intune weekly notes (Windows and security)", weeks, "intune"),
     section("intune-dev", "Intune in development", dev, "intune"),
+    section("roadmap", "Microsoft 365 roadmap: Defender and Intune", renderRoadmap(), "roadmap"),
   ].join("");
+}
+
+function renderRoadmap() {
+  const r = data("roadmap");
+  if (!r) return `<div class="card"><p class="meta">${esc(sec("roadmap")?.detail || "Not checked yet.")} Microsoft's public roadmap feed is often unavailable; this section fills in when it answers.</p>${source("https://www.microsoft.com/microsoft-365/roadmap", "Microsoft 365 roadmap")}</div>`;
+  return `<div class="card">${r.rows.length ? `<ul class="list">${r.rows
+    .map((i) => `<li><span class="row-title">${link(i.url, i.title)}</span> ${pill(i.status || "Roadmap", /launched|rolling/i.test(i.status) ? "ok" : "")}${i.release ? ` <span class="meta">${esc(i.release)}</span>` : ""}<p>${esc(i.description)}</p></li>`)
+    .join("")}</ul>` : "<p>No Defender or Intune items in the feed right now.</p>"}${source(r.url, "Microsoft 365 roadmap")}</div>`;
 }
 
 // ---------- Intel tab ----------
 function renderIntel() {
-  const cl = data("changelog");
+  const clData = data("changelog");
+  const history = clData?.history?.length ? clData.history : clData ? [clData] : [];
+  const wanted = pref.get("siVersion", "");
+  const cl = clData ? { ...clData, ...(history.find((h) => h.version === wanted) || history[0]) } : null;
   const winOnly = pref.get("winOnly", true);
   const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(n);
   const rows = (cl?.rows || []).filter((r) => !winOnly || isWin(r.name));
   const changelog = cl
     ? `<div class="card">
         <p><strong>${esc(cl.version)}</strong> · ${cl.releasedAt ? esc(stamp(cl.releasedAt)) : na("Time not published")} · ${cl.rows.filter((r) => r.change === "added").length} added, ${cl.rows.filter((r) => r.change === "updated").length} updated</p>
-        <div class="controls"><label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Hide Android, macOS and Linux detections</label></div>
+        <div class="controls">
+          ${history.length > 1 ? `<label class="field">Version <select id="si-version">${history.map((h, i) => `<option value="${esc(h.version)}" ${h.version === cl.version ? "selected" : ""}>${esc(h.version)}${i === 0 ? " (latest)" : ""}${h.releasedAt ? ` · ${esc(stamp(h.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
+          <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Hide Android, macOS and Linux detections</label>
+        </div>
         <div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th><th>Change</th></tr></thead><tbody>${rows
           .slice(0, 60)
           .map((r) => `<tr><td>${link(r.url, r.name)}</td><td>${esc(r.severity)}</td><td>${esc(r.change)}</td></tr>`)
@@ -421,6 +447,26 @@ function renderIntel() {
         .join("")}</ul>` : "<p>No posts right now.</p>"}<p class="meta">Community posts, not Microsoft guidance. r/DefenderATP is shown in full; r/Intune and r/sysadmin only when a post mentions Defender.</p></div>`
     : sectionError("community", "Reddit");
 
+  const hashes = data("hashes")?.rows || [];
+  const short = (h) => `${h.slice(0, 12)}…${h.slice(-6)}`;
+  const hashBody = `<div class="card">
+    <p>SHA-256 hashes posted publicly today (TweetFeed), checked against AlienVault OTX's analysis, which includes a Microsoft Defender scan. A row marked <strong>Gap</strong> is one where another scanner names the file and Defender does not: a candidate to submit to Microsoft.</p>
+    ${data("hashes") ? (hashes.length ? `<div class="table-wrap"><table><thead><tr><th>Hash</th><th>Reported</th><th>File type</th><th>Defender (OTX)</th><th>Other scanner</th><th>Links</th></tr></thead><tbody>${hashes
+      .map((h) => `<tr><td class="mono" title="${esc(h.hash)}">${esc(short(h.hash))} <button type="button" class="btn small" data-copy="${esc(h.hash)}" aria-label="Copy hash">Copy</button></td>
+        <td>${h.reportedAt ? esc(ago(h.reportedAt)) : ""}${h.reporter ? `<div class="meta">${esc(h.reporter)}</div>` : ""}</td>
+        <td>${h.analysed ? esc(h.fileType || "unknown") : pill("Reported only")}</td>
+        <td>${h.defender ? esc(h.defender) : h.analysed ? pill(h.other ? "Gap" : "Not detected", h.other ? "bad" : "") : ""}</td>
+        <td>${esc(h.other || "")}</td>
+        <td>${link(h.vt, "VirusTotal")} · ${link(h.otx, "OTX")}</td></tr>`)
+      .join("")}</tbody></table></div>` : "<p>No Windows hashes in today's feed.</p>") : sectionError("hashes", "The public hash feed")}
+    <p class="meta" style="margin-top:8px">Third-party, unvetted data. "Reported only" means OTX has no analysis yet. Use it as a lead, not as proof of a miss.</p>
+    <form id="hash-form" class="controls" style="margin-top:10px">
+      <label class="field" style="flex:1 1 260px">Look up a hash <input type="text" id="hash-q" placeholder="MD5, SHA-1 or SHA-256" autocomplete="off" spellcheck="false"></label>
+      <button type="submit" class="btn" style="align-self:end">Open in VirusTotal and OTX</button>
+    </form>
+    <p class="meta">Opens the public pages in new tabs. Nothing is sent from this site.</p>
+  </div>`;
+
   const states = [
     ["Active", "The sensor is reporting. A bad signature still shows up as alerts and quarantines, not as an inactive sensor."],
     ["Impaired communications", "The device cannot fully reach the Defender service URLs, usually because of a proxy. Isolate, live response and file submission fail until that path works."],
@@ -444,6 +490,7 @@ function renderIntel() {
     section("sensor", "Sensor (MsSense / SenseIR)", sensor),
     section("news", "News", newsBody, "news"),
     section("reddit", "Reddit", redditBody, "community"),
+    section("hashes", "Public hashes and Defender coverage", hashBody, "hashes"),
   ].join("");
 }
 
@@ -498,7 +545,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
+  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
@@ -540,10 +587,27 @@ document.addEventListener("change", (e) => {
   const t = e.target;
   if (t.id === "issue-scope") pref.set("issueScope", t.value);
   else if (t.id === "win-only") pref.set("winOnly", t.checked);
+  else if (t.id === "si-version") pref.set("siVersion", t.value);
   else return;
   const id = t.id;
   render();
   document.getElementById(id)?.focus();
+});
+
+document.addEventListener("submit", (e) => {
+  if (e.target.id !== "hash-form") return;
+  e.preventDefault();
+  const h = document.getElementById("hash-q").value.trim().toLowerCase();
+  if (!/^([a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64})$/.test(h)) {
+    document.getElementById("hash-q").setCustomValidity("Enter an MD5, SHA-1 or SHA-256 hash");
+    document.getElementById("hash-q").reportValidity();
+    return;
+  }
+  window.open(`https://www.virustotal.com/gui/file/${h}`, "_blank", "noopener");
+  window.open(`https://otx.alienvault.com/indicator/file/${h}`, "_blank", "noopener");
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id === "hash-q") e.target.setCustomValidity("");
 });
 
 window.addEventListener("hashchange", route);

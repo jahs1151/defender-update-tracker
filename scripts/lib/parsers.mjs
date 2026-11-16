@@ -137,7 +137,10 @@ export function parseChangelog(html) {
   };
   grab(split > 0 ? html.slice(0, split) : html, "added");
   if (split > 0) grab(html.slice(split), "updated");
-  return { version, releasedRaw, rows };
+  const versions = [];
+  for (const m of html.matchAll(/versionid=(\d+\.\d+\.\d+\.\d+)/gi)) if (!versions.includes(m[1])) versions.push(m[1]);
+  for (const m of html.matchAll(/<option[^>]*>\s*(\d+\.\d+\.\d+\.\d+)\s*<\/option>/gi)) if (!versions.includes(m[1])) versions.push(m[1]);
+  return { version, releasedRaw, rows, versions };
 }
 
 /** Windows release health status page: known issues table. */
@@ -402,4 +405,54 @@ export function parseRedditPosts(json, sub, filter) {
     });
   }
   return posts;
+}
+
+/** Qualys ThreatPROTECT index pages: Patch Tuesday review links by release month ("2026-Nov"). */
+export function parseQualysIndex(html) {
+  const map = {};
+  for (const m of html.matchAll(/href="(https:\/\/threatprotect\.qualys\.com\/(\d{4})\/\d{2}\/\d{2}\/microsoft-patch-tuesday-([a-z]+)-\d{4}-security-update-review\/)"/gi)) {
+    const key = `${m[2]}-${m[3].charAt(0).toUpperCase()}${m[3].slice(1, 3).toLowerCase()}`;
+    if (!map[key]) map[key] = m[1];
+  }
+  return map;
+}
+
+/** QIDs listed on a Qualys Patch Tuesday review. */
+export function parseQualysQids(html) {
+  const text = plain(html);
+  const qids = new Set();
+  for (const block of text.matchAll(/qid:?\s*\[?\s*([0-9,\s]{4,})/gi)) for (const id of block[1].matchAll(/\d{4,6}/g)) qids.add(id[0]);
+  return [...qids].sort((a, b) => Number(a) - Number(b));
+}
+
+/** AlienVault OTX file analysis to a compact row. */
+export function parseOtxAnalysis(hash, body) {
+  const analysis = body?.analysis;
+  const plugins = analysis?.plugins || {};
+  const info = analysis?.info?.results || {};
+  const name = (r) => {
+    if (!r || typeof r !== "object") return "";
+    for (const k of ["detection", "threat", "signature", "malware", "result", "name"]) if (typeof r[k] === "string" && r[k].trim()) return r[k].trim();
+    return "";
+  };
+  const defender = name(plugins.msdefender?.results);
+  const other = name(plugins.clamav?.results);
+  const fileType = [info.file_class, info.file_type].filter(Boolean).join(" · ");
+  return { hash, analysed: Boolean(fileType || defender || other), fileType, defender, other };
+}
+
+/** Microsoft 365 roadmap API rows kept when the title is about Defender or Intune. */
+export function filterRoadmap(json) {
+  const rows = Array.isArray(json) ? json : json?.value || [];
+  return rows
+    .map((r) => ({
+      id: String(r.id ?? ""),
+      title: plain(r.title || ""),
+      status: plain(r.status || ""),
+      description: plain(r.description || "").slice(0, 400),
+      release: r.publicDisclosureAvailabilityDate || r.generalAvailabilityDate || "",
+      updated: toIso(r.modified || r.lastModified || ""),
+    }))
+    .filter((r) => r.id && /\bdefender\b|\bintune\b/i.test(r.title) && !/outlook|exchange|\bowa\b|dynamics|purview|office 365|for cloud|for identity|cloud apps/i.test(r.title))
+    .map((r) => ({ ...r, url: `https://www.microsoft.com/microsoft-365/roadmap?id=${r.id}` }));
 }

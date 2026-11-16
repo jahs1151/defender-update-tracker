@@ -34,6 +34,9 @@ const LABELS = {
   mde: "Defender for Endpoint what's new",
   news: "News feeds",
   community: "Reddit (via Arctic Shift)",
+  qualys: "Qualys Patch Tuesday QIDs",
+  hashes: "Public hashes (TweetFeed + AlienVault OTX)",
+  roadmap: "Microsoft 365 roadmap",
 };
 
 async function main() {
@@ -43,7 +46,7 @@ async function main() {
   const checkedAt = now.toISOString();
 
   const packages = await S.loadPackages();
-  const [intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community] = await Promise.all([
+  const [intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, hashes, roadmap] = await Promise.all([
     S.loadIntelligence(packages.data),
     S.loadProductUpdates(),
     S.loadChangelog(),
@@ -55,16 +58,23 @@ async function main() {
     S.loadMdeWhatsNew(),
     S.loadNews(),
     S.loadCommunity(),
+    S.loadPublicHashes(),
+    S.loadRoadmap(),
   ]);
+  const qualys = await S.loadQualys(patchTuesday.data?.month || previous?.sections?.patchTuesday?.data?.month || "");
 
   // The changelog uses the same unlabeled clock as the definitions page.
-  if (changelog.ok && changelog.data.releasedRaw) {
+  if (changelog.ok) {
     const zone = intelligence.data?.clockZone || previous?.sections?.intelligence?.data?.clockZone || "UTC";
-    const at = parseUsClock(changelog.data.releasedRaw, zone);
-    changelog.data.releasedAt = at ? at.toISOString() : "";
+    const conv = (raw) => {
+      const at = raw ? parseUsClock(raw, zone) : null;
+      return at ? at.toISOString() : "";
+    };
+    changelog.data.releasedAt = conv(changelog.data.releasedRaw);
+    for (const h of changelog.data.history || []) h.releasedAt = conv(h.releasedRaw);
   }
 
-  const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community };
+  const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, qualys, hashes, roadmap };
   const sections = {};
   for (const [key, result] of Object.entries(fresh)) {
     const prev = previous?.sections?.[key];

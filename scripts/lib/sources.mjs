@@ -141,8 +141,24 @@ export async function loadChangelog() {
   try {
     const parsed = P.parseChangelog(await getText(URLS.changelog));
     if (!parsed.version) throw new Error("No version on the changelog page");
+    // Earlier versions: the page takes ?requestVersion=. Keep the last 10 including the current one.
+    const older = parsed.versions.filter((v) => v !== parsed.version).slice(0, 9);
+    const history = [{ version: parsed.version, releasedRaw: parsed.releasedRaw, rows: parsed.rows.slice(0, 120) }];
+    for (const v of older) {
+      try {
+        const p = P.parseChangelog(await getText(`${URLS.changelog}?requestVersion=${encodeURIComponent(v)}`, { retries: 1 }));
+        history.push({ version: p.version || v, releasedRaw: p.releasedRaw, rows: p.rows.slice(0, 120) });
+      } catch {
+        /* one missing version is fine */
+      }
+    }
     // The changelog clock is the same as the definitions clock; the collector converts it.
-    return ok(`${parsed.version} · ${parsed.rows.length} detections`, { ...parsed, rows: parsed.rows.slice(0, 120), url: URLS.changelog });
+    return ok(`${parsed.version} · ${parsed.rows.length} detections · ${history.length} versions kept`, {
+      ...parsed,
+      rows: parsed.rows.slice(0, 120),
+      history,
+      url: URLS.changelog,
+    });
   } catch (error) {
     return fail(error);
   }
@@ -332,6 +348,62 @@ export async function loadSense() {
     const rows = P.parseSenseCatalog(await getText(URLS.senseCatalog, { timeoutMs: 30000 }));
     if (!rows.length) throw new Error("No Sense build found in the Update Catalog");
     return ok(`Latest ${rows[0].version}`, { latest: rows[0], url: URLS.senseCatalog });
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+export async function loadQualys(month) {
+  try {
+    const links = {};
+    for (let page = 1; page <= 4; page += 1) {
+      const html = await getText(page === 1 ? "https://threatprotect.qualys.com/" : `https://threatprotect.qualys.com/page/${page}/`, { timeoutMs: 15000, retries: 1 }).catch(() => "");
+      Object.assign(links, P.parseQualysIndex(html), links);
+      if (links[month]) break;
+    }
+    const url = links[month];
+    if (!url) throw new Error(`No Qualys Patch Tuesday review for ${month} yet`);
+    const qids = P.parseQualysQids(await getText(url, { timeoutMs: 20000 }));
+    if (!qids.length) throw new Error("Review found but no QIDs listed");
+    return ok(`${qids.length} QIDs for ${month}`, { month, url, qids, query: `vulnerabilities.vulnerability.qid:[${qids.join(", ")}]` });
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+export async function loadPublicHashes() {
+  try {
+    const rows = await getJson("https://api.tweetfeed.live/v1/today/sha256", { timeoutMs: 20000 });
+    const picked = [];
+    const seen = new Set();
+    for (const r of Array.isArray(rows) ? rows : []) {
+      const hash = String(r.value || "").toLowerCase();
+      if (!/^[a-f0-9]{64}$/.test(hash) || seen.has(hash)) continue;
+      seen.add(hash);
+      picked.push({ hash, reportedAt: r.date ? toIso(`${String(r.date).replace(" ", "T")}Z`) : "", reporter: r.user || "", tags: (r.tags || []).join(" "), tweet: r.tweet || "" });
+      if (picked.length >= 10) break;
+    }
+    const out = [];
+    for (const item of picked) {
+      const res = await getJson(`https://otx.alienvault.com/api/v1/indicators/file/${item.hash}/analysis`, { timeoutMs: 15000, retries: 0 }).catch(() => null);
+      const a = res ? P.parseOtxAnalysis(item.hash, res) : { hash: item.hash, analysed: false, fileType: "", defender: "", other: "" };
+      if (a.fileType && !/pe32|pe64|windows|win32|dll|executable|ms-dos/i.test(a.fileType)) continue;
+      out.push({ ...item, ...a, vt: `https://www.virustotal.com/gui/file/${item.hash}`, otx: `https://otx.alienvault.com/indicator/file/${item.hash}` });
+    }
+    const gaps = out.filter((r) => r.other && !r.defender).length;
+    return ok(`${out.length} Windows hashes, ${out.filter((r) => r.analysed).length} analysed, ${gaps} where another scanner names it and Defender does not`, { rows: out });
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+export async function loadRoadmap() {
+  try {
+    const res = await getText("https://www.microsoft.com/releasecommunications/api/v1/m365", { timeoutMs: 25000, accept: "application/json" });
+    const t = res.trim();
+    if (!t.startsWith("{") && !t.startsWith("[")) throw new Error("The roadmap API did not return JSON on this run");
+    const rows = P.filterRoadmap(JSON.parse(t)).sort((a, b) => (b.updated || "").localeCompare(a.updated || "")).slice(0, 30);
+    return ok(`${rows.length} Defender or Intune items`, { rows, url: "https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Defender%20for%20Endpoint,Microsoft%20Intune" });
   } catch (error) {
     return fail(error);
   }

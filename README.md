@@ -3,9 +3,9 @@
 A static dashboard for Microsoft Defender on Windows 11 and Windows Server 2019, 2022 and 2025:
 
 - **Status**: current security intelligence, engine, platform and Sense (MsSense.exe) versions, the download packages, the monthly platform and engine releases with N-2 support, and a fleet compare box.
-- **Updates**: Patch Tuesday from the Security Update Guide, exploited vulnerabilities (CISA KEV plus a short hand-kept list), Windows release health known issues, and the Defender update channel settings.
-- **Intune**: what the Intune compliance checks actually test (including BitLocker through Device Health Attestation), and Intune weekly and in-development notes. Policy values and OMA-URIs are deliberately not included; those are set internally.
-- **Intel**: the detection changelog, new Defender for Endpoint features, a short MsSense / SenseIR explainer, and filtered security news.
+- **Updates**: Patch Tuesday from the Security Update Guide, exploited vulnerabilities (CISA KEV plus a short hand-kept list), Windows release health known issues, Qualys QIDs for the current Patch Tuesday, and the Defender update channel settings.
+- **Intune**: what the Intune compliance checks actually test (including BitLocker through Device Health Attestation), Intune weekly and in-development notes, and Microsoft 365 roadmap items for Defender and Intune. Policy values and OMA-URIs are deliberately not included; those are set internally.
+- **Intel**: the detection changelog with the last 10 security intelligence versions, public malware hashes checked against Defender's verdict (TweetFeed plus AlienVault OTX, third-party and unvetted) with a hash lookup, new Defender for Endpoint features, a short MsSense / SenseIR explainer, and filtered security news.
 
 It reads only public Microsoft and security sources. It never signs in to a tenant and holds no secrets.
 

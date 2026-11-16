@@ -180,3 +180,38 @@ test("Reddit posts are filtered and cleaned", () => {
   assert.equal(posts[0].summary, "Defender quarantined it");
   assert.equal(posts[0].published, "2025-11-16T00:00:00.000Z");
 });
+
+test("qualys index maps release months to review links", () => {
+  const html = `<a href="https://threatprotect.qualys.com/2026/11/10/microsoft-patch-tuesday-november-2026-security-update-review/">Nov</a>
+    <a href="https://threatprotect.qualys.com/2026/10/14/microsoft-patch-tuesday-october-2026-security-update-review/">Oct</a>`;
+  const map = P.parseQualysIndex(html);
+  assert.equal(map["2026-Nov"], "https://threatprotect.qualys.com/2026/11/10/microsoft-patch-tuesday-november-2026-security-update-review/");
+  assert.ok(map["2026-Oct"]);
+});
+
+test("qualys QIDs are collected, deduplicated and sorted", () => {
+  const html = "<p>QID: 92301, 92299</p><p>Qualys QID: [ 92299, 110500 ]</p>";
+  assert.deepEqual(P.parseQualysQids(html), ["92299", "92301", "110500"]);
+});
+
+test("otx analysis reads Defender and ClamAV names", () => {
+  const row = P.parseOtxAnalysis("abc", { analysis: { info: { results: { file_class: "PE32", file_type: "executable" } }, plugins: { msdefender: { results: { detection: "Trojan:Win32/Test" } }, clamav: { results: {} } } } });
+  assert.deepEqual(row, { hash: "abc", analysed: true, fileType: "PE32 · executable", defender: "Trojan:Win32/Test", other: "" });
+  assert.equal(P.parseOtxAnalysis("x", {}).analysed, false);
+});
+
+test("roadmap keeps Defender for Endpoint and Intune, drops other Defender products", () => {
+  const rows = P.filterRoadmap([
+    { id: 1, title: "Microsoft Defender for Endpoint: new sensor", status: "In development" },
+    { id: 2, title: "Microsoft Intune: Windows update policy", status: "Rolling out" },
+    { id: 3, title: "Microsoft Defender for Office 365: Outlook reporting", status: "Launched" },
+    { id: 4, title: "Teams: new meeting view", status: "Launched" },
+  ]);
+  assert.deepEqual(rows.map((r) => r.id), ["1", "2"]);
+  assert.match(rows[0].url, /roadmap\?id=1$/);
+});
+
+test("changelog lists older versions from links and options", () => {
+  const html = `<a href="?versionid=1.463.300.0">x</a><option>1.463.299.0</option><option> 1.463.300.0 </option>`;
+  assert.deepEqual(P.parseChangelog(html).versions, ["1.463.300.0", "1.463.299.0"]);
+});
