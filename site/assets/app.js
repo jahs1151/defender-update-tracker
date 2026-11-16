@@ -84,7 +84,7 @@ async function getJson(path, timeoutMs = 15000, retries = 2) {
 async function load() {
   const [pulse, catalog, curated, links] = await Promise.allSettled([
     getJson("data/pulse.json"),
-    getJson("data/catalog.json"),
+    getJson("data/features.json"),
     getJson("data/curated.json"),
     getJson("data/link-report.json", 8000, 0),
   ]);
@@ -93,7 +93,6 @@ async function load() {
   state.catalog = catalog.status === "fulfilled" ? catalog.value : null;
   state.curated = curated.status === "fulfilled" ? curated.value : null;
   if (!state.pulse) state.errors.pulse = String(pulse.reason?.message || pulse.reason);
-  if (!state.catalog) state.errors.catalog = String(catalog.reason?.message || catalog.reason);
   render();
 }
 
@@ -314,12 +313,11 @@ function renderUpdates() {
 
   const channels = `<div class="card">
     <p>Defender has three separate update channel settings: engine, platform and security intelligence. Each one decides when in Microsoft's gradual rollout a device takes a new release.</p>
-    <div class="table-wrap"><table><thead><tr><th>Setting (Defender CSP)</th><th>Channels</th></tr></thead><tbody>
-      <tr><td><code>./Vendor/MSFT/Defender/Configuration/EngineUpdatesChannel</code></td><td>Not configured (default), Beta Channel, Current Channel (Preview), Current Channel (Staged), Current Channel (Broad), Critical: Time delay</td></tr>
-      <tr><td><code>./Vendor/MSFT/Defender/Configuration/PlatformUpdatesChannel</code></td><td>Not configured (default), Beta Channel, Current Channel (Preview), Current Channel (Staged), Current Channel (Broad), Critical: Time delay</td></tr>
-      <tr><td><code>./Vendor/MSFT/Defender/Configuration/SecurityIntelligenceUpdatesChannel</code></td><td>Not configured (default), Current Channel (Staged), Current Channel (Broad)</td></tr>
-    </tbody></table></div>
-    <p style="margin-top:10px">The supported way to stage updates is a pilot group on Current Channel (Staged) and the rest of the fleet on Current Channel (Broad). Critical: Time delay holds engine and platform releases back further, for devices that must change last. Exact values and Intune paths are in the <a href="#catalog">policy catalog</a> under "Update rings, signatures and incident response".</p>
+    <ul>
+      <li><strong>Engine and platform:</strong> Beta Channel, then Current Channel (Preview), then Current Channel (Staged), then Current Channel (Broad). Critical: Time delay holds a release back further.</li>
+      <li><strong>Security intelligence:</strong> Current Channel (Staged) or Current Channel (Broad). It ships several times a day.</li>
+    </ul>
+    <p>The public definitions page does not say which channel the current versions above are on.</p>
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/manage-gradual-rollout", "Manage the gradual rollout process for Microsoft Defender updates")}
   </div>`;
 
@@ -337,7 +335,7 @@ function renderIntune() {
     <p>The Windows compliance policy in Intune has two Microsoft Defender Antimalware checks:</p>
     <ul>
       <li><strong>Microsoft Defender Antimalware security intelligence up-to-date</strong>: a yes or no check. It uses Defender's own out-of-date flag on the device. There is no setting for a custom number of days.</li>
-      <li><strong>Microsoft Defender Antimalware minimum version</strong>: the lowest allowed Defender client version, for example 4.18.xxxx.x. Set it to the N-2 platform from the Status tab so devices on supported builds stay compliant.</li>
+      <li><strong>Microsoft Defender Antimalware minimum version</strong>: the lowest allowed Defender client version, for example 4.18.xxxx.x. The Status tab shows which platform versions are still within N-2.</li>
     </ul>
     <p><strong>Require BitLocker</strong> is read through Device Health Attestation, which is measured at boot. A device that finishes encrypting only reports compliant after its next restart. After a BIOS or firmware update, BitLocker can be suspended until it is resumed, which shows as non-compliant. That is not an antivirus failure.</p>
     <p>This site cannot see your tenant, policies or devices.</p>
@@ -357,76 +355,9 @@ function renderIntune() {
 
   return [
     section("compliance", "Intune compliance: antivirus, versions and BitLocker", compliance),
-    section("catalog", "Policy catalog (OMA-URI and settings catalog)", renderCatalog()),
-    section("asr", "ASR rule value builder", renderAsr()),
     section("intune-weekly", "Intune weekly notes (Windows and security)", weeks, "intune"),
     section("intune-dev", "Intune in development", dev, "intune"),
   ].join("");
-}
-
-function renderCatalog() {
-  const c = state.catalog;
-  if (!c) return `<div class="notice">The policy catalog did not load. ${esc(state.errors.catalog || "")}</div>`;
-  const area = pref.get("area", "all");
-  const q = pref.get("q", "");
-  const areas = Object.entries(c.areaLabels);
-  const items = c.policies
-    .filter((p) => osOk(p.os))
-    .filter((p) => area === "all" || p.area === area)
-    .filter((p) => !q || `${p.name} ${p.summary} ${p.omaUri} ${p.note}`.toLowerCase().includes(q.toLowerCase()));
-  const copy = (text) => `<button type="button" class="btn small" data-copy="${esc(text)}" aria-label="Copy ${esc(text.slice(0, 40))}">Copy</button>`;
-  const uri = (p) => {
-    const list = p.omaUris || [p.omaUri];
-    return list.map((u) => `<dd>${/^\.\//.test(u) ? `<code>${esc(u)}</code>${copy(u)}` : esc(u)}</dd>`).join("");
-  };
-  return `<div class="controls">
-      <label class="field" style="flex:1 1 220px">Search <input type="search" id="cat-q" value="${esc(q)}" placeholder="Name, OMA-URI or note"></label>
-      <label class="field">Area <select id="cat-area"><option value="all">All areas</option>${areas.map(([k, v]) => `<option value="${k}" ${k === area ? "selected" : ""}>${esc(v)}</option>`).join("")}</select></label>
-    </div>
-    <p class="meta">${items.length} of ${c.policies.length} items. ADMX-backed settings take a String value such as <code>&lt;enabled/&gt;&lt;data id="…" value="…"/&gt;</code>, not an Integer.</p>
-    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr))">${items
-      .map(
-        (p) => `<article class="card policy">
-          <div><span class="pill">${esc(c.areaLabels[p.area] || p.area)}</span> ${p.primary ? pill("Recommended", "ok") : ""}${p.extra ? pill("Extra option") : ""} ${osPills(p.os)}</div>
-          <h3>${esc(p.name)}</h3>
-          ${p.warning ? `<div class="notice bad">${esc(p.warning)}</div>` : ""}
-          <p>${esc(p.summary)}</p>
-          <dl class="kv">
-            <dt>Intune</dt><dd>${esc(p.intunePath)}</dd>
-            <dt>OMA-URI</dt>${uri(p)}
-            <dt>Type</dt><dd>${esc(p.dataType)}</dd>
-            <dt>Value</dt><dd><code>${esc(p.value)}</code>${copy(p.value)}</dd>
-          </dl>
-          ${p.note ? `<p class="meta">${esc(p.note)}</p>` : ""}
-          ${source(p.docs, "Microsoft Learn")}
-        </article>`,
-      )
-      .join("")}</div>`;
-}
-
-function renderAsr() {
-  const c = state.catalog;
-  if (!c) return "";
-  const modes = pref.get("asr", {});
-  const rules = c.asr.filter((r) => osOk(r.os));
-  const value = c.asr
-    .filter((r) => modes[r.guid] !== undefined && modes[r.guid] !== "")
-    .map((r) => `${r.guid}=${modes[r.guid]}`)
-    .join("|");
-  return `<div class="card">
-    <p>Pick a mode per rule. The value goes in <code>${esc(c.asrOma)}</code> as a String. Rules left blank are not configured. Modes: 0 Off, 1 Block, 2 Audit, 6 Warn.</p>
-    <div class="table-wrap"><table><thead><tr><th>Rule</th><th>Mode</th></tr></thead><tbody>${rules
-      .map(
-        (r) => `<tr><td>${esc(r.name)} ${r.standard ? pill("Standard protection", "ok") : ""}<div class="meta mono">${esc(r.guid)}</div>${r.note ? `<div class="meta">${esc(r.note)}</div>` : ""}</td>
-        <td><select data-asr="${esc(r.guid)}" aria-label="Mode for ${esc(r.name)}"><option value="">Not configured</option>${c.asrModes
-          .map((m) => `<option value="${m.id}" ${String(modes[r.guid]) === String(m.id) ? "selected" : ""}>${esc(m.label)}</option>`)
-          .join("")}</select></td></tr>`,
-      )
-      .join("")}</tbody></table></div>
-    <p style="margin-top:10px"><strong>Value</strong></p>
-    <div class="policy"><dl class="kv"><dt>String</dt><dd><code id="asr-value">${value ? esc(value) : "Choose at least one rule"}</code>${value ? `<button type="button" class="btn small" data-copy="${esc(value)}">Copy</button>` : ""}</dd></dl></div>
-    ${source("https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-reference", "ASR rules reference")}
-  </div>`;
 }
 
 // ---------- Intel tab ----------
@@ -567,7 +498,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", catalog: "intune", asr: "intune", "intune-weekly": "intune", "intune-dev": "intune", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
+  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
@@ -595,7 +526,6 @@ document.addEventListener("click", async (e) => {
   }
 });
 
-let typing;
 document.addEventListener("input", (e) => {
   const t = e.target;
   if (t.closest("#fleet-form")) {
@@ -603,34 +533,17 @@ document.addEventListener("input", (e) => {
     const v = { platform: String(f.get("platform")).trim(), engine: String(f.get("engine")).trim(), si: String(f.get("si")).trim() };
     pref.set("fleet", v);
     document.getElementById("fleet-out").innerHTML = fleetVerdict(v, data("productUpdates")?.rows || [], data("intelligence"));
-  } else if (t.id === "cat-q") {
-    clearTimeout(typing);
-    typing = setTimeout(() => {
-      pref.set("q", t.value);
-      const pos = t.selectionStart;
-      render();
-      const again = document.getElementById("cat-q");
-      again.focus();
-      again.setSelectionRange(pos, pos);
-    }, 250);
   }
 });
 
 document.addEventListener("change", (e) => {
   const t = e.target;
-  if (t.id === "cat-area") pref.set("area", t.value);
-  else if (t.id === "issue-scope") pref.set("issueScope", t.value);
+  if (t.id === "issue-scope") pref.set("issueScope", t.value);
   else if (t.id === "win-only") pref.set("winOnly", t.checked);
-  else if (t.dataset.asr) {
-    const m = pref.get("asr", {});
-    if (t.value === "") delete m[t.dataset.asr];
-    else m[t.dataset.asr] = Number(t.value);
-    pref.set("asr", m);
-  } else return;
+  else return;
   const id = t.id;
-  const asr = t.dataset.asr;
   render();
-  (id ? document.getElementById(id) : document.querySelector(`[data-asr="${asr}"]`))?.focus();
+  document.getElementById(id)?.focus();
 });
 
 window.addEventListener("hashchange", route);

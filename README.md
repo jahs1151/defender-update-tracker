@@ -4,7 +4,7 @@ A static dashboard for Microsoft Defender on Windows 11 and Windows Server 2019,
 
 - **Status**: current security intelligence, engine, platform and Sense (MsSense.exe) versions, the download packages, the monthly platform and engine releases with N-2 support, and a fleet compare box.
 - **Updates**: Patch Tuesday from the Security Update Guide, exploited vulnerabilities (CISA KEV plus a short hand-kept list), Windows release health known issues, and the Defender update channel settings.
-- **Intune and policy**: what the Intune compliance checks actually test (including BitLocker through Device Health Attestation), a policy catalog with OMA-URIs and correct ADMX value strings, an ASR rule value builder, and Intune weekly and in-development notes.
+- **Intune**: what the Intune compliance checks actually test (including BitLocker through Device Health Attestation), and Intune weekly and in-development notes. Policy values and OMA-URIs are deliberately not included; those are set internally.
 - **Intel**: the detection changelog, new Defender for Endpoint features, a short MsSense / SenseIR explainer, and filtered security news.
 
 It reads only public Microsoft and security sources. It never signs in to a tenant and holds no secrets.
@@ -33,20 +33,20 @@ Microsoft's security intelligence page prints its release time with no time zone
 | --- | --- |
 | `site/` | The published site: `index.html`, `assets/`, `data/` |
 | `site/data/pulse.json` | Live data written by the collector |
-| `site/data/catalog.json` | Policy catalog, ASR rules, feature notes (edit by hand) |
+| `site/data/features.json` | Reported-but-unconfirmed feature notes (edit by hand) |
 | `site/data/curated.json` | Hand-kept incidents, references and the Sense fallback (edit by hand) |
 | `site/data/link-report.json` | Written by the weekly link check; the page hides hand-kept entries whose link failed |
 | `scripts/collect.mjs` | Collector entry point (Node 20+, no npm packages) |
 | `scripts/lib/parsers.mjs` | Pure parsers, covered by `test/parsers.test.mjs` |
 | `scripts/inspect-sources.mjs` | Prints live page excerpts to the Actions log (workflow **Inspect sources**), for fixing a parser after Microsoft changes a page |
-| `scripts/check-links.mjs` | Checks every hand-kept URL, every curated CVE against MSRC, and that each OMA-URI name appears on its docs page |
+| `scripts/check-links.mjs` | Checks every hand-kept URL and every curated CVE against MSRC |
 
 ## Run locally
 
 ```sh
 npm test                 # unit tests (no network)
 node scripts/collect.mjs # refresh site/data/pulse.json from the live sources
-npm run check-links      # link and OMA-URI check
+npm run check-links      # link check
 npm run serve            # http://localhost:8080
 ```
 

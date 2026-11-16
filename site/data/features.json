@@ -1,0 +1,180 @@
+{
+ "features": [
+  {
+   "id": "si",
+   "name": "Security intelligence channel",
+   "status": "Shipping",
+   "summary": "Detection content ships several times a day as KB2267602. Engine updates ride along about monthly. Platform updates are a separate package and stay supported back to N-2.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates"
+  },
+  {
+   "id": "sense",
+   "name": "Sense sensor and SenseIR",
+   "status": "Shipping",
+   "summary": "The EDR sensor is MsSense.exe, service name Sense. Live response and automated investigation start SenseIR.exe, which often launches PowerShell as SYSTEM. Health for both is in the Defender portal sensor report, not in the antivirus signature version.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/device-health-sensor-health-os"
+  },
+  {
+   "id": "usb-layers",
+   "name": "USB layers a write-deny does not cover",
+   "status": "Shipping",
+   "summary": "Removable-disk write deny leaves read, execute, AutoPlay, AutoRun, and MTP phones alone. Encrypted sticks often need disk-level write to unlock and a file-system write deny to stop the copy. This page lists those controls next to device control and the USB ASR rule.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/device-control-faq"
+  },
+  {
+   "id": "asr",
+   "name": "Attack surface reduction rules",
+   "status": "Shipping",
+   "summary": "Behavioral blocks for Office, scripts, USB, LSASS, drivers, and WMI. Standard protection rules are meant to be in block mode. The rest should be audited before they are enforced. Not available on Linux or macOS.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview"
+  },
+  {
+   "id": "device",
+   "name": "Device control",
+   "status": "Shipping",
+   "summary": "Allow or deny removable storage, Windows portable devices, CD/DVD, and printers, with per-device exceptions. Default enforcement is an OMA-URI, not a toggle in the Intune rule builder.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/device-control-overview"
+  },
+  {
+   "id": "np",
+   "name": "Network protection",
+   "status": "Shipping on Windows",
+   "summary": "Outbound block or audit against Microsoft's URL and IP reputation, which covers a large share of commodity C2. Custom indicators extend it. Still listed as preview on Linux, which is out of scope here.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/network-protection"
+  },
+  {
+   "id": "wcf",
+   "name": "Web content filtering",
+   "status": "Shipping",
+   "summary": "Category policies in the Defender portal. Enforcement depends on network protection in block mode and an onboarded Defender for Endpoint sensor.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/web-content-filtering"
+  },
+  {
+   "id": "web",
+   "name": "Web protection",
+   "status": "Shipping on Windows",
+   "summary": "The combination of network protection, SmartScreen, custom indicators, and web content filtering. Report location is the Defender portal Web protection page.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/web-protection-overview"
+  },
+  {
+   "id": "smartscreen",
+   "name": "SmartScreen and Edge",
+   "status": "Shipping",
+   "summary": "Shell reputation for downloaded programs, plus Edge site, download, and PUA checks. Bypass can be removed by policy on both surfaces.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/deployedge/microsoft-edge-security-browse-safer"
+  },
+  {
+   "id": "wdac",
+   "name": "App Control for Business",
+   "status": "Shipping",
+   "summary": "WDAC policies deployed from Intune, including Microsoft recommended block and driver block rules. Prefer this over AppLocker for new allow-listing.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/appcontrol"
+  },
+  {
+   "id": "tamper",
+   "name": "Tamper protection",
+   "status": "Shipping",
+   "summary": "Stops local changes to core Defender settings. Turn it on in the Antivirus endpoint security profile or from Defender security settings management. There is no general-purpose OMA-URI that replaces that switch.",
+   "os": [
+    "win11",
+    "srv2019",
+    "srv2022",
+    "srv2025"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection"
+  },
+  {
+   "id": "agents",
+   "name": "Local AI agent discovery",
+   "status": "GA, October 2026",
+   "summary": "Defender inventories supported local AI agents and their MCP servers on onboarded Windows devices, and exposes them in the AI agent inventory and advanced hunting.",
+   "os": [
+    "win11"
+   ],
+   "docs": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
+   "statusNote": "From the Defender for Endpoint what's new page."
+  },
+  {
+   "id": "runtime",
+   "name": "Agent runtime protection in Intune",
+   "status": "Reported",
+   "summary": "The Defender for Endpoint agent runtime protection template in Intune is generally available, including AI agent runtime inspection.",
+   "os": [
+    "win11"
+   ],
+   "docs": "https://www.microsoft.com/en-us/security/blog/2026/11/05/whats-new-in-microsoft-security-november-2026/",
+   "statusNote": "Source is a blog or news post. Treat as reported until a Learn page confirms it."
+  },
+  {
+   "id": "mxc",
+   "name": "Microsoft Execution Containers",
+   "status": "Reported",
+   "summary": "An OS-enforced containment boundary for local AI agents on Windows, so an agent keeps least privilege instead of inheriting the user.",
+   "os": [
+    "win11"
+   ],
+   "docs": "https://www.microsoft.com/en-us/security/blog/2026/11/05/whats-new-in-microsoft-security-november-2026/",
+   "statusNote": "Source is a blog or news post. Treat as reported until a Learn page confirms it."
+  }
+ ]
+}

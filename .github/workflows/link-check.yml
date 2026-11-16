@@ -1,10 +1,10 @@
-name: Link and OMA-URI check
+name: Link check
 
 on:
   schedule:
     - cron: "40 6 * * 1"   # Mondays 06:40 UTC
   pull_request:
-    paths: ["site/data/catalog.json", "site/data/curated.json", "scripts/check-links.mjs"]
+    paths: ["site/data/features.json", "site/data/curated.json", "scripts/check-links.mjs"]
   workflow_dispatch:
 
 permissions:
@@ -33,5 +33,5 @@ jobs:
       - name: Fail when something is broken
         if: steps.check.outcome == 'failure'
         run: |
-          echo "::error::Broken links or OMA-URIs. See the step log and site/data/link-report.json."
+          echo "::error::Broken links. See the step log and site/data/link-report.json."
           exit 1
