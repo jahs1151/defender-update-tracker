@@ -1,66 +1,25 @@
 {
  "schema": 1,
- "checkedAt": "2026-11-16T03:46:58.073Z",
- "contentChangedAt": "2026-11-16T03:46:58.073Z",
+ "checkedAt": "2026-11-16T03:53:28.258Z",
+ "contentChangedAt": "2026-11-16T03:53:28.258Z",
  "changes": [
   {
-   "field": "Security intelligence",
-   "kind": "changed",
-   "from": "1.463.320.0",
-   "to": "1.463.322.0"
-  },
-  {
-   "field": "mpam-fe.exe",
-   "kind": "changed",
-   "from": "1.463.320.0",
-   "to": "1.463.322.0"
-  },
-  {
-   "field": "Sense build",
+   "field": "Monthly platform release",
    "kind": "added",
    "from": "",
-   "to": "10.8839.26080.2008"
+   "to": "4.18.26020.6"
   },
   {
-   "field": "Patch Tuesday month",
+   "field": "Monthly engine release",
    "kind": "added",
    "from": "",
-   "to": "2026-Nov"
+   "to": "1.1.26020.3"
   },
   {
-   "field": "Patch Tuesday CVEs",
+   "field": "Patch Tuesday Windows CVEs",
    "kind": "added",
    "from": "",
-   "to": "2248"
-  },
-  {
-   "field": "Defender or Intune CVEs",
-   "kind": "added",
-   "from": "",
-   "to": "CVE-2026-122194, CVE-2026-112758"
-  },
-  {
-   "field": "Newest KEV entry",
-   "kind": "added",
-   "from": "",
-   "to": "CVE-2026-96951"
-  },
-  {
-   "field": "Open known issues",
-   "kind": "added",
-   "to": "SQL Server linked server connections might remain open"
-  },
-  {
-   "field": "Latest headline",
-   "kind": "added",
-   "from": "",
-   "to": "SCKit abuses ScreenConnect to deploy remote access and target technician sessions"
-  },
-  {
-   "field": "Latest Intune week",
-   "kind": "added",
-   "from": "",
-   "to": "Week of November 16, 2026 (Service release 2611)"
+   "to": "723"
   }
  ],
  "patch": {
@@ -73,8 +32,8 @@
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "3 of 3 packages resolved",
    "data": [
     {
@@ -125,8 +84,8 @@
    "label": "Security intelligence page",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "1.463.322.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
    "data": {
     "securityIntelligence": "1.463.322.0",
@@ -141,19 +100,87 @@
   },
   "productUpdates": {
    "label": "Platform and engine release list (Learn)",
-   "ok": false,
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "",
-   "detail": "No platform/engine releases found",
-   "data": null
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
+   "detail": "8 monthly releases listed, latest February 2026",
+   "data": {
+    "rows": [
+     {
+      "label": "February 2026",
+      "platform": "4.18.26020.6",
+      "engine": "1.1.26020.3",
+      "securityIntelligence": "1.447.2.0",
+      "released": "2026-03-25",
+      "supportPhase": "Security and Critical Updates"
+     },
+     {
+      "label": "January 2026",
+      "platform": "4.18.26010.5",
+      "engine": "1.1.26010.1",
+      "securityIntelligence": "1.445.6.0",
+      "released": "2026-02-03",
+      "supportPhase": "Security and Critical Updates"
+     },
+     {
+      "label": "November 2025",
+      "platform": "4.18.25110.6",
+      "engine": "1.1.25110.1",
+      "securityIntelligence": "1.443.6.0",
+      "released": "2025-12-11",
+      "supportPhase": "Security and Critical Updates"
+     },
+     {
+      "label": "October 2025",
+      "platform": "4.18.25100.9008",
+      "engine": "1.1.25100.9002",
+      "securityIntelligence": "1.441.131.0",
+      "released": "2025-11-06",
+      "supportPhase": "Security and Critical Updates"
+     },
+     {
+      "label": "September 2025",
+      "platform": "4.18.25090.3009",
+      "engine": "1.1.25090.3001",
+      "securityIntelligence": "1.439.345.0",
+      "released": "2025-10-08",
+      "supportPhase": "Security and Critical Updates"
+     },
+     {
+      "label": "August 2025",
+      "platform": "4.18.25080.5",
+      "engine": "1.1.25080.5",
+      "securityIntelligence": "1.437.1.0",
+      "released": "2025-09-16",
+      "supportPhase": "Security and Critical Updates"
+     },
+     {
+      "label": "July 2025",
+      "platform": "4.18.25070.5",
+      "engine": "1.1.25070.4",
+      "securityIntelligence": "1.435.11.0",
+      "released": "2025-08-05",
+      "supportPhase": "Technical upgrade support"
+     },
+     {
+      "label": "June 2025",
+      "platform": "4.18.25060.7",
+      "engine": "1.1.25060.6",
+      "securityIntelligence": "1.433.2.0",
+      "released": "2025-07-22",
+      "supportPhase": "Technical upgrade support"
+     }
+    ],
+    "url": "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support"
+   }
   },
   "changelog": {
    "label": "Detection changelog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "1.463.322.0 · 102 detections",
    "data": {
     "version": "1.463.322.0",
@@ -780,8 +807,8 @@
    "label": "Sense (EDR sensor) build, Update Catalog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "Latest 10.8839.26080.2008",
    "data": {
     "latest": {
@@ -796,19 +823,36 @@
    "label": "Security Update Guide (MSRC API)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
-   "detail": "2026-Nov: 2248 CVEs, 2 Defender or Intune",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
+   "detail": "2026-Nov: 723 Windows CVEs, 35 Critical, 2 Defender or Intune",
    "data": {
     "month": "2026-Nov",
-    "total": 2248,
-    "critical": 64,
+    "windowsTotal": 723,
+    "critical": 35,
+    "perOs": {
+     "srv2022": {
+      "total": 651,
+      "critical": 30
+     },
+     "srv2019": {
+      "total": 618,
+      "critical": 28
+     },
+     "srv2025": {
+      "total": 690,
+      "critical": 33
+     },
+     "win11": {
+      "total": 661,
+      "critical": 33
+     }
+    },
     "endpoint": [
      {
       "cve": "CVE-2026-122194",
       "title": "Microsoft Defender Remote Code Execution Vulnerability",
       "severity": "Critical",
-      "impact": "Remote Code Execution",
       "score": "8.8",
       "released": "2026-11-10T16:00:00.000Z",
       "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-122194"
@@ -817,7 +861,6 @@
       "cve": "CVE-2026-112758",
       "title": "Windows Defender Firewall Service Elevation of Privilege Vulnerability",
       "severity": "Important",
-      "impact": "Elevation of Privilege",
       "score": "7.8",
       "released": "2026-11-10T16:00:00.000Z",
       "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-112758"
@@ -830,8 +873,8 @@
    "label": "CISA Known Exploited Vulnerabilities",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "19 Microsoft Windows or endpoint entries in 12 months",
    "data": {
     "rows": [
@@ -1165,8 +1208,8 @@
    "label": "Windows release health",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "1 open across 5 pages",
    "data": {
     "rows": [
@@ -1291,8 +1334,8 @@
    "label": "Intune what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "8 weeks, 18 Windows or security items",
    "data": {
     "weeks": [
@@ -1530,19 +1573,68 @@
   },
   "mde": {
    "label": "Defender for Endpoint what's new",
-   "ok": false,
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "",
-   "detail": "No monthly items found",
-   "data": null
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
+   "detail": "5 Windows items",
+   "data": {
+    "items": [
+     {
+      "id": "october-2026-local-ai-agent-discovery-on-windows-and-macos",
+      "when": "October 2026",
+      "type": "Feature",
+      "name": "Local AI agent discovery on Windows and macOS",
+      "stage": "GA",
+      "text": "Discover supported local AI agents and their configured MCP servers on onboarded Windows and macOS devices, and investigate them in the AI agent inventory and advanced hunting. Windows requires Microsoft Defender Antivirus platform version 4.18.26090.9 (2609) or later. macOS requires Microsoft Defender for Endpoint version 101.26072.0017 or later. Discovery in WSL remains in preview. See the discovery prerequisites and support matrix .",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/local-agent-discovery-overview"
+     },
+     {
+      "id": "october-2026-vulnerability-assessment-for-microsoft-store-applications",
+      "when": "October 2026",
+      "type": "Feature",
+      "name": "Vulnerability assessment for Microsoft Store applications",
+      "stage": "GA",
+      "text": "Vulnerability assessment for applications installed via the Microsoft Store is now generally available. Defender Vulnerability Management detects supported Microsoft Store applications, adds them to the software inventory, and assesses them for vulnerabilities. Coverage is currently limited to a select set of commonly used applications. Use the Software evidence area on the software page to view the file path for the vulnerable application, along with a suggested query showing the vulnerable app",
+      "url": "https://learn.microsoft.com/en-us/defender-vulnerability-management/tvm-software-inventory#microsoft-store-applications"
+     },
+     {
+      "id": "september-2026-microsoft-defender-for-endpoint-plug-in-support-for-wsl-containers-wslc",
+      "when": "September 2026",
+      "type": "Feature",
+      "name": "Microsoft Defender for Endpoint plug-in support for WSL containers (WSLc)",
+      "stage": "GA",
+      "text": "Extend Microsoft Defender for Endpoint protection to workloads running in WSL containers (WSLc). Gain visibility into WSL container activity through device inventory, alerts, incidents, device timeline, and Advanced Hunting, helping security teams investigate and respond to threats across both Windows and Linux workloads. MDE plugin version 2.26.921.1.",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-plugin-wsl"
+     },
+     {
+      "id": "september-2026-new-microsoft-secure-score-recommendations-for-ai-readiness",
+      "when": "September 2026",
+      "type": "Feature",
+      "name": "New Microsoft Secure Score recommendations for AI-Readiness",
+      "stage": "GA",
+      "text": "Microsoft Defender now brings together six security recommendations for AI-Readiness to help organizations strengthen endpoint trust against AI-accelerated cyberattacks. Together, these recommendations provide a layered security baseline that helps reduce externally visible entry points, establish hardware-backed trust in device startup, isolate critical Windows security functions, protect kernel code integrity, and limit the reuse of local administrator credentials for lateral movement. In the ",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint"
+     },
+     {
+      "id": "september-2026-microsoft-defender-for-endpoint-plug-in-support-for-wsl-containers-wslc",
+      "when": "September 2026",
+      "type": "Feature",
+      "name": "Microsoft Defender for Endpoint plug-in support for WSL containers (WSLc)",
+      "stage": "Preview",
+      "text": "Extend Microsoft Defender for Endpoint protection to workloads running in WSL containers (WSLc). Gain visibility into WSL container activity through device inventory, alerts, incidents, device timeline, and Advanced Hunting, helping security teams investigate and respond to threats across both Windows and Linux workloads. Available in Public Preview. To enroll, complete the registration form .",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-plugin-wsl"
+     }
+    ],
+    "url": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint"
+   }
   },
   "news": {
    "label": "News feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T03:46:58.073Z",
-   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "checkedAt": "2026-11-16T03:53:28.258Z",
+   "lastOkAt": "2026-11-16T03:53:28.258Z",
    "detail": "12 relevant headlines from 4 feeds (failed: BleepingComputer)",
    "data": {
     "items": [
