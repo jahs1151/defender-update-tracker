@@ -34,7 +34,7 @@
     "srv2025"
    ],
    "note": "Also set RemovableDisks: Deny write access and RemovableDisks: Deny execute access in the same template folder. Prefer this catalog over hand-built XML when you do not need a hardware allow-list.",
-   "docs": "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-removablestorage"
+   "docs": "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-removablestorage"
   },
   {
    "id": "usb-autoplay",
@@ -358,7 +358,7 @@
    "name": "File hash computation",
    "summary": "Lets custom file indicators and some investigations match samples by hash.",
    "intunePath": "Endpoint security > Antivirus",
-   "omaUri": "./Vendor/MSFT/Policy/Config/Defender/EnableFileHashComputation",
+   "omaUri": "./Vendor/MSFT/Defender/Configuration/EnableFileHashComputation",
    "dataType": "Integer",
    "value": "1",
    "os": [
@@ -367,7 +367,7 @@
     "srv2022",
     "srv2025"
    ],
-   "docs": "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender"
+   "docs": "https://learn.microsoft.com/en-us/windows/client-management/mdm/defender-csp"
   },
   {
    "id": "web-filter",
@@ -421,7 +421,8 @@
     "srv2025"
    ],
    "note": "Also set SmartScreen/PreventOverrideForFilesInShell to 1 so users cannot click through. Server Core has no shell; this setting matters on Windows 11 and Server with Desktop Experience.",
-   "docs": "https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/"
+   "docs": "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen",
+   "csp": "https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/"
   },
   {
    "id": "edge-ss",
