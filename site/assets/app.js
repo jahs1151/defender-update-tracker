@@ -760,17 +760,33 @@ function renderIntel() {
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/device-health-sensor-health-os", "Device health and sensor health reports")}
   </div>`;
 
+  // Defender for Endpoint changes that Microsoft announces in Intune's what's new and in-development pages.
+  const intune = data("intune");
+  const MDE_IN_INTUNE = /defender|\bmde\b|antivirus|agent runtime|endpoint security/i;
+  const fromIntune = [
+    ...(intune?.weeks || []).flatMap((w) => w.items.filter((i) => MDE_IN_INTUNE.test(i.name)).map((i) => ({ ...i, stage: "Released", when: w.week.replace(/^Week of /, "Week of ") }))),
+    ...(intune?.inDevelopment || []).filter((i) => MDE_IN_INTUNE.test(i.name) && !/linux|macos|android|ios/i.test(i.name)).map((i) => ({ ...i, stage: "In development", when: "" })),
+  ];
+  const intuneBlock = intune
+    ? `<div class="card" style="margin-bottom:12px"><h3>Defender for Endpoint changes from Intune</h3>${fromIntune.length ? `<ul class="list">${fromIntune
+        .map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span> ${pill(i.stage, i.stage === "Released" ? "ok" : "")}${i.when ? ` <span class="meta">${esc(i.when)}</span>` : ""}<p class="clamp">${esc(i.summary)}</p></li>`)
+        .join("")}</ul>` : "<p class=\"meta\">No Defender items in Intune's recent notes.</p>"}<p class="meta">From Intune's what's new and in-development pages, Windows only. ${link(intune.url, "Intune what's new ↗")}</p></div>`
+    : "";
+  const confirmedBy = (f) => fromIntune.find((i) => i.stage === "Released" && f.name.toLowerCase().split(" in intune")[0].split(" ").filter((w) => w.length > 3).every((w) => i.name.toLowerCase().includes(w)));
   const reported = (state.catalog?.features || []).filter((f) => f.status === "Reported");
   const reportedBlock = reported.length
     ? `<div class="card" style="margin-top:12px"><h3>Reported, not yet confirmed on Microsoft Learn</h3><ul class="list">${reported
-        .map((f) => `<li><span class="row-title">${esc(f.name)}</span> ${pill("Reported", "warn")}<p>${esc(f.summary)}</p>${source(f.docs)}</li>`)
+        .map((f) => {
+          const c = confirmedBy(f);
+          return `<li><span class="row-title">${esc(f.name)}</span> ${c ? pill("Confirmed in Intune what's new", "ok") : pill("Reported", "warn")}<p>${esc(f.summary)}</p>${c ? `<div>${link(c.url, `Intune: ${c.name} ↗`, "src")}</div>` : ""}${source(f.docs)}</li>`;
+        })
         .join("")}</ul></div>`
     : "";
 
   return [
     section("changelog", "Detection changelog", renderChangelog(), "changelog"),
     section("si-trend", "Security intelligence builds: last 8", renderTrend(), "changelog"),
-    section("features", "New Defender for Endpoint features", renderFeatures() + reportedBlock, "mde"),
+    section("features", "New Defender for Endpoint features", intuneBlock + renderFeatures() + reportedBlock, "mde"),
     section("chatter", "Bad-detection chatter", chatterBody),
     section("sensor", "Sensor (MsSense / SenseIR)", sensor, "sense"),
     section("news", "News and Reddit", renderFeed(), "news"),
