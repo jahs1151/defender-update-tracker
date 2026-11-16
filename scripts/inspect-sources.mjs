@@ -22,31 +22,17 @@ async function run(name, fn) {
   }
 }
 
-await run("sense catalog", async () => {
-  const html = await getText("https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292", { timeoutMs: 30000 });
-  show("sense rows", html.split(/<tr[\s>]/i).slice(1).map((r) => plain(r).replace(/\s+/g, " ").slice(0, 300)).filter((t) => /10\.8\d{3}/.test(t)).slice(0, 8).join("\n"));
+await run("troubleshoot-sensor follow", async () => {
+  for (const u of ["https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-sensor", "https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/troubleshoot-sensor"]) {
+    const res = await fetch(u, { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" } });
+    const html = await res.text();
+    show(u, `${res.status} final=${res.url} title=${(/<title>([^<]*)/i.exec(html) || [])[1] || ""}`);
+  }
 });
-await run("bleepingcomputer", async () => {
-  const res = await fetch("https://www.bleepingcomputer.com/feed/", { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", accept: "application/rss+xml,*/*" } });
-  show("bleeping", `${res.status} ${res.headers.get("content-type")} ${(await res.text()).slice(0, 300)}`);
-});
-await run("arctic intune", async () => {
-  const res = await fetch("https://arctic-shift.photon-reddit.com/api/posts/search?subreddit=Intune&limit=40&sort=desc");
-  show("arctic intune", `${res.status} ${(await res.text()).slice(0, 400)}`);
-});
-await run("intune in development", async () => {
-  const html = await getText("https://learn.microsoft.com/en-us/intune/whats-new/in-development");
-  show("in-dev headings", [...html.matchAll(/<h([23])[^>]*>([\s\S]*?)<\/h\1>/gi)].map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
-  show("scope tags", around(plain(html), /Scope tags support|Agentic identity/i, 2, 600));
-});
-await run("intune weekly", async () => {
-  const html = await getText("https://learn.microsoft.com/en-us/intune/whats-new/");
-  show("weekly headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 40).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
-});
-await run("troubleshoot-sensor", async () => {
-  for (const slug of ["troubleshoot-sensor", "troubleshoot-onboarding", "troubleshoot-onboarding-error-messages", "check-sensor-status", "troubleshoot-mdatp", "troubleshoot-sense-health", "fix-unhealthy-sensors", "device-health-sensor-health-os", "troubleshoot-microsoft-defender-antivirus"]) {
-    const res = await fetch(`https://learn.microsoft.com/en-us/defender-endpoint/${slug}`, { redirect: "manual" });
-    show(`learn ${slug}`, `${res.status} ${res.headers.get("location") || ""}`);
+await run("sense catalog details", async () => {
+  for (const id of ["a6b341dd-63fa-461c-9e15-0e9f778f4d91", "30186f65-7777-4534-b132-7c5b8814d9cb"]) {
+    const html = await getText(`https://www.catalog.update.microsoft.com/ScopedViewInline.aspx?updateid=${id}`, { timeoutMs: 30000 });
+    show(id, around(plain(html), /Last Modified|Release date|Date|KB5005292/i, 6, 200));
   }
 });
 await run("last-modified", async () => {

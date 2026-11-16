@@ -275,7 +275,10 @@ function renderStatus() {
 }
 
 function renderFleet(releases, intel) {
-  const saved = pref.get("fleet", { platform: "", engine: "", si: "" });
+  // Only well-formed versions are ever kept; anything else saved by an older version of this page is dropped.
+  const raw = pref.get("fleet", {});
+  const saved = Object.fromEntries(["platform", "engine", "si"].map((k) => [k, VALID_VERSION.test(String(raw?.[k] || "")) ? raw[k] : ""]));
+  if (JSON.stringify(saved) !== JSON.stringify(raw)) pref.set("fleet", saved);
   return `<div class="card">
     <p>Paste versions from a device (Get-MpComputerStatus: AMProductVersion, AMEngineVersion, AntivirusSignatureVersion). Saved only in this browser.</p>
     <form class="form-grid" id="fleet-form" autocomplete="off">
@@ -318,13 +321,21 @@ function renderUpdates() {
   const kev = kevAll.filter((r) => osOk(r.os));
   const kevSet = new Set([...(data("kev")?.microsoftCves || []), ...kevAll.map((r) => r.cve)]);
   const cisa = (cve) => (!data("kev") ? "" : /^CVE-/.test(cve) && kevSet.has(cve) ? pill("CISA catalog", "bad") : pill("Not in the CISA catalog"));
-  const pt = data("patchTuesday");
+  const ptData = data("patchTuesday");
   const p = state.pulse.patch;
-  const ptBody = pt
+  // One month picker drives the Patch Tuesday cards, the CVE tables and the Qualys QIDs.
+  const q = data("qualys");
+  const monthKey = (m) => Date.parse(`${m.slice(5)} 1, ${m.slice(0, 4)}`) || 0;
+  const allMonths = [...new Set([...Object.keys(ptData?.months || {}), ptData?.month, ...Object.keys(q?.months || {}), q?.month].filter(Boolean))].sort((a, b) => monthKey(b) - monthKey(a)).slice(0, 3);
+  const savedMonth = pref.get("ptMonth", "");
+  const month = allMonths.includes(savedMonth) ? savedMonth : ptData?.month || allMonths[0];
+  const pt = ptData ? ptData.months?.[month] || (ptData.month === month ? ptData : null) : null;
+  const monthTabs = allMonths.length > 1 ? `<div class="seg" role="tablist" aria-label="Patch Tuesday month">${allMonths.map((m) => `<button type="button" role="tab" data-ptmonth="${esc(m)}" aria-selected="${m === month}">${esc(m)}</button>`).join("")}</div>` : "";
+  const ptBody = monthTabs + (pt
     ? `<div class="grid">
-        <div class="card"><div class="kpi-label">Release</div><div class="kpi">${esc(pt.month)}</div><div class="when">Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.</div>${source(pt.url, "Security Update Guide")}</div>
+        <div class="card"><div class="kpi-label">Release</div><div class="kpi">${esc(month)}</div><div class="when">${month === ptData.month ? `Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.` : "An earlier release, kept for comparison."}</div>${source(ptData.url, "Security Update Guide")}</div>
         <div class="card"><div class="kpi-label">Windows CVEs (in-scope versions)</div><div class="kpi">${esc(pt.windowsTotal)}</div><div class="when">${esc(pt.critical)} rated Critical</div></div>
-        <div class="card"><div class="kpi-label">Defender or Intune CVEs</div><div class="kpi">${esc(pt.endpoint.length)}</div><div class="when">${pt.endpoint.length ? "Listed below" : "None this month"}</div></div>
+        <div class="card"><div class="kpi-label">Defender or Intune CVEs</div><div class="kpi">${esc(pt.endpoint.length)}</div><div class="when">${pt.endpoint.length ? "Listed below" : "None in this release"}</div></div>
       </div>
       <div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>Operating system</th><th>CVEs</th><th>Critical</th></tr></thead><tbody>${Object.entries(pt.perOs || {})
         .sort(([a], [b]) => ALL_OS.indexOf(a) - ALL_OS.indexOf(b))
@@ -334,21 +345,21 @@ function renderUpdates() {
       ${pt.endpoint.length ? `<div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>CVE</th><th>Title</th><th>Severity</th><th>CVSS</th><th>Released</th></tr></thead><tbody>${pt.endpoint
         .map((r) => `<tr><td>${link(r.url, r.cve)} ${cisa(r.cve)}</td><td>${esc(r.title)}</td><td>${esc(r.severity)}</td><td>${esc(r.score)}</td><td>${r.released ? esc(stamp(r.released)) : na("Time not published")}</td></tr>`)
         .join("")}</tbody></table></div>` : ""}`
-    : `${sectionError("patchTuesday", "The Security Update Guide")}<div class="card"><p>Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.</p></div>`;
+    : ptData
+      ? `<div class="card"><p>The Security Update Guide summary for ${esc(month)} is not stored yet. It is fetched on the next scheduled refresh.</p></div>`
+      : `${sectionError("patchTuesday", "The Security Update Guide")}<div class="card"><p>Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.</p></div>`);
 
-  const q = data("qualys");
-  const qMonths = q ? (q.months ? Object.keys(q.months) : [q.month]) : [];
-  const qPick = qMonths.includes(pref.get("qualysMonth", "")) ? pref.get("qualysMonth", "") : q?.month;
-  const qm = q ? (q.months?.[qPick] || q) : null;
-  const qualysBody = q
+  const qPick = month;
+  const qm = q ? q.months?.[qPick] || (q.month === qPick ? q : null) : null;
+  const qualysBody = qm
     ? `<div class="card">
-        ${qMonths.length > 1 ? `<div class="seg" role="tablist" aria-label="Patch Tuesday month">${qMonths.map((m) => `<button type="button" role="tab" data-qmonth="${esc(m)}" aria-selected="${m === qPick}">${esc(m)}</button>`).join("")}</div>` : ""}
+        ${monthTabs}
         <p>${esc(qm.qids.length)} Qualys QIDs detect the ${esc(qPick)} Patch Tuesday fixes. Paste the query into Qualys VMDR to find unpatched hosts.</p>
         <div class="policy"><dl class="kv"><dt>Query</dt><dd><code>${esc(qm.query)}</code><button type="button" class="btn small" data-copy="${esc(qm.query)}" data-label="Copy Qualys QQL">Copy Qualys QQL</button></dd></dl></div>
         <p class="meta" style="margin-top:8px">CVE data from the Microsoft Security Update Guide, QIDs from Qualys's public monthly review.</p>
         ${source(qm.url, `Qualys ${qPick} Patch Tuesday review`)}
       </div>`
-    : `<div class="card"><p class="meta">${esc(sec("qualys")?.detail || "Not checked yet.")} Qualys usually posts its review on Patch Tuesday evening, US time.</p></div>`;
+    : `<div class="card">${monthTabs}<p class="meta">${q ? `No Qualys QIDs stored for ${esc(qPick)}.` : esc(sec("qualys")?.detail || "Not checked yet.")} Qualys usually posts its review on Patch Tuesday evening, US time.</p></div>`;
 
   // Hand-kept entries whose link failed the weekly check are hidden until fixed.
   const incidents = (state.curated?.incidents || []).filter((i) => !state.failedUrls?.has(i.url));
@@ -365,17 +376,27 @@ function renderUpdates() {
     ${source(data("kev")?.url, "CISA catalog")}
   </div>`;
 
-  const allIssues = (data("knownIssues")?.rows || []).filter((r) => osOk(r.os));
+  const everyIssue = data("knownIssues")?.rows || [];
+  const allIssues = everyIssue.filter((r) => osOk(r.os));
+  const hiddenByOs = everyIssue.length - allIssues.length;
   const ISSUE_TABS = {
-    endpoint: { label: "Defender and Intune", test: (r) => r.scope === "security" || CONTROLS.test(`${r.title} ${r.detail}`) || /defender|intune|bitlocker|autopilot|mdm|enrol/i.test(`${r.title} ${r.detail}`) },
+    all: { label: "All", test: () => true },
+    endpoint: { label: "Defender and Intune", test: (r) => r.scope === "security" || /defender|intune|bitlocker|autopilot|\bmdm\b|enrol|device control|removable storage|firewall|attack surface/i.test(`${r.title} ${r.detail}`) },
     win11: { label: "Windows 11", test: (r) => r.os.includes("win11") },
     server: { label: "Server", test: (r) => r.os.some((o) => o.startsWith("srv")) },
     bios: { label: "HP and Dell BIOS", test: (r) => /\b(hp|dell|bios|uefi|firmware)\b/i.test(`${r.title} ${r.detail}`) },
   };
   const counts = Object.fromEntries(Object.entries(ISSUE_TABS).map(([k, t]) => [k, allIssues.filter(t.test).length]));
-  // Default: Defender and Intune when it has entries, otherwise the first tab that does.
-  const savedTab = pref.get("issueTab", "");
-  const scope = ISSUE_TABS[savedTab] ? savedTab : counts.endpoint ? "endpoint" : Object.keys(ISSUE_TABS).find((k) => counts[k]) || "endpoint";
+  // Default: every issue, each listed once with what it applies to. The other tabs narrow it.
+  const savedTab = pref.get("issueTab2", "");
+  const scope = ISSUE_TABS[savedTab] ? savedTab : "all";
+  const appliesTo = (os) => {
+    const parts = [];
+    if (os.includes("win11")) parts.push("Windows 11");
+    const srv = os.filter((o) => o.startsWith("srv")).map((o) => o.slice(3)).sort();
+    if (srv.length) parts.push(srv.length === 3 ? "Server" : `Server ${srv.join(", ")}`);
+    return parts.length ? `Applies to: ${parts.join(", ")}` : "";
+  };
   const issues = allIssues.filter(ISSUE_TABS[scope].test);
   const scopeLabel = ISSUE_TABS[scope].label;
   const issuesBody = data("knownIssues")
@@ -383,9 +404,9 @@ function renderUpdates() {
         <div class="seg" role="tablist" aria-label="Known issue filter">${Object.entries(ISSUE_TABS)
           .map(([k, t]) => `<button type="button" role="tab" data-issue-tab="${k}" aria-selected="${k === scope}">${esc(t.label)} (${counts[k]})</button>`)
           .join("")}</div>
-        ${!counts.endpoint && scope !== "endpoint" && !savedTab ? `<p class="meta">No open or recent Defender, Intune, BitLocker or device-control known issues right now, so this opens on ${esc(scopeLabel)}.</p>` : ""}
+        ${hiddenByOs ? `<p class="meta">${hiddenByOs} more ${hiddenByOs === 1 ? "issue is" : "issues are"} hidden by the ${esc(OS[state.os])} filter at the top. Choose All there to see ${hiddenByOs === 1 ? "it" : "them"}.</p>` : ""}
         ${issues.length ? `<ul class="list">${issues
-          .map((r) => `<li><span class="row-title">${link(r.url, r.title)}</span> ${pill(r.status, /resolved/i.test(r.status) ? "ok" : "warn")} ${osPills(r.os)}
+          .map((r) => `<li><span class="row-title">${link(r.url, r.title)}</span> ${pill(r.status, /resolved/i.test(r.status) ? "ok" : "warn")} ${pill(appliesTo(r.os))}
             <div class="meta">${esc(r.sources.join(", "))}${r.updated ? ` · updated ${esc(stamp(r.updated))}` : ""}</div><p>${esc(r.detail)}</p></li>`)
           .join("")}</ul>` : `<p>No open or recent ${esc(scopeLabel)} known issues${state.os === "all" ? "" : ` for ${esc(OS[state.os])}`}.</p>`}
         <p class="meta">From Windows release health. Resolved items are kept for 45 days. ${(data("knownIssues").pages || []).map((pg) => link(pg.url, pg.label)).join(" · ")}</p>
@@ -498,6 +519,48 @@ function changelogHistory() {
   return clData?.history?.length ? clData.history : clData ? [clData] : [];
 }
 
+// Older builds' detections live in their own files and load when picked.
+state.builds = {};
+const BUILD_TIMEOUT_MS = 10000;
+
+function buildRows(h) {
+  if (!h) return { status: "none", rows: [] };
+  if (Array.isArray(h.rows)) return { status: "ok", rows: h.rows };
+  const latest = data("changelog");
+  if (latest && h.version === latest.version && Array.isArray(latest.rows)) return { status: "ok", rows: latest.rows };
+  return state.builds[h.version] || { status: "idle", rows: [] };
+}
+
+async function loadBuild(h) {
+  if (!h?.file) return;
+  const cur = state.builds[h.version];
+  if (cur && (cur.status === "loading" || cur.status === "ok")) return;
+  state.builds[h.version] = { status: "loading", rows: [] };
+  rerenderChangelog();
+  try {
+    const json = await getJson(h.file, BUILD_TIMEOUT_MS, 0);
+    state.builds[h.version] = { status: "ok", rows: json.rows || [] };
+  } catch (e) {
+    state.builds[h.version] = { status: "error", rows: [], error: e?.name === "TimeoutError" ? "timeout" : String(e?.message || e) };
+  }
+  rerenderChangelog();
+}
+
+function rerenderChangelog() {
+  const el = document.getElementById("changelog");
+  if (!el) return;
+  const focusId = document.activeElement?.id;
+  el.outerHTML = section("changelog", "Detection changelog", renderChangelog(), "changelog");
+  if (focusId) document.getElementById(focusId)?.focus();
+}
+
+function selectedBuild() {
+  const history = changelogHistory();
+  const wanted = pref.get("siVersion", "");
+  const idx = Math.max(0, history.findIndex((h) => h.version === wanted));
+  return { history, idx, h: history[idx], prev: history[idx + 1] };
+}
+
 function renderChangelog() {
   const clData = data("changelog");
   if (!clData) {
@@ -505,37 +568,42 @@ function renderChangelog() {
     return `<div class="card"><p>${/timed out/i.test(s?.detail || "") ? "The detection changelog timed out on the last check." : "The detection changelog could not be read on the last check."} ${esc(s?.detail || "")}</p>
       <button type="button" class="btn" data-action="retry">Retry</button> <span class="meta">Retry reloads the latest published data file. The changelog itself is re-read at the next scheduled refresh.</span></div>`;
   }
-  const history = changelogHistory();
-  const wanted = pref.get("siVersion", "");
-  const idx = Math.max(0, history.findIndex((h) => h.version === wanted));
-  const cl = { ...clData, ...history[idx] };
-  const prev = history[idx + 1];
+  const { history, idx, h, prev } = selectedBuild();
+  const cur = buildRows(h);
+  const before = buildRows(prev);
+  if (cur.status === "idle") setTimeout(() => loadBuild(h));
+  if (prev && before.status === "idle") setTimeout(() => loadBuild(prev));
   const winOnly = pref.get("winOnly", true);
   const q = (state.threatQ || "").trim().toLowerCase();
-  const rows = (cl.rows || []).filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q)));
-  const added = cl.rows.filter((r) => r.change === "added");
-  const updated = cl.rows.filter((r) => r.change === "updated");
+  const rows = cur.rows.filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q)));
+  const nAdded = h.added ?? cur.rows.filter((r) => r.change === "added").length;
+  const nUpdated = h.updated ?? cur.rows.filter((r) => r.change === "updated").length;
   let delta = "";
   if (prev) {
-    const before = new Set(prev.rows.map((r) => r.name));
-    const now = new Set(cl.rows.map((r) => r.name));
-    const fresh = cl.rows.filter((r) => !before.has(r.name)).length;
-    const dropped = prev.rows.filter((r) => !now.has(r.name)).length;
-    delta = `<div class="delta"><strong>${esc(prev.version)} → ${esc(cl.version)}</strong>: ${added.length} added (was ${prev.rows.filter((r) => r.change === "added").length}), ${updated.length} updated (was ${prev.rows.filter((r) => r.change === "updated").length}). ${fresh} detection names are new in this build's list and ${dropped} from the previous build's list are not repeated.</div>`;
+    const pAdded = prev.added ?? before.rows.filter((r) => r.change === "added").length;
+    const pUpdated = prev.updated ?? before.rows.filter((r) => r.change === "updated").length;
+    let names = "";
+    if (cur.status === "ok" && before.status === "ok") {
+      const was = new Set(before.rows.map((r) => r.name));
+      const now = new Set(cur.rows.map((r) => r.name));
+      names = ` ${cur.rows.filter((r) => !was.has(r.name)).length} detection names are new in this build's list and ${before.rows.filter((r) => !now.has(r.name)).length} from the previous build's list are not repeated.`;
+    }
+    delta = `<div class="delta"><strong>${esc(prev.version)} → ${esc(h.version)}</strong>: ${nAdded} added (was ${pAdded}), ${nUpdated} updated (was ${pUpdated}).${names}</div>`;
   } else if (history.length > 1) delta = `<div class="delta">This is the oldest build kept, so there is no earlier build to compare.</div>`;
-  const loading = state.loadingBuild ? ` ${pill("Loading this build", "warn")}` : "";
-  const table = state.loadingBuild
-    ? `<div class="skeleton" style="height:180px"></div>`
-    : rows.length
-      ? `<div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th><th>Change</th></tr></thead><tbody>${rows
-          .slice(0, 80)
-          .map((r) => `<tr><td>${link(r.url, r.name)}</td><td>${esc(r.severity)}</td><td>${esc(r.change)}</td></tr>`)
-          .join("")}</tbody></table></div>${rows.length > 80 ? `<p class="meta">Showing 80 of ${rows.length}. Use the search or the exports for the full list.</p>` : ""}`
-      : `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(cl.version)} matches "${esc(state.threatQ)}".` : cl.rows.length ? "Every detection in this build is for Android, macOS or Linux. Clear the checkbox to see them." : "Microsoft lists no detections for this build."}</p>`;
+  const status = cur.status === "loading" || cur.status === "idle" ? ` ${pill("Loading this build", "warn")}` : "";
+  let table;
+  if (cur.status === "loading" || cur.status === "idle") table = `<div class="skeleton" style="height:180px" aria-label="Loading this build"></div>`;
+  else if (cur.status === "error")
+    table = `<div class="notice">${cur.error === "timeout" ? `Build ${esc(h.version)} did not load within ${BUILD_TIMEOUT_MS / 1000} seconds.` : `Build ${esc(h.version)} did not load (${esc(cur.error)}).`} <button type="button" class="btn small" data-action="retry-build" data-version="${esc(h.version)}">Retry</button></div>`;
+  else if (rows.length)
+    table = `<div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th><th>Change</th></tr></thead><tbody>${rows
+      .map((r) => `<tr><td>${link(r.url, r.name)}</td><td>${esc(r.severity)}</td><td>${esc(r.change)}</td></tr>`)
+      .join("")}</tbody></table></div><p class="meta">All ${rows.length} rows shown.</p>`;
+  else table = `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(h.version)} matches "${esc(state.threatQ)}".` : cur.rows.length ? "Every detection in this build is for Android, macOS or Linux. Clear the checkbox to see them." : "Microsoft lists no detections for this build."}</p>`;
   return `<div class="card">
-    <p><strong>${esc(cl.version)}</strong>${loading} · ${cl.releasedAt ? esc(stamp(cl.releasedAt)) : na("Time not published")} · ${added.length} added, ${updated.length} updated</p>
+    <p><strong>${esc(h.version)}</strong>${status} · ${h.releasedAt ? esc(stamp(h.releasedAt)) : na("Time not published")} · ${nAdded} added, ${nUpdated} updated</p>
     <div class="controls">
-      ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((h, i) => `<option value="${esc(h.version)}" ${i === idx ? "selected" : ""}>${esc(h.version)}${i === 0 ? " (latest)" : ""}${h.releasedAt ? ` · ${esc(stamp(h.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
+      ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((x, i) => `<option value="${esc(x.version)}" ${i === idx ? "selected" : ""}>${esc(x.version)}${i === 0 ? " (latest)" : ""}${x.releasedAt ? ` · ${esc(stamp(x.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
       <label class="field" style="flex:1 1 220px">Threat name <input type="search" id="threat-q" value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
       <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Hide Android, macOS and Linux detections</label>
     </div>
@@ -544,21 +612,20 @@ function renderChangelog() {
       <button type="button" class="btn small" data-export="json">Download JSON</button>
       <button type="button" class="btn small" data-export="csv">Download CSV</button>
       <button type="button" class="btn small" data-export="copy">Copy JSON</button>
-      <span class="meta">Exports the rows shown, for build ${esc(cl.version)}.</span>
+      <span class="meta">Exports the rows shown, for build ${esc(h.version)}.</span>
     </div>
     <div id="cl-table">${table}</div>
-    ${source(cl.url, "Security intelligence release notes")}
+    <p class="meta">Older builds load from this site's own data when picked. If one takes longer than ${BUILD_TIMEOUT_MS / 1000} seconds you get a Retry button.</p>
+    ${source(clData.url, "Security intelligence release notes")}
   </div>`;
 }
 
 function exportRows() {
-  const history = changelogHistory();
-  const wanted = pref.get("siVersion", "");
-  const h = history.find((x) => x.version === wanted) || history[0];
+  const { h } = selectedBuild();
   if (!h) return { version: "", rows: [] };
   const winOnly = pref.get("winOnly", true);
   const q = (state.threatQ || "").trim().toLowerCase();
-  return { version: h.version, releasedAt: h.releasedAt || "", rows: h.rows.filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q))) };
+  return { version: h.version, releasedAt: h.releasedAt || "", rows: buildRows(h).rows.filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q))) };
 }
 
 function renderTrend() {
@@ -567,7 +634,7 @@ function renderTrend() {
   return `<div class="card table-wrap"><table><thead><tr><th>Build</th><th>Released (UTC)</th><th>Released (Chicago)</th><th>Added</th><th>Updated</th></tr></thead><tbody>${history
     .map((h, i) => {
       const [utc, chi] = h.releasedAt ? stamp(h.releasedAt).split(" · ") : ["Time not published", ""];
-      return `<tr><td class="mono">${esc(h.version)}${i === 0 ? ` ${pill("Latest", "ok")}` : ""}</td><td>${esc(utc)}</td><td>${esc(chi || "")}</td><td>${h.rows.filter((r) => r.change === "added").length}</td><td>${h.rows.filter((r) => r.change === "updated").length}</td></tr>`;
+      return `<tr><td class="mono">${esc(h.version)}${i === 0 ? ` ${pill("Latest", "ok")}` : ""}</td><td>${esc(utc)}</td><td>${esc(chi || "")}</td><td>${h.added ?? buildRows(h).rows.filter((r) => r.change === "added").length}</td><td>${h.updated ?? buildRows(h).rows.filter((r) => r.change === "updated").length}</td></tr>`;
     })
     .join("")}</tbody></table><p class="meta" style="margin-top:6px">The last ${history.length} builds in Microsoft's detection changelog. Chicago times carry CST or CDT.</p></div>`;
 }
@@ -771,10 +838,10 @@ function renderSearch() {
     box.innerHTML = "";
     return;
   }
-  // Every word must match. A number must match a whole token, so "2610" does not match "4.18.26100".
+  // Every word must match. A number must match a whole number, so "2610" does not match "4.18.26100" but "5131080" matches "KB5131080".
   const tests = q.split(/\s+/).map((w) => {
     const e = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(/^\d+$/.test(w) ? `(^|[^a-z0-9])${e}($|[^a-z0-9])` : `(^|[^a-z0-9])${e}`, "i");
+    return new RegExp(/^\d+$/.test(w) ? `(^|[^0-9])${e}($|[^0-9])` : `(^|[^a-z0-9])${e}`, "i");
   });
   const hits = searchIndex().filter((x) => tests.every((t) => t.test(x.text)));
   box.innerHTML = `<div class="card"><p><strong>${hits.length} ${hits.length === 1 ? "result" : "results"}</strong> for "${esc(q)}" across CVEs, KBs, QIDs, features and news.</p>${hits.length ? `<ul class="list">${hits
@@ -835,12 +902,12 @@ document.addEventListener("click", async (e) => {
     setTimeout(() => (btn.textContent = btn.dataset.label || "Copy"), 1500);
     return;
   }
-  const t = e.target.closest("[data-qmonth],[data-issue-tab],[data-roadmap],[data-feed]");
+  const t = e.target.closest("[data-ptmonth],[data-issue-tab],[data-roadmap],[data-feed]");
   if (t) {
-    const [key, value, id] = t.dataset.qmonth
-      ? ["qualysMonth", t.dataset.qmonth, "qualys"]
+    const [key, value, id] = t.dataset.ptmonth
+      ? ["ptMonth", t.dataset.ptmonth, t.closest("section")?.id || "patch-tuesday"]
       : t.dataset.issueTab
-        ? ["issueTab", t.dataset.issueTab, "known-issues"]
+        ? ["issueTab2", t.dataset.issueTab, "known-issues"]
         : t.dataset.roadmap
           ? ["roadmapMode", t.dataset.roadmap, "roadmap"]
           : ["feedFilter", t.dataset.feed, "news"];
@@ -881,6 +948,13 @@ document.addEventListener("click", async (e) => {
     setTimeout(() => (URL.revokeObjectURL(a.href), a.remove()), 1000);
     return;
   }
+  const rb2 = e.target.closest('[data-action="retry-build"]');
+  if (rb2) {
+    const h = changelogHistory().find((x) => x.version === rb2.dataset.version);
+    delete state.builds[rb2.dataset.version];
+    loadBuild(h);
+    return;
+  }
   if (e.target.closest("#refresh-btn") || e.target.closest('[data-action="retry"]')) {
     const b = e.target.closest("button");
     b.disabled = true;
@@ -903,7 +977,7 @@ document.addEventListener("input", (e) => {
   if (t.id === "threat-q") {
     state.threatQ = t.value;
     const pos = t.selectionStart;
-    document.getElementById("changelog").outerHTML = section("changelog", "Detection changelog", renderChangelog(), "changelog");
+    rerenderChangelog();
     const n = document.getElementById("threat-q");
     n.focus();
     n.setSelectionRange(pos, pos);
@@ -917,7 +991,7 @@ document.addEventListener("input", (e) => {
   if (t.closest("#fleet-form")) {
     const f = new FormData(t.form);
     const v = { platform: String(f.get("platform")).trim(), engine: String(f.get("engine")).trim(), si: String(f.get("si")).trim() };
-    pref.set("fleet", v);
+    pref.set("fleet", Object.fromEntries(Object.entries(v).map(([k, x]) => [k, VALID_VERSION.test(x) ? x : ""])));
     document.getElementById("fleet-out").innerHTML = fleetVerdict(v, data("productUpdates")?.rows || [], data("intelligence"));
   }
 });
@@ -928,16 +1002,7 @@ document.addEventListener("change", (e) => {
   else if (t.id === "win-only") pref.set("winOnly", t.checked);
   else if (t.id === "si-version") {
     pref.set("siVersion", t.value);
-    state.loadingBuild = true;
-    render();
-    document.getElementById("si-version")?.focus();
-    requestAnimationFrame(() =>
-      setTimeout(() => {
-        state.loadingBuild = false;
-        render();
-        document.getElementById("si-version")?.focus();
-      }, 150),
-    );
+    rerenderChangelog();
     return;
   } else return;
   const id = t.id;

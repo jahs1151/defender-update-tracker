@@ -192,12 +192,33 @@ const OS_PRODUCTS = {
   srv2019: ["Windows Server 2019"],
 };
 
-export async function loadPatchTuesday(now = new Date()) {
+export async function loadPatchTuesday(now = new Date(), previous = null) {
   try {
     // Before this month's Patch Tuesday, the latest Windows release is last month's.
     const thisPt = secondTuesday(now.getUTCFullYear(), now.getUTCMonth());
     const ref = now.getTime() >= thisPt.getTime() + 17 * 3600000 ? now : new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
     const month = releaseNumber(ref);
+    const prevMonth = releaseNumber(new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - 1, 1)));
+    const current = await summarizeMonth(month);
+    // The month before: kept from the last snapshot, fetched once if missing. Lets the page switch months.
+    const months = {};
+    for (const [m, v] of Object.entries(previous?.months || {})) if (m !== month) months[m] = v;
+    if (!months[prevMonth]) months[prevMonth] = await summarizeMonth(prevMonth).catch(() => undefined);
+    if (!months[prevMonth]) delete months[prevMonth];
+    months[month] = current;
+    const order = Object.keys(months).sort((a, b) => Date.parse(`${b.slice(5)} 1, ${b.slice(0, 4)}`) - Date.parse(`${a.slice(5)} 1, ${a.slice(0, 4)}`)).slice(0, 3);
+    return ok(`${month}: ${current.windowsTotal} Windows CVEs, ${current.critical} Critical, ${current.endpoint.length} Defender or Intune · ${order.length} months kept`, {
+      ...current,
+      months: Object.fromEntries(order.map((m) => [m, months[m]])),
+      url: "https://msrc.microsoft.com/update-guide",
+    });
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+async function summarizeMonth(month) {
+  {
     const osRows = {};
     await Promise.all(
       Object.entries(OS_PRODUCTS).map(async ([os, names]) => {
@@ -215,12 +236,7 @@ export async function loadPatchTuesday(now = new Date()) {
     );
     const summary = P.summarizeMsrc({ month, osRows, endpointRows, endpointSeverity });
     if (!summary.windowsTotal) throw new Error(`No Windows CVEs returned for ${month}`);
-    return ok(`${month}: ${summary.windowsTotal} Windows CVEs, ${summary.critical} Critical, ${summary.endpoint.length} Defender or Intune`, {
-      ...summary,
-      url: "https://msrc.microsoft.com/update-guide",
-    });
-  } catch (error) {
-    return fail(error);
+    return summary;
   }
 }
 
@@ -435,15 +451,16 @@ async function loadQualysMonth(month) {
 
 export async function loadPublicHashes(previous) {
   try {
-    const rows = await getJson("https://api.tweetfeed.live/v1/today/sha256", { timeoutMs: 20000 });
+    const rows = await getJson("https://api.tweetfeed.live/v1/week/sha256", { timeoutMs: 30000 });
     const picked = [];
     const seen = new Set();
-    for (const r of Array.isArray(rows) ? rows : []) {
+    const newest = (Array.isArray(rows) ? rows : []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+    for (const r of newest) {
       const hash = String(r.value || "").toLowerCase();
       if (!/^[a-f0-9]{64}$/.test(hash) || seen.has(hash)) continue;
       seen.add(hash);
       picked.push({ hash, reportedAt: r.date ? toIso(`${String(r.date).replace(" ", "T")}Z`) : "", reporter: r.user || "", tags: (r.tags || []).join(" "), tweet: r.tweet || "" });
-      if (picked.length >= 10) break;
+      if (picked.length >= 30) break;
     }
     // Re-check earlier hashes that had no analysis yet, then add today's new ones. Keep the latest 20.
     const earlier = (previous?.rows || []).filter((r) => !seen.has(r.hash));

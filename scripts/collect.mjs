@@ -3,7 +3,7 @@
 // Run by .github/workflows/refresh-and-deploy.yml. Node 20+, no npm packages.
 //
 // A section that fails keeps its last good data, marked stale, so the page is never empty.
-import { readFile, writeFile, appendFile } from "node:fs/promises";
+import { readFile, writeFile, appendFile, mkdir, readdir, unlink } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import * as S from "./lib/sources.mjs";
@@ -78,7 +78,7 @@ async function main() {
     S.loadProductUpdates(),
     S.loadChangelog(),
     S.loadSense(),
-    S.loadPatchTuesday(now),
+    S.loadPatchTuesday(now, previous?.sections?.patchTuesday?.data),
     S.loadKev(),
     S.loadKnownIssues(),
     S.loadIntune(),
@@ -99,6 +99,20 @@ async function main() {
     };
     changelog.data.releasedAt = conv(changelog.data.releasedRaw);
     for (const h of changelog.data.history || []) h.releasedAt = conv(h.releasedRaw);
+    // Each build's detections go to their own file, loaded by the page only when that build is picked.
+    const dir = join(root, "site", "data", "changelog");
+    await mkdir(dir, { recursive: true });
+    const keep = new Set();
+    for (const h of changelog.data.history || []) {
+      const file = `${h.version}.json`;
+      keep.add(file);
+      await writeFile(join(dir, file), `${JSON.stringify({ version: h.version, releasedRaw: h.releasedRaw, releasedAt: h.releasedAt, rows: h.rows })}\n`);
+      h.added = h.rows.filter((r) => r.change === "added").length;
+      h.updated = h.rows.filter((r) => r.change === "updated").length;
+      h.file = `data/changelog/${file}`;
+      delete h.rows;
+    }
+    for (const f of await readdir(dir)) if (f.endsWith(".json") && !keep.has(f)) await unlink(join(dir, f));
   }
 
   const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, qualys, hashes, roadmap };
@@ -115,7 +129,7 @@ async function main() {
   }
 
   const pulse = {
-    schema: 2,
+    schema: 3,
     checkedAt,
     contentChangedAt: previous?.contentChangedAt || checkedAt,
     changes: previous?.changes || [],
