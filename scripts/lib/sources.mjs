@@ -3,6 +3,7 @@ import { getText, getJson, resolveDownload, errorText } from "./http.mjs";
 import * as P from "./parsers.mjs";
 import { toIso, osTags } from "./text.mjs";
 import { secondTuesday } from "../../site/assets/time.js";
+import { exeContents, wimPlatform } from "./packages.mjs";
 
 export const URLS = {
   definitions: "https://www.microsoft.com/en-us/wdsi/definitions",
@@ -28,28 +29,75 @@ const PACKAGES = [
 ];
 
 export async function loadPackages() {
+  const wimPage = await getText(URLS.wimPage).then(P.parseWimPage).catch(() => null);
   const results = await Promise.all(
     PACKAGES.map(async (spec) => {
       try {
         const target = await resolveDownload(spec.latestUrl);
         const { packageVersion, engineVersion } = P.parseDownloadUrl(target.url);
-        return {
+        const row = {
           ...spec,
           version: packageVersion,
           engine: engineVersion,
+          platform: spec.id === "updateplatform" ? packageVersion : "",
           lastModified: toIso(target.lastModified),
           bytes: target.bytes,
           downloadUrl: target.url.toString(),
+          contents: [],
+          contentsDate: "",
           error: packageVersion ? "" : "Version missing from the download redirect",
         };
+        if (spec.id === "wim") {
+          row.engine = wimPage?.engine || "";
+          row.platform = wimPage?.platform || "";
+          row.securityIntelligence = wimPage?.securityIntelligence || packageVersion;
+          const fromCab = await wimPlatform(row.downloadUrl, row.bytes).catch(() => "");
+          if (fromCab) {
+            row.platform = fromCab;
+            row.platformSource = "Read from the platform folder inside defender-dism-x64.cab";
+          } else if (row.platform) {
+            row.platformSource = "As listed on Microsoft's offline image page";
+          }
+        } else {
+          const facts = await exeContents(row.downloadUrl).catch(() => null);
+          if (facts) {
+            row.contents = facts.files;
+            row.contentsDate = facts.fileDate;
+          }
+        }
+        return row;
       } catch (error) {
-        return { ...spec, version: "", engine: "", lastModified: "", bytes: 0, downloadUrl: spec.latestUrl, error: errorText(error) };
+        return { ...spec, version: "", engine: "", lastModified: "", bytes: 0, downloadUrl: spec.latestUrl, contents: [], error: errorText(error) };
       }
     }),
   );
   const good = results.filter((r) => r.version);
   if (!good.length) return { ok: false, detail: results.map((r) => `${r.file}: ${r.error}`).join("; "), data: null };
-  return ok(`${good.length} of ${results.length} packages resolved`, results);
+  return ok(`${good.length} of ${results.length} packages resolved${wimPage ? "" : " (offline image page not read)"}`, results);
+}
+
+const SUBREDDITS = [
+  { sub: "DefenderATP", filter: false },
+  { sub: "Intune", filter: true },
+  { sub: "sysadmin", filter: true },
+];
+
+export async function loadCommunity() {
+  const packs = [];
+  for (const { sub, filter } of SUBREDDITS) {
+    try {
+      const q = new URLSearchParams({ subreddit: sub, limit: "40", sort: "desc" });
+      const json = await getJson(`https://arctic-shift.photon-reddit.com/api/posts/search?${q}`, { timeoutMs: 15000 });
+      packs.push({ sub, ok: true, posts: P.parseRedditPosts(json, sub, filter) });
+    } catch (error) {
+      packs.push({ sub, ok: false, posts: [], error: errorText(error) });
+    }
+    await new Promise((r) => setTimeout(r, 900));
+  }
+  if (!packs.some((p) => p.ok)) return { ok: false, detail: packs.map((p) => `r/${p.sub}: ${p.error}`).join("; "), data: null };
+  const posts = packs.flatMap((p) => p.posts).sort((a, b) => (b.published || "").localeCompare(a.published || "")).slice(0, 30);
+  const failed = packs.filter((p) => !p.ok).map((p) => `r/${p.sub}`);
+  return ok(`${posts.length} posts${failed.length ? ` (failed: ${failed.join(", ")})` : ""}`, { posts, subs: packs.map((p) => ({ sub: p.sub, ok: p.ok })) });
 }
 
 export async function loadIntelligence(packages) {

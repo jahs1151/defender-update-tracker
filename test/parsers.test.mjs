@@ -153,3 +153,30 @@ test("diff reports version changes and ignores timestamps", () => {
   const d = diffPulse(mk("1.463.1.0", "a"), mk("1.463.2.0", "b"));
   assert.deepEqual(d, [{ field: "Security intelligence", kind: "changed", from: "1.463.1.0", to: "1.463.2.0" }]);
 });
+
+test("offline image page versions", () => {
+  const html = `<p>Defender package version: <strong>1.463.217.0</strong></p><p>Platform version: <strong>4.18.26100.4</strong></p>
+    <p>Engine version: <strong>1.1.26100.4</strong></p><p>Security intelligence version: <strong>1.463.217.0</strong></p>`;
+  assert.deepEqual(P.parseWimPage(html), { packageVersion: "1.463.217.0", platform: "4.18.26100.4", engine: "1.1.26100.4", securityIntelligence: "1.463.217.0" });
+});
+
+test("bad-detection chatter matcher", () => {
+  assert.ok(P.isBadDetectionChatter("Defender false positive quarantines Chrome after 1.463.322.0"));
+  assert.ok(P.isBadDetectionChatter("SenseIR.exe flagged as reverse shell"));
+  assert.ok(!P.isBadDetectionChatter("Patch Tuesday fixes 60 bugs"));
+});
+
+test("Reddit posts are filtered and cleaned", () => {
+  const json = {
+    data: [
+      { title: "MDE flagged our backup agent", selftext: "Defender **quarantined** it", permalink: "/r/sysadmin/comments/a/", created_utc: 1763251200, subreddit: "sysadmin", author: "x" },
+      { title: "Printer driver help", selftext: "nothing about AV", permalink: "/r/sysadmin/comments/b/", created_utc: 1763251100, subreddit: "sysadmin", author: "y" },
+      { title: "[removed]", selftext: "", permalink: "/r/sysadmin/comments/c/", created_utc: 1, author: "z" },
+      { title: "Defender on macOS crash", selftext: "macOS only", permalink: "/r/sysadmin/comments/d/", created_utc: 2, author: "w" },
+    ],
+  };
+  const posts = P.parseRedditPosts(json, "sysadmin", true);
+  assert.deepEqual(posts.map((p) => p.url), ["https://www.reddit.com/r/sysadmin/comments/a/"]);
+  assert.equal(posts[0].summary, "Defender quarantined it");
+  assert.equal(posts[0].published, "2025-11-16T00:00:00.000Z");
+});

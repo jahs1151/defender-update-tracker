@@ -17,6 +17,11 @@ const pill = (text, tone = "") => `<span class="pill ${tone}">${esc(text)}</span
 const osOk = (list) => state.os === "all" || !list || !list.length || list.includes(state.os);
 const osPills = (list) => (list && list.length && list.length < ALL_OS.length ? list.map((o) => pill(OS[o] || o)).join(" ") : "");
 const sec = (key) => state.pulse?.sections?.[key] || null;
+const CHATTER =
+  /false[-\s]?positive|faulty (signature|update|detection|intelligence)|bad (signature|definition|update)|mass (detection|alert|quarantine)|detection storm|signature (revision|rollback)|reverted (signature|update)|security intelligence.{0,48}(issue|problem|false|revision)|SenseIR|MsSense|sense\.exe|impaired communication|no sensor data|sensor health|quarantin\w+ (legit|good|our|everything)/i;
+const CONTROLS = /\busb\b|removable|device control|firewall|attack surface|\basr\b|bitlocker/i;
+const daysOld = (iso) => (iso ? (Date.now() - Date.parse(iso)) / 86400000 : Infinity);
+const size = (b) => (!b ? "" : b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : `${Math.round(b / 1024)} KB`);
 const data = (key) => sec(key)?.data || null;
 
 function checked(key) {
@@ -170,15 +175,19 @@ function renderStatus() {
     .map(
       (p) => `<tr>
         <td><div class="row-title">${esc(p.name)}</div><div class="meta">${esc(p.file)}${p.kb ? ` · ${esc(p.kb)}` : ""}</div></td>
-        <td class="mono">${p.version ? esc(p.version) : na()}${p.engine ? `<div class="meta">engine ${esc(p.engine)}</div>` : ""}</td>
-        <td>${p.lastModified ? esc(stamp(p.lastModified)) : na("Time not published")}</td>
+        <td class="mono">${p.version ? esc(p.version) : na()}${p.engine ? `<div class="meta">engine ${esc(p.engine)}</div>` : ""}${p.id === "wim" && p.platform ? `<div class="meta" title="${esc(p.platformSource || "")}">platform ${esc(p.platform)}</div>` : ""}</td>
+        <td>${p.lastModified ? esc(stamp(p.lastModified)) : na("Time not published")}${p.contents?.length ? `<div class="meta">Contains ${esc(p.contents.join(", "))}${p.contentsDate ? `, files dated ${esc(stamp(p.contentsDate))}` : ""}</div>` : ""}</td>
+        <td>${esc(size(p.bytes))}</td>
         <td>${link(p.latestUrl, "Download x64")} · ${link(p.page, "Docs")}</td>
       </tr>`,
     )
     .join("");
   const packages = pkgs.length
-    ? `<div class="card table-wrap"><table><thead><tr><th>Package</th><th>Version</th><th>File date (Last-Modified)</th><th>Links</th></tr></thead><tbody>${pkgRows}</tbody></table>
-       <p class="meta" style="margin-top:8px">mpam-fe.exe updates security intelligence and the engine, not the platform. updateplatform.exe updates only the platform. The offline image kit trails the daily signatures between Patch Tuesdays.</p></div>`
+    ? `<div class="card table-wrap"><table><thead><tr><th>Package</th><th>Version</th><th>File date (Last-Modified)</th><th>Size</th><th>Links</th></tr></thead><tbody>${pkgRows}</tbody></table>
+       <p class="meta" style="margin-top:8px">mpam-fe.exe updates security intelligence and the engine, not the platform. updateplatform.exe updates only the platform. The offline image kit trails the daily signatures between Patch Tuesdays${(() => {
+         const w = pkgs.find((p) => p.id === "wim");
+         return w?.platformSource ? `. Its platform version is ${esc(w.platformSource.charAt(0).toLowerCase() + w.platformSource.slice(1))}` : "";
+       })()}.</p></div>`
     : sectionError("packages", "The download packages");
 
   const currentPlatform = intel?.platform || plat?.version || "";
@@ -284,15 +293,21 @@ function renderUpdates() {
     ${source(data("kev")?.url, "CISA catalog")}
   </div>`;
 
-  const showAll = pref.get("issuesAll", false);
-  const issues = (data("knownIssues")?.rows || []).filter((r) => osOk(r.os)).filter((r) => showAll || r.scope === "security");
+  const scope = pref.get("issueScope", "security");
+  const inScope = (r) => scope === "all" || (scope === "controls" ? CONTROLS.test(`${r.title} ${r.detail}`) : r.scope === "security");
+  const issues = (data("knownIssues")?.rows || []).filter((r) => osOk(r.os)).filter(inScope);
+  const scopeLabel = { security: "Defender, Intune or BitLocker", controls: "USB, Firewall, ASR or BitLocker", all: "Windows" }[scope];
   const issuesBody = data("knownIssues")
     ? `<div class="card">
-        <div class="controls"><label><input type="checkbox" id="issues-all" ${showAll ? "checked" : ""}> Show every Windows issue, not only Defender, Intune and BitLocker</label></div>
+        <div class="controls"><label class="field">Show <select id="issue-scope">
+          <option value="security" ${scope === "security" ? "selected" : ""}>Defender, Intune and BitLocker issues</option>
+          <option value="controls" ${scope === "controls" ? "selected" : ""}>Intune controls: USB, Firewall, ASR, BitLocker</option>
+          <option value="all" ${scope === "all" ? "selected" : ""}>Every Windows known issue</option>
+        </select></label></div>
         ${issues.length ? `<ul class="list">${issues
           .map((r) => `<li><span class="row-title">${link(r.url, r.title)}</span> ${pill(r.status, /resolved/i.test(r.status) ? "ok" : "warn")} ${osPills(r.os)}
             <div class="meta">${esc(r.sources.join(", "))}${r.updated ? ` · updated ${esc(stamp(r.updated))}` : ""}</div><p>${esc(r.detail)}</p></li>`)
-          .join("")}</ul>` : `<p>No ${showAll ? "" : "Defender, Intune or BitLocker "}known issues for this filter.</p>`}
+          .join("")}</ul>` : `<p>No open or recent ${esc(scopeLabel)} known issues for this filter.</p>`}
         <p class="meta">From Windows release health. ${(data("knownIssues").pages || []).map((pg) => link(pg.url, pg.label)).join(" · ")}</p>
       </div>`
     : sectionError("knownIssues", "Windows release health");
@@ -418,7 +433,7 @@ function renderAsr() {
 function renderIntel() {
   const cl = data("changelog");
   const winOnly = pref.get("winOnly", true);
-  const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\//i.test(n);
+  const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(n);
   const rows = (cl?.rows || []).filter((r) => !winOnly || isWin(r.name));
   const changelog = cl
     ? `<div class="card">
@@ -454,19 +469,78 @@ function renderIntel() {
         .join("")}</ul>` : "<p>No headlines match this filter.</p>"}</div>`
     : sectionError("news", "The news feeds");
 
+  const posts = data("community")?.posts || [];
+  const chatter = [
+    ...news.map((n) => ({ ...n, where: n.source })),
+    ...posts.map((p) => ({ ...p, where: p.community })),
+  ]
+    .filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 14)
+    .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+  const chatterBody = `<div class="card">
+    <p>News and Reddit posts from the last 14 days that mention a false positive, a signature revision, a detection storm, or MsSense / SenseIR. One post is a lead. Several, plus quarantines on your pilot ring, are a reason to hold the broad ring.</p>
+    ${chatter.length ? `<ul class="list">${chatter
+      .slice(0, 10)
+      .map((x) => `<li><span class="row-title">${link(x.url, x.title)}</span><div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div></li>`)
+      .join("")}</ul>` : `<p class="meta">Nothing matches right now. That is a real empty result, not a missing feed (see Source health).</p>`}
+  </div>`;
+  const redditBody = data("community")
+    ? `<div class="card">${posts.length ? `<ul class="list">${posts
+        .slice(0, 20)
+        .map((p) => `<li><span class="row-title">${link(p.url, p.title)}</span><div class="meta">${esc(p.community)} · ${p.published ? esc(stamp(p.published)) : ""}</div>${p.summary ? `<p>${esc(p.summary)}</p>` : ""}</li>`)
+        .join("")}</ul>` : "<p>No posts right now.</p>"}<p class="meta">Community posts, not Microsoft guidance. r/DefenderATP is shown in full; r/Intune and r/sysadmin only when a post mentions Defender.</p></div>`
+    : sectionError("community", "Reddit");
+
+  const states = [
+    ["Active", "The sensor is reporting. A bad signature still shows up as alerts and quarantines, not as an inactive sensor."],
+    ["Impaired communications", "The device cannot fully reach the Defender service URLs, usually because of a proxy. Isolate, live response and file submission fail until that path works."],
+    ["No sensor data", "The device reaches the service but sends only partial data. Check that the Connected User Experiences and Telemetry service (DiagTrack) is running and that antivirus was not disabled by policy."],
+    ["Inactive", "No signals for about seven days, or the device was offboarded. It is not a signature-version problem."],
+  ];
   const sensor = `<div class="card">
     <p><strong>MsSense.exe</strong> is the Defender for Endpoint EDR sensor (service name <code>Sense</code>). It collects telemetry and sends it to the Defender portal. Its version is separate from the antivirus platform and is updated through KB5005292.</p>
     <p><strong>SenseIR.exe</strong> runs automated investigation and live response actions. It often starts PowerShell as SYSTEM, which can look alarming in process trees but is expected. Do not add allow indicators or exclusions for either file.</p>
     <p>Sensor health is in the Defender portal's device health reports, not in the antivirus signature version.</p>
+    <h3 style="margin-top:12px">Sensor health states</h3>
+    <div class="table-wrap"><table><thead><tr><th>State</th><th>What it means</th></tr></thead><tbody>${states.map(([a, b]) => `<tr><td><strong>${esc(a)}</strong></td><td>${esc(b)}</td></tr>`).join("")}</tbody></table></div>
+    ${source("https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors", "Fix unhealthy sensors")}
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/device-health-sensor-health-os", "Device health and sensor health reports")}
   </div>`;
 
   return [
     section("changelog", "Detection changelog", changelog, "changelog"),
     section("features", "New Defender for Endpoint features", features + reportedBlock, "mde"),
+    section("chatter", "Bad-detection chatter", chatterBody),
     section("sensor", "Sensor (MsSense / SenseIR)", sensor),
     section("news", "News", newsBody, "news"),
+    section("reddit", "Reddit", redditBody, "community"),
   ].join("");
+}
+
+// ---------- alert banner ----------
+function renderAlerts() {
+  const alerts = [];
+  const go = (hash, text) => `<a href="#${hash}">${esc(text)}</a>`;
+  for (const r of data("kev")?.rows || []) {
+    if (daysOld(r.dateAdded) <= 21 && osOk(r.os)) alerts.push({ tone: "bad", html: `${r.endpointSecurity ? "Defender/Intune" : "Windows"} vulnerability exploited in the wild: ${esc(r.cve)} ${esc(r.name)}, added to CISA KEV ${esc(stamp(r.dateAdded))}. ${go("exploited", "Details")}` });
+  }
+  for (const r of data("patchTuesday")?.endpoint || []) {
+    if (/critical/i.test(r.severity) && daysOld(r.released) <= 21) alerts.push({ tone: "bad", html: `Critical Defender CVE this month: ${esc(r.cve)} ${esc(r.title)}. ${go("patch-tuesday", "Patch Tuesday")}` });
+  }
+  for (const i of state.curated?.incidents || []) {
+    if (i.status !== "Patched" && daysOld(i.date) <= 60 && !state.failedUrls?.has(i.url)) alerts.push({ tone: "bad", html: `${esc(i.name)} (${esc(i.status.toLowerCase())}). ${go("exploited", "Details")}` });
+  }
+  const oob = (data("news")?.items || []).filter((n) => /out-of-band|emergency (update|patch|fix)|zero-day|actively exploited/i.test(n.title) && daysOld(n.published) <= 7 && osOk(n.os));
+  for (const n of oob.slice(0, 2)) alerts.push({ tone: "", html: `${esc(n.title)} (${esc(n.source)}, ${esc(ago(n.published))}). ${link(n.url, "Read")}` });
+  const posts = data("community")?.posts || [];
+  const recentChatter = [...(data("news")?.items || []), ...posts].filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 3);
+  if (recentChatter.length >= 2) alerts.push({ tone: "", html: `${recentChatter.length} posts in the last 3 days mention a possible bad detection or sensor problem. ${go("chatter", "Review before widening the broad ring")}` });
+  const openIssues = (data("knownIssues")?.rows || []).filter((r) => r.scope === "security" && !/resolved/i.test(r.status) && osOk(r.os));
+  for (const r of openIssues.slice(0, 2)) alerts.push({ tone: "", html: `Open known issue: ${esc(r.title)} (${esc(r.status)}). ${go("known-issues", "Known issues")}` });
+  if (!alerts.length) return "";
+  return `<div class="section" role="region" aria-label="Alerts">${alerts
+    .slice(0, 6)
+    .map((a) => `<div class="notice ${a.tone}">${a.html}</div>`)
+    .join("")}</div>`;
 }
 
 // ---------- render + events ----------
@@ -478,7 +552,7 @@ function render() {
     return;
   }
   const fn = { status: renderStatus, updates: renderUpdates, intune: renderIntune, intel: renderIntel }[state.tab];
-  view.innerHTML = fn();
+  view.innerHTML = renderAlerts() + fn();
   document.querySelectorAll("#tabs a").forEach((a) => a.setAttribute("aria-current", a.dataset.tab === state.tab ? "page" : "false"));
   document.querySelectorAll("#os-chips button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.os === state.os)));
 }
@@ -493,7 +567,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", catalog: "intune", asr: "intune", "intune-weekly": "intune", "intune-dev": "intune", changelog: "intel", features: "intel", sensor: "intel", news: "intel" }[hash];
+  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", catalog: "intune", asr: "intune", "intune-weekly": "intune", "intune-dev": "intune", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
@@ -545,7 +619,7 @@ document.addEventListener("input", (e) => {
 document.addEventListener("change", (e) => {
   const t = e.target;
   if (t.id === "cat-area") pref.set("area", t.value);
-  else if (t.id === "issues-all") pref.set("issuesAll", t.checked);
+  else if (t.id === "issue-scope") pref.set("issueScope", t.value);
   else if (t.id === "win-only") pref.set("winOnly", t.checked);
   else if (t.dataset.asr) {
     const m = pref.get("asr", {});

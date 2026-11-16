@@ -355,3 +355,51 @@ export function summarizeMsrc({ month, osRows, endpointRows, endpointSeverity = 
   }
   return { month, windowsTotal: all.size, critical: critical.size, perOs, endpoint };
 }
+
+/** Offline image page: the versions Microsoft lists for the current kit. */
+export function parseWimPage(html) {
+  const text = plain(html);
+  const pick = (label) => new RegExp(`${label}:?\\s*(\\d+\\.\\d+\\.\\d+\\.\\d+)`, "i").exec(text)?.[1] ?? "";
+  return {
+    packageVersion: pick("Defender package version"),
+    platform: pick("Platform version"),
+    engine: pick("Engine version"),
+    securityIntelligence: pick("Security intelligence version"),
+  };
+}
+
+/** Words that suggest a faulty detection or a sensor problem. */
+const CHATTER =
+  /false[-\s]?positive|faulty (signature|update|detection|intelligence)|bad (signature|definition|update)|mass (detection|alert|quarantine)|detection storm|signature (revision|rollback)|reverted (signature|update)|security intelligence.{0,48}(issue|problem|false|revision)|SenseIR|MsSense|sense\.exe|impaired communication|no sensor data|sensor health|quarantin\w+ (legit|good|our|everything)/i;
+
+export const isBadDetectionChatter = (text) => CHATTER.test(text || "");
+
+function looksEnglish(text) {
+  if ((text.match(/[^\u0000-\u007F]/g) || []).length >= 3) return false;
+  return !/\b(nicht|und|der|die|das|eine|für|wird|sind|oder)\b/i.test(text);
+}
+
+/** Arctic Shift Reddit search rows to posts. `filter` keeps only Defender-related posts. */
+export function parseRedditPosts(json, sub, filter) {
+  const posts = [];
+  for (const row of Array.isArray(json?.data) ? json.data : []) {
+    const title = (row.title || "").trim();
+    const body = row.selftext || "";
+    if (!title || /\[(removed|deleted)\]/i.test(`${title} ${body}`) || row.author === "[deleted]") continue;
+    if (row._meta?.removal_type || row._meta?.was_deleted_later) continue;
+    const blob = `${title} ${body}`;
+    if (!looksEnglish(blob)) continue;
+    if (filter && !/defender|antivirus|\bmde\b|\bedr\b|device control|attack surface|\basr\b|security intelligence|mssense|senseir/i.test(blob)) continue;
+    if (/\b(macos|mac os|ios|ipados|android|linux)\b/i.test(blob) && !/\b(windows|server 20)\b/i.test(blob)) continue;
+    const at = row.created_utc || row.created || 0;
+    posts.push({
+      id: row.permalink || `${sub}-${at}`,
+      community: `r/${row.subreddit || sub}`,
+      title: plain(title),
+      url: row.permalink ? `https://www.reddit.com${row.permalink}` : `https://www.reddit.com/r/${sub}/new/`,
+      published: at ? new Date(at * 1000).toISOString() : "",
+      summary: plain(body.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/[#*_`>]/g, " ")).slice(0, 280),
+    });
+  }
+  return posts;
+}

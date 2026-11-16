@@ -33,6 +33,7 @@ const LABELS = {
   intune: "Intune what's new",
   mde: "Defender for Endpoint what's new",
   news: "News feeds",
+  community: "Reddit (via Arctic Shift)",
 };
 
 async function main() {
@@ -42,7 +43,7 @@ async function main() {
   const checkedAt = now.toISOString();
 
   const packages = await S.loadPackages();
-  const [intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news] = await Promise.all([
+  const [intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community] = await Promise.all([
     S.loadIntelligence(packages.data),
     S.loadProductUpdates(),
     S.loadChangelog(),
@@ -53,6 +54,7 @@ async function main() {
     S.loadIntune(),
     S.loadMdeWhatsNew(),
     S.loadNews(),
+    S.loadCommunity(),
   ]);
 
   // The changelog uses the same unlabeled clock as the definitions page.
@@ -62,7 +64,7 @@ async function main() {
     changelog.data.releasedAt = at ? at.toISOString() : "";
   }
 
-  const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news };
+  const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community };
   const sections = {};
   for (const [key, result] of Object.entries(fresh)) {
     const prev = previous?.sections?.[key];
