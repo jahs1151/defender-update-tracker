@@ -1,9 +1,68 @@
 {
  "schema": 1,
- "seed": true,
- "checkedAt": "2026-11-15T21:05:00.000Z",
- "contentChangedAt": "2026-11-15T21:05:00.000Z",
- "changes": [],
+ "checkedAt": "2026-11-16T03:46:58.073Z",
+ "contentChangedAt": "2026-11-16T03:46:58.073Z",
+ "changes": [
+  {
+   "field": "Security intelligence",
+   "kind": "changed",
+   "from": "1.463.320.0",
+   "to": "1.463.322.0"
+  },
+  {
+   "field": "mpam-fe.exe",
+   "kind": "changed",
+   "from": "1.463.320.0",
+   "to": "1.463.322.0"
+  },
+  {
+   "field": "Sense build",
+   "kind": "added",
+   "from": "",
+   "to": "10.8839.26080.2008"
+  },
+  {
+   "field": "Patch Tuesday month",
+   "kind": "added",
+   "from": "",
+   "to": "2026-Nov"
+  },
+  {
+   "field": "Patch Tuesday CVEs",
+   "kind": "added",
+   "from": "",
+   "to": "2248"
+  },
+  {
+   "field": "Defender or Intune CVEs",
+   "kind": "added",
+   "from": "",
+   "to": "CVE-2026-122194, CVE-2026-112758"
+  },
+  {
+   "field": "Newest KEV entry",
+   "kind": "added",
+   "from": "",
+   "to": "CVE-2026-96951"
+  },
+  {
+   "field": "Open known issues",
+   "kind": "added",
+   "to": "SQL Server linked server connections might remain open"
+  },
+  {
+   "field": "Latest headline",
+   "kind": "added",
+   "from": "",
+   "to": "SCKit abuses ScreenConnect to deploy remote access and target technician sessions"
+  },
+  {
+   "field": "Latest Intune week",
+   "kind": "added",
+   "from": "",
+   "to": "Week of November 16, 2026 (Service release 2611)"
+  }
+ ],
  "patch": {
   "last": "2026-11-10",
   "next": "2026-12-08",
@@ -13,10 +72,10 @@
   "packages": {
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
-   "stale": true,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "2026-11-15T21:05:00.000Z",
-   "detail": "Seed snapshot carried over from the previous site. Replaced on the first scheduled run.",
+   "stale": false,
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "3 of 3 packages resolved",
    "data": [
     {
      "id": "mpam-fe",
@@ -25,11 +84,11 @@
      "kb": "KB2267602",
      "latestUrl": "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64",
      "page": "https://www.microsoft.com/en-us/wdsi/definitions",
-     "version": "1.463.320.0",
+     "version": "1.463.322.0",
      "engine": "1.1.26100.4",
-     "lastModified": "",
-     "bytes": 0,
-     "downloadUrl": "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64",
+     "lastModified": "2026-11-15T23:50:30.000Z",
+     "bytes": 220379552,
+     "downloadUrl": "https://definitionupdates.microsoft.com/packages/content/mpam-fe.exe?packageType=Signatures&packageVersion=1.463.322.0&arch=amd64&engineVersion=1.1.26100.4",
      "error": ""
     },
     {
@@ -41,9 +100,9 @@
      "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
      "version": "4.18.26100.4",
      "engine": "",
-     "lastModified": "",
-     "bytes": 0,
-     "downloadUrl": "https://go.microsoft.com/fwlink/?LinkID=870379&arch=x64",
+     "lastModified": "2026-11-10T02:11:03.000Z",
+     "bytes": 40425488,
+     "downloadUrl": "https://definitionupdates.microsoft.com/packages/content/updateplatform.exe?packageType=Platform&packageVersion=4.18.26100.4&arch=x64",
      "error": ""
     },
     {
@@ -56,8 +115,8 @@
      "version": "1.463.217.0",
      "engine": "",
      "lastModified": "2026-11-10T03:07:38.000Z",
-     "bytes": 0,
-     "downloadUrl": "https://go.microsoft.com/fwlink/?linkid=2144531",
+     "bytes": 258150833,
+     "downloadUrl": "https://definitionupdates.microsoft.com/packages/content/defender-update-kit-x64.zip?packageType=DismPackage&packageVersion=1.463.217.0&arch=x64",
      "error": ""
     }
    ]
@@ -65,101 +124,1625 @@
   "intelligence": {
    "label": "Security intelligence page",
    "ok": true,
-   "stale": true,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "2026-11-15T21:05:00.000Z",
-   "detail": "Seed snapshot carried over from the previous site. ",
+   "stale": false,
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "1.463.322.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
    "data": {
-    "securityIntelligence": "1.463.320.0",
+    "securityIntelligence": "1.463.322.0",
     "engine": "1.1.26100.4",
     "platform": "4.18.26100.4",
-    "releasedAt": "",
-    "releasedRaw": "",
-    "clockZone": "",
-    "clockBasis": "Not checked yet.",
+    "releasedAt": "2026-11-16T02:41:33.000Z",
+    "releasedRaw": "11/16/2026 2:41:33 AM",
+    "clockZone": "UTC",
+    "clockBasis": "Verified: the page clock matches the mpam-fe.exe Last-Modified header (GMT) within 171 min when read as UTC.",
     "url": "https://www.microsoft.com/en-us/wdsi/definitions"
+   }
+  },
+  "productUpdates": {
+   "label": "Platform and engine release list (Learn)",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "",
+   "detail": "No platform/engine releases found",
+   "data": null
+  },
+  "changelog": {
+   "label": "Detection changelog",
+   "ok": true,
+   "stale": false,
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "1.463.322.0 · 102 detections",
+   "data": {
+    "version": "1.463.322.0",
+    "releasedRaw": "11/16/2026 2:36:17 AM",
+    "rows": [
+     {
+      "name": "Trojan:MacOS/Obfuse!AMTB",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MacOS/Obfuse!AMTB&ThreatID=2147982168"
+     },
+     {
+      "name": "Adware:AndroidOS/Ewind!rfn",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Adware:AndroidOS/Ewind!rfn&ThreatID=466595"
+     },
+     {
+      "name": "Adware:AndroidOS/Multiverze!rfn",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Adware:AndroidOS/Multiverze!rfn&ThreatID=450521"
+     },
+     {
+      "name": "Adware:Win32/Tnega",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Adware:Win32/Tnega&ThreatID=406605"
+     },
+     {
+      "name": "Backdoor:PHP/Webshell!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:PHP/Webshell!rfn&ThreatID=2147693340"
+     },
+     {
+      "name": "Backdoor:Win32/Berbew!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/Berbew!rfn&ThreatID=2147692330"
+     },
+     {
+      "name": "Backdoor:Win32/Koceg!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/Koceg!rfn&ThreatID=2147694169"
+     },
+     {
+      "name": "Backdoor:Win32/Supper!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/Supper!rfn&ThreatID=2147939267"
+     },
+     {
+      "name": "Exploit:Win32/CVE-2016-009",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Exploit:Win32/CVE-2016-009&ThreatID=2147875613"
+     },
+     {
+      "name": "HackTool:AndroidOS/Mesploit!rfn",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:AndroidOS/Mesploit!rfn&ThreatID=2147752932"
+     },
+     {
+      "name": "HackTool:BAT/AutoKMS!MSR",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:BAT/AutoKMS!MSR&ThreatID=2147754451"
+     },
+     {
+      "name": "HackTool:PowerShell/PowerSploit.E",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:PowerShell/PowerSploit.E&ThreatID=2147734721"
+     },
+     {
+      "name": "HackTool:Win32/AutoKMS!MTB",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/AutoKMS!MTB&ThreatID=2147766452"
+     },
+     {
+      "name": "HackTool:Win32/crack",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/crack&ThreatID=2147734096"
+     },
+     {
+      "name": "HackTool:Win32/Crack!AMTB",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Crack!AMTB&ThreatID=2147933412"
+     },
+     {
+      "name": "HackTool:Win32/Crack!MTB",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Crack!MTB&ThreatID=2147745913"
+     },
+     {
+      "name": "HackTool:Win32/Keygen",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Keygen&ThreatID=2147593794"
+     },
+     {
+      "name": "HackTool:Win32/Keygen!AMTB",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Keygen!AMTB&ThreatID=2147931343"
+     },
+     {
+      "name": "HackTool:Win32/Malgent!MSR",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Malgent!MSR&ThreatID=2147774372"
+     },
+     {
+      "name": "HackTool:Win64/ProductKey.G!MSR",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win64/ProductKey.G!MSR&ThreatID=2147765679"
+     },
+     {
+      "name": "PWS:MSIL/Stealer!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=PWS:MSIL/Stealer!rfn&ThreatID=2147768044"
+     },
+     {
+      "name": "Ransom:Linux/Babuk!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Linux/Babuk!rfn&ThreatID=2147930489"
+     },
+     {
+      "name": "Ransom:Win32/Chaos!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Chaos!rfn&ThreatID=2147936744"
+     },
+     {
+      "name": "Ransom:Win32/Genasom!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Genasom!rfn&ThreatID=2147694768"
+     },
+     {
+      "name": "Ransom:Win32/NoEscape!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/NoEscape!rfn&ThreatID=2147930607"
+     },
+     {
+      "name": "Ransom:Win32/PowerRanges!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/PowerRanges!rfn&ThreatID=2147950527"
+     },
+     {
+      "name": "Ransom:Win64/DarkPower!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win64/DarkPower!rfn&ThreatID=2147950513"
+     },
+     {
+      "name": "Ransom:Win64/Rook!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win64/Rook!rfn&ThreatID=2147938875"
+     },
+     {
+      "name": "Spyware:AndroidOS/Multiverze!rfn",
+      "severity": "high",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Spyware:AndroidOS/Multiverze!rfn&ThreatID=449452"
+     },
+     {
+      "name": "Tool:Linux/Multiverze!rfn",
+      "severity": "moderate",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Tool:Linux/Multiverze!rfn&ThreatID=453148"
+     },
+     {
+      "name": "Trojan:AndroidOS/AVerseFalc!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:AndroidOS/AVerseFalc!rfn&ThreatID=2147932745"
+     },
+     {
+      "name": "Trojan:AndroidOS/Multiverze!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:AndroidOS/Multiverze!rfn&ThreatID=2147922339"
+     },
+     {
+      "name": "Trojan:BAT/Boxter!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:BAT/Boxter!rfn&ThreatID=2147953495"
+     },
+     {
+      "name": "Trojan:BAT/LNK_DarkGate!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:BAT/LNK_DarkGate!rfn&ThreatID=2147936180"
+     },
+     {
+      "name": "Trojan:BAT/Starter.G!lnk",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:BAT/Starter.G!lnk&ThreatID=2147756434"
+     },
+     {
+      "name": "Trojan:HTML/Phish!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:HTML/Phish!rfn&ThreatID=2147726754"
+     },
+     {
+      "name": "Trojan:Linux/CoinMiner!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Linux/CoinMiner!rfn&ThreatID=2147745568"
+     },
+     {
+      "name": "Trojan:MacOS/CloudSyncD!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MacOS/CloudSyncD!rfn&ThreatID=2147981566"
+     },
+     {
+      "name": "Trojan:MacOS/Multiverze!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MacOS/Multiverze!rfn&ThreatID=2147933097"
+     },
+     {
+      "name": "Trojan:MSIL/AgentTesla!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/AgentTesla!rfn&ThreatID=2147734417"
+     },
+     {
+      "name": "Trojan:MSIL/AsyncRat!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/AsyncRat!rfn&ThreatID=2147921955"
+     },
+     {
+      "name": "Trojan:MSIL/DarkCloud!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/DarkCloud!rfn&ThreatID=2147930460"
+     },
+     {
+      "name": "Trojan:MSIL/Dcstl!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/Dcstl!rfn&ThreatID=2147930517"
+     },
+     {
+      "name": "Trojan:MSIL/Odbijen!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/Odbijen!rfn&ThreatID=2147981513"
+     },
+     {
+      "name": "Trojan:MSIL/Xworm.PU!MTB",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/Xworm.PU!MTB&ThreatID=2147982167"
+     },
+     {
+      "name": "Trojan:NPM/Multiverze!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:NPM/Multiverze!rfn&ThreatID=2147980043"
+     },
+     {
+      "name": "Trojan:O97M/DDownloader!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:O97M/DDownloader!rfn&ThreatID=2147752927"
+     },
+     {
+      "name": "Trojan:Perl/Multiverze!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Perl/Multiverze!rfn&ThreatID=2147943567"
+     },
+     {
+      "name": "Trojan:Python/Multiverze!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Python/Multiverze!rfn&ThreatID=2147933408"
+     },
+     {
+      "name": "Trojan:Python/Mythic!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Python/Mythic!rfn&ThreatID=2147956787"
+     },
+     {
+      "name": "Trojan:Script/Malgent!MSR",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Script/Malgent!MSR&ThreatID=2147750686"
+     },
+     {
+      "name": "Trojan:Script/Multiverze!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Script/Multiverze!rfn&ThreatID=2147933035"
+     },
+     {
+      "name": "Trojan:VBS/Emotet!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Emotet!rfn&ThreatID=2147930488"
+     },
+     {
+      "name": "Trojan:VBS/Kalhine!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Kalhine!rfn&ThreatID=2147716339"
+     },
+     {
+      "name": "Trojan:VBS/Pterodo!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Pterodo!rfn&ThreatID=2147933423"
+     },
+     {
+      "name": "Trojan:VBS/ShortPipe!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/ShortPipe!rfn&ThreatID=2147934934"
+     },
+     {
+      "name": "Trojan:Win32/Agent!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Agent!rfn&ThreatID=2147931462"
+     },
+     {
+      "name": "Trojan:Win32/Blackmoon!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Blackmoon!rfn&ThreatID=2147921992"
+     },
+     {
+      "name": "Trojan:Win32/Delf!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Delf!rfn&ThreatID=2147693806"
+     },
+     {
+      "name": "Trojan:Win32/DriverLoader!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/DriverLoader!rfn&ThreatID=2147976155"
+     },
+     {
+      "name": "Trojan:Win32/Egairtigado!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Egairtigado!rfn&ThreatID=2147925178"
+     },
+     {
+      "name": "Trojan:Win32/Graftor!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Graftor!rfn&ThreatID=2147748850"
+     },
+     {
+      "name": "Trojan:Win32/Grandoreiro!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Grandoreiro!rfn&ThreatID=2147762695"
+     },
+     {
+      "name": "Trojan:Win32/Injector!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Injector!rfn&ThreatID=2147930400"
+     },
+     {
+      "name": "Trojan:Win32/Kepavll!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Kepavll!rfn&ThreatID=2147939874"
+     },
+     {
+      "name": "Trojan:Win32/Leonem!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Leonem!rfn&ThreatID=2147827561"
+     },
+     {
+      "name": "Trojan:Win32/Malgent",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Malgent&ThreatID=2147794830"
+     },
+     {
+      "name": "Trojan:Win32/Malgent!AMTB",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Malgent!AMTB&ThreatID=2147929796"
+     },
+     {
+      "name": "Trojan:Win32/Malgent!MSR",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Malgent!MSR&ThreatID=2147742994"
+     },
+     {
+      "name": "Trojan:Win32/MereTam!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/MereTam!rfn&ThreatID=2147728185"
+     },
+     {
+      "name": "Trojan:Win32/PlugX!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/PlugX!rfn&ThreatID=2147767902"
+     },
+     {
+      "name": "Trojan:Win32/Pomal!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Pomal!rfn&ThreatID=2147925201"
+     },
+     {
+      "name": "Trojan:Win32/QQrob!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/QQrob!rfn&ThreatID=2147982161"
+     },
+     {
+      "name": "Trojan:Win32/Qwexlafiba!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Qwexlafiba!rfn&ThreatID=2147965225"
+     },
+     {
+      "name": "Trojan:Win32/Ravartar!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Ravartar!rfn&ThreatID=2147965211"
+     },
+     {
+      "name": "Trojan:Win32/Seheq!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Seheq!rfn&ThreatID=2147754938"
+     },
+     {
+      "name": "Trojan:Win32/Suschil!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Suschil!rfn&ThreatID=2147927547"
+     },
+     {
+      "name": "Trojan:Win32/ValleyRAT!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/ValleyRAT!rfn&ThreatID=2147930616"
+     },
+     {
+      "name": "Trojan:Win32/Yomal!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Yomal!rfn&ThreatID=2147927549"
+     },
+     {
+      "name": "Trojan:Win32/Zbot!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Zbot!rfn&ThreatID=2147722723"
+     },
+     {
+      "name": "Trojan:Win32/Zusy!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Zusy!rfn&ThreatID=2147922450"
+     },
+     {
+      "name": "Trojan:Win64/AcrStealer!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/AcrStealer!rfn&ThreatID=2147948238"
+     },
+     {
+      "name": "Trojan:Win64/Agent!AMTB",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Agent!AMTB&ThreatID=2147960313"
+     },
+     {
+      "name": "Trojan:Win64/ClipBanker!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/ClipBanker!rfn&ThreatID=2147936151"
+     },
+     {
+      "name": "Trojan:Win64/Coins!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Coins!rfn&ThreatID=2147978954"
+     },
+     {
+      "name": "Trojan:Win64/CryptInject!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/CryptInject!rfn&ThreatID=2147746835"
+     },
+     {
+      "name": "Trojan:Win64/Emotetcrypt!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Emotetcrypt!rfn&ThreatID=2147818298"
+     },
+     {
+      "name": "Trojan:Win64/Remus!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Remus!rfn&ThreatID=2147978881"
+     },
+     {
+      "name": "Trojan:Win64/StealC.RH!MTB",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/StealC.RH!MTB&ThreatID=2147955847"
+     },
+     {
+      "name": "Trojan:Win64/Vidar!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Vidar!rfn&ThreatID=2147931887"
+     },
+     {
+      "name": "TrojanDownloader:JS/Qakbot!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDownloader:JS/Qakbot!rfn&ThreatID=2147709459"
+     },
+     {
+      "name": "TrojanDownloader:O97M/Emotet!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDownloader:O97M/Emotet!rfn&ThreatID=2147743970"
+     },
+     {
+      "name": "TrojanDownloader:SWF/Esaprof!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDownloader:SWF/Esaprof!rfn&ThreatID=2147726287"
+     },
+     {
+      "name": "TrojanDownloader:Win32/Upatre!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDownloader:Win32/Upatre!rfn&ThreatID=2147692124"
+     },
+     {
+      "name": "TrojanDropper:Win32/Delf!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:Win32/Delf!rfn&ThreatID=2147709770"
+     },
+     {
+      "name": "VirTool:INF/Autorun!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:INF/Autorun!rfn&ThreatID=2147692059"
+     },
+     {
+      "name": "VirTool:Win32/Autorun!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:Win32/Autorun!rfn&ThreatID=2147727087"
+     },
+     {
+      "name": "VirTool:Win32/Carpace!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:Win32/Carpace!rfn&ThreatID=2147935514"
+     },
+     {
+      "name": "VirTool:Win32/Sliver!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:Win32/Sliver!rfn&ThreatID=2147933043"
+     },
+     {
+      "name": "VirTool:WinNT/Citeary!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:WinNT/Citeary!rfn&ThreatID=2147726605"
+     },
+     {
+      "name": "Worm:Win32/AutoRun!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Worm:Win32/AutoRun!rfn&ThreatID=2147705894"
+     },
+     {
+      "name": "Worm:Win32/Mira!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Worm:Win32/Mira!rfn&ThreatID=2147708071"
+     }
+    ],
+    "url": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
+    "releasedAt": "2026-11-16T02:36:17.000Z"
    }
   },
   "sense": {
    "label": "Sense (EDR sensor) build, Update Catalog",
-   "ok": false,
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet.",
-   "data": null
-  },
-  "productUpdates": {
-   "label": "productUpdates",
-   "ok": false,
-   "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
-  },
-  "changelog": {
-   "label": "changelog",
-   "ok": false,
-   "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "Latest 10.8839.26080.2008",
+   "data": {
+    "latest": {
+     "version": "10.8839.26080.2008",
+     "date": "2026-11-15",
+     "title": "id=\"30186f65-7777-4534-b132-7c5b8814d9cb_R0\" style=\"border-width:0px;\"> Windows Server 2019+ - Update for Microsoft Defender for Endpoint - KB5005292 (Version 10.8839.26080.2008) - Current Channel (Br"
+    },
+    "url": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292"
+   }
   },
   "patchTuesday": {
-   "label": "patchTuesday",
-   "ok": false,
+   "label": "Security Update Guide (MSRC API)",
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "2026-Nov: 2248 CVEs, 2 Defender or Intune",
+   "data": {
+    "month": "2026-Nov",
+    "total": 2248,
+    "critical": 64,
+    "endpoint": [
+     {
+      "cve": "CVE-2026-122194",
+      "title": "Microsoft Defender Remote Code Execution Vulnerability",
+      "severity": "Critical",
+      "impact": "Remote Code Execution",
+      "score": "8.8",
+      "released": "2026-11-10T16:00:00.000Z",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-122194"
+     },
+     {
+      "cve": "CVE-2026-112758",
+      "title": "Windows Defender Firewall Service Elevation of Privilege Vulnerability",
+      "severity": "Important",
+      "impact": "Elevation of Privilege",
+      "score": "7.8",
+      "released": "2026-11-10T16:00:00.000Z",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-112758"
+     }
+    ],
+    "url": "https://msrc.microsoft.com/update-guide"
+   }
   },
   "kev": {
-   "label": "kev",
-   "ok": false,
+   "label": "CISA Known Exploited Vulnerabilities",
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "19 Microsoft Windows or endpoint entries in 12 months",
+   "data": {
+    "rows": [
+     {
+      "cve": "CVE-2026-96951",
+      "name": "Microsoft Windows Command Injection Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Shell contains a command injection vulnerability that allows an unauthorized attacker to bypass a security feature over a network.",
+      "dateAdded": "2026-10-13",
+      "dueDate": "2026-10-16",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96951"
+     },
+     {
+      "cve": "CVE-2026-81963",
+      "name": "Microsoft Windows Link Following Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Update Stack contains a link following vulnerability that allows a local attacker to escalate privileges locally up to SYSTEM.",
+      "dateAdded": "2026-09-08",
+      "dueDate": "2026-09-22",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-81963"
+     },
+     {
+      "cve": "CVE-2026-85880",
+      "name": "Microsoft Windows Heap-Based Buffer Overflow Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Advanced Local Procedure Call contains a heap-based buffer overflow vulnerability that allows an attacker to elevate privileges locally.",
+      "dateAdded": "2026-09-08",
+      "dueDate": "2026-09-22",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-85880"
+     },
+     {
+      "cve": "CVE-2026-68820",
+      "name": "Microsoft Windows Ancillary Function Driver for WinSock Use-After-Free Vulnerability",
+      "product": "Windows Ancillary Function Driver for WinSock",
+      "summary": "Microsoft Windows Ancillary Function Driver for WinSock contains a use-after-free vulnerability that allows an authorized attacker to elevate privileges locally.",
+      "dateAdded": "2026-08-11",
+      "dueDate": "2026-08-25",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-68820"
+     },
+     {
+      "cve": "CVE-2008-4250",
+      "name": "Microsoft Windows Buffer Overflow Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows contains a buffer overflow vulnerability in the Windows Server Service that allows remote attackers to execute arbitrary code via a crafted RPC request that triggers an overflow during path canonicalization.",
+      "dateAdded": "2026-05-20",
+      "dueDate": "2026-06-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2008-4250"
+     },
+     {
+      "cve": "CVE-2026-41091",
+      "name": "Microsoft Defender Link Following Vulnerability",
+      "product": "Defender",
+      "summary": "Microsoft Defender contains a link following vulnerability that allows an authorized attacker to elevate privileges locally.",
+      "dateAdded": "2026-05-20",
+      "dueDate": "2026-06-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": true,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-41091"
+     },
+     {
+      "cve": "CVE-2026-45498",
+      "name": "Microsoft Defender Denial of Service Vulnerability",
+      "product": "Defender",
+      "summary": "Microsoft Defender contains an unspecified vulnerability that allows for denial of service.",
+      "dateAdded": "2026-05-20",
+      "dueDate": "2026-06-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": true,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-45498"
+     },
+     {
+      "cve": "CVE-2026-32202",
+      "name": "Microsoft Windows Protection Mechanism Failure Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Shell contains a protection mechanism failure vulnerability that allows an unauthorized attacker to perform spoofing over a network.",
+      "dateAdded": "2026-04-28",
+      "dueDate": "2026-05-12",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-32202"
+     },
+     {
+      "cve": "CVE-2026-33825",
+      "name": "Microsoft Defender Insufficient Granularity of Access Control Vulnerability",
+      "product": "Defender",
+      "summary": "Microsoft Defender contains an insufficient granularity of access control vulnerability that could allow an authorized attacker to escalate privileges locally.",
+      "dateAdded": "2026-04-22",
+      "dueDate": "2026-05-06",
+      "ransomware": "Known",
+      "endpointSecurity": true,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-33825"
+     },
+     {
+      "cve": "CVE-2025-60710",
+      "name": "Microsoft Windows Link Following Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows contains a link following vulnerability that allows for privilege escalation",
+      "dateAdded": "2026-04-13",
+      "dueDate": "2026-04-27",
+      "ransomware": "Known",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-60710"
+     },
+     {
+      "cve": "CVE-2023-36424",
+      "name": "Microsoft Windows Out-of-Bounds Read Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Common Log File System Driver contains an out-of-bounds read vulnerability that could allow a threat actor for privileges escalation",
+      "dateAdded": "2026-04-13",
+      "dueDate": "2026-04-27",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36424"
+     },
+     {
+      "cve": "CVE-2008-0015",
+      "name": "Microsoft Windows Video ActiveX Control Remote Code Execution Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Video ActiveX Control contains a remote code execution vulnerability. An attacker could exploit the vulnerability by constructing a specially crafted Web page. When a user views the Web page, the vulnerability could allow remote code execution. An attacker who successfully exploited this vulnerability could gain the same user rights as the logged-on user.",
+      "dateAdded": "2026-02-17",
+      "dueDate": "2026-03-10",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2008-0015"
+     },
+     {
+      "cve": "CVE-2026-21513",
+      "name": "Microsoft MSHTML Framework Protection Mechanism Failure Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft MSHTML Framework contains a protection mechanism failure vulnerability that could allow an unauthorized attacker to bypass a security feature over a network.",
+      "dateAdded": "2026-02-10",
+      "dueDate": "2026-03-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21513"
+     },
+     {
+      "cve": "CVE-2026-21525",
+      "name": "Microsoft Windows NULL Pointer Dereference Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Remote Access Connection Manager contains a NULL pointer dereference that could allow an unauthorized attacker to deny service locally.",
+      "dateAdded": "2026-02-10",
+      "dueDate": "2026-03-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21525"
+     },
+     {
+      "cve": "CVE-2026-21510",
+      "name": "Microsoft Windows Shell Protection Mechanism Failure Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Shell contains a protection mechanism failure vulnerability that could allow an unauthorized attacker to bypass a security feature over a network.",
+      "dateAdded": "2026-02-10",
+      "dueDate": "2026-03-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21510"
+     },
+     {
+      "cve": "CVE-2026-21533",
+      "name": "Microsoft Windows Improper Privilege Management Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Remote Desktop Services contains an improper privilege management vulnerability that could allow an authorized attacker to elevate privileges locally.",
+      "dateAdded": "2026-02-10",
+      "dueDate": "2026-03-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21533"
+     },
+     {
+      "cve": "CVE-2026-21519",
+      "name": "Microsoft Windows Type Confusion Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Desktop Windows Manager contains a type confusion vulnerability that could allow an authorized attacker to elevate privileges locally.",
+      "dateAdded": "2026-02-10",
+      "dueDate": "2026-03-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-21519"
+     },
+     {
+      "cve": "CVE-2026-20805",
+      "name": "Microsoft Windows Information Disclosure Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Desktop Windows Manager contains an information disclosure vulnerability that allows an authorized attacker to disclose information locally.",
+      "dateAdded": "2026-01-13",
+      "dueDate": "2026-02-03",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-20805"
+     },
+     {
+      "cve": "CVE-2025-62221",
+      "name": "Microsoft Windows Use After Free Vulnerability",
+      "product": "Windows",
+      "summary": "Microsoft Windows Cloud Files Mini Filter Driver contains a use after free vulnerability that can allow an authorized attacker to elevate privileges locally.",
+      "dateAdded": "2025-12-09",
+      "dueDate": "2025-12-30",
+      "ransomware": "Unknown",
+      "endpointSecurity": false,
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ],
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-62221"
+     }
+    ],
+    "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+   }
   },
   "knownIssues": {
-   "label": "knownIssues",
-   "ok": false,
+   "label": "Windows release health",
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "1 open across 5 pages",
+   "data": {
+    "rows": [
+     {
+      "id": "windows-11-25h2-sql-server-linked-server-connections-might-remain-open",
+      "title": "SQL Server linked server connections might remain open",
+      "status": "Confirmed",
+      "detail": "Connections to external databases such as Oracle and PostgreSQL can accumulate over time",
+      "origin": "OS Build 26200.9711 KB5127648 2026-10-13",
+      "updated": "2026-11-11",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-25h2#3721msgdesc",
+      "os": [
+       "win11",
+       "srv2025",
+       "srv2022",
+       "srv2019"
+      ],
+      "scope": "windows",
+      "source": "Windows 11 25H2",
+      "sources": [
+       "Windows 11 25H2",
+       "Windows 11 24H2",
+       "Windows Server 2025",
+       "Windows Server 2022",
+       "Windows Server 2019"
+      ]
+     },
+     {
+      "id": "windows-11-25h2-usb-audio-devices-might-fail-to-start-or-produce-no-sound",
+      "title": "USB audio devices might fail to start or produce no sound",
+      "status": "Resolved KB5132061",
+      "detail": "Some USB Audio Class 1.0 devices display Code 10 or fail in multichannel audio modes after installing the Sept. 8 update",
+      "origin": "OS Build 26200.9445 KB5124008 2026-09-08",
+      "updated": "2026-11-10",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-25h2#4984msgdesc",
+      "os": [
+       "win11",
+       "srv2025",
+       "srv2022",
+       "srv2019"
+      ],
+      "scope": "windows",
+      "source": "Windows 11 25H2",
+      "sources": [
+       "Windows 11 25H2",
+       "Windows 11 24H2",
+       "Windows Server 2025",
+       "Windows Server 2022",
+       "Windows Server 2019"
+      ]
+     },
+     {
+      "id": "windows-server-2025-users-might-be-unable-to-sign-in-to-owa-or-send-emails-on-exchange-server",
+      "title": "Users might be unable to sign in to OWA or send emails on Exchange Server",
+      "status": "Resolved KB5131080",
+      "detail": "Issue reported on Exchange Server 2016, 2019, and Subscription Edition, affecting OWA sign-in and mail delivery.",
+      "origin": "OS Build 26100.33650 KB5126646 2026-10-13",
+      "updated": "2026-11-10",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-server-2025#5047msgdesc",
+      "os": [
+       "srv2025",
+       "srv2022",
+       "srv2019"
+      ],
+      "scope": "windows",
+      "source": "Windows Server 2025",
+      "sources": [
+       "Windows Server 2025",
+       "Windows Server 2022",
+       "Windows Server 2019"
+      ]
+     },
+     {
+      "id": "windows-11-25h2-remote-desktop-connections-might-fail-for-non-admin-users-with-error-0xc000000d",
+      "title": "Remote Desktop connections might fail for non-admin users with error 0xC000000D",
+      "status": "Resolved KB5127936",
+      "detail": "This issue affects non-admin users connecting through Remote Desktop with Administrator protection enabled.",
+      "origin": "OS Build 26200.9550 KB5124010 2026-09-22",
+      "updated": "2026-10-28",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-25h2#5031msgdesc",
+      "os": [
+       "win11"
+      ],
+      "scope": "windows",
+      "source": "Windows 11 25H2",
+      "sources": [
+       "Windows 11 25H2",
+       "Windows 11 24H2"
+      ]
+     }
+    ],
+    "pages": [
+     {
+      "label": "Windows 11 25H2",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-25h2",
+      "ok": true
+     },
+     {
+      "label": "Windows 11 24H2",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2",
+      "ok": true
+     },
+     {
+      "label": "Windows Server 2025",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-server-2025",
+      "ok": true
+     },
+     {
+      "label": "Windows Server 2022",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-server-2022",
+      "ok": true
+     },
+     {
+      "label": "Windows Server 2019",
+      "url": "https://learn.microsoft.com/en-us/windows/release-health/status-windows-10-1809-and-windows-server-2019",
+      "ok": true
+     }
+    ]
+   }
   },
   "intune": {
-   "label": "intune",
-   "ok": false,
+   "label": "Intune what's new",
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "8 weeks, 18 Windows or security items",
+   "data": {
+    "weeks": [
+     {
+      "week": "Week of November 16, 2026 (Service release 2611)",
+      "items": [
+       {
+        "id": "group-exclusions-and-built-in-group-targeting-for-powershell-scripts-on-windows",
+        "name": "Group exclusions and built-in group targeting for PowerShell scripts on Windows",
+        "summary": "Microsoft Intune now supports group exclusions and the built-in All Users and All Devices groups for PowerShell script assignments on Windows. You can target scripts broadly, then exclude selected groups to keep the assignment focused on the users or devices that need it. This brings script assignments in line with other Intune workloads and gives you more control over deployment scope. For more information, see Use PowerShell scripts on Windows devices in Intune . Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#group-exclusions-and-built-in-group-targeting-for-powershell-scripts-on-windows"
+       },
+       {
+        "id": "maintenance-windows-for-operating-system-and-driver-updates-on-windows",
+        "name": "Maintenance windows for operating system and driver updates on Windows",
+        "summary": "Microsoft Intune now supports maintenance windows for operating system and driver updates on Windows devices. You can choose which update operations run during a window and configure its start date, time, duration, and repeat schedule. To create a profile, go to Devices > Manage devices > Maintenance windows > Create profile . These controls help you schedule update activity during planned maintenance periods. For more information, see Policy CSP - Update . Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#maintenance-windows-for-operating-system-and-driver-updates-on-windows"
+       },
+       {
+        "id": "configure-evaluation-frequency-for-custom-compliance-scripts-on-windows-and-macos",
+        "name": "Configure evaluation frequency for custom compliance scripts on Windows and macOS",
+        "summary": "Microsoft Intune now supports configurable evaluation intervals for custom compliance scripts on managed Windows and macOS devices. You can choose intervals of 15 minutes, 30 minutes, or one to eight hours to match your compliance and operational requirements. This flexibility helps you balance compliance responsiveness with device resource use. Applies to: Windows macOS",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#configure-evaluation-frequency-for-custom-compliance-scripts-on-windows-and-macos"
+       },
+       {
+        "id": "get-more-remediation-guidance-in-windows-autopatch-reports",
+        "name": "Get more remediation guidance in Windows Autopatch reports",
+        "summary": "Windows Autopatch now provides additional reporting data, remediation guidance, and guardrails for configuration issues. Administrators can use the expanded information to understand configurations that need attention and determine an appropriate next step. Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#get-more-remediation-guidance-in-windows-autopatch-reports"
+       }
+      ]
+     },
+     {
+      "week": "Week of October 26, 2026 (Service release 2610)",
+      "items": [
+       {
+        "id": "administrator-protection-settings-in-account-protection-policies",
+        "name": "Administrator protection settings in Account protection policies",
+        "summary": "Microsoft Intune now includes two Administrator protection settings in endpoint security Account protection policies. On supported Windows 11 versions, admins can configure the Administrator Approval Mode type and choose the elevation prompt behavior for Administrator protection. For more information, see Account protection policy . Applies to: Windows 11",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#administrator-protection-settings-in-account-protection-policies"
+       },
+       {
+        "id": "push-notification-support-update-for-windows-devices",
+        "name": "Push notification support update for Windows devices",
+        "summary": "We've improved connectivity for scenarios that rely on push notifications including Device actions , Win32 apps , PowerShell scripts and Remediations . For the best experience, we recommend updating firewall rules to include this new endpoint: *.trouter.communications.svc.cloud.microsoft For the current list of required network endpoints, see Network requirements for PowerShell scripts and Win32 apps and Windows Push Notification Services (WNS) dependencies in the Intune endpoints documentation. Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#push-notification-support-update-for-windows-devices"
+       },
+       {
+        "id": "stig-audit-baselines-for-windows-devices-in-commercial-tenants",
+        "name": "STIG audit baselines for Windows devices in commercial tenants",
+        "summary": "Microsoft Intune commercial tenants can now audit Windows devices against Security Technical Implementation Guide (STIG) recommendations. Review per-setting and per-device audit results to identify configuration gaps and prioritize remediation. The baseline evaluates supported automated checks without changing device settings. This feature requires Intune Advanced Analytics. Assess rules that require manual verification separately. For more information, see Use STIG audit baselines to assess Windows device compliance . Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#stig-audit-baselines-for-windows-devices-in-commercial-tenants"
+       },
+       {
+        "id": "updated-windows-support-for-administrator-protection-settings",
+        "name": "Updated Windows support for Administrator protection settings",
+        "summary": "Microsoft Intune now supports two Administrator protection settings in the settings catalog on Windows 11 versions 24H2 and 25H2. Admins can configure the Administrator Approval Mode type and choose the elevation prompt behavior used with Administrator protection. For more information, see Settings catalog . Applies to: Windows 11",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#updated-windows-support-for-administrator-protection-settings"
+       },
+       {
+        "id": "agent-runtime-protection-settings-are-generally-available",
+        "name": "Agent runtime protection settings are generally available",
+        "summary": "Microsoft Intune's endpoint security template for Microsoft Defender for Endpoint agent runtime protection settings is now generally available. Administrators can use the template to manage supported runtime protection settings for Windows devices without the preview designation, aligning Intune policy management with the Microsoft Defender for Endpoint general availability release. We have also added a new setting called AI agent runtime inspection to be configured in the template. Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#agent-runtime-protection-settings-are-generally-available"
+       },
+       {
+        "id": "faster-delivery-of-windows-scripts",
+        "name": "Faster delivery of Windows scripts",
+        "summary": "Microsoft Intune now uses push notifications for admin-initiated and service-side changes to Windows scripts. Managed devices can check in sooner after script changes, reducing delivery and refresh delays compared with waiting for the normal polling interval. This update improves script deployment responsiveness without requiring a new admin workflow. Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#faster-delivery-of-windows-scripts"
+       }
+      ]
+     },
+     {
+      "week": "Week of October 26, 2026",
+      "items": []
+     },
+     {
+      "week": "Week of October 19, 2026",
+      "items": []
+     },
+     {
+      "week": "Week of October 12, 2026",
+      "items": [
+       {
+        "id": "new-remote-help-for-windows-version-available",
+        "name": "New Remote Help for Windows version available",
+        "summary": "Remote Help for Windows version 5.2.1210.0 is now available. This release includes stability and observability improvements. Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#new-remote-help-for-windows-version-available"
+       }
+      ]
+     },
+     {
+      "week": "Week of October 5, 2026",
+      "items": [
+       {
+        "id": "intune-security-baseline-for-windows-11-version-26h2",
+        "name": "Intune security baseline for Windows 11, version 26H2",
+        "summary": "The Windows security baseline for Windows 11, version 26H2 is now available in Microsoft Intune. This baseline reflects current Microsoft security recommendations and is the latest available Windows security baseline in Intune. The Windows 11, version 26H2 security baseline includes new settings, updated default values, and revised security guidance. Existing security baseline profiles don't automatically update to the new version. To use the Windows 11, version 26H2 security baseline, Intune admins can create a new baseline profile or update an existing profile to the latest version . Review ",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#intune-security-baseline-for-windows-11-version-26h2"
+       }
+      ]
+     },
+     {
+      "week": "Week of September 28, 2026 (Service release 2609)",
+      "items": [
+       {
+        "id": "faster-delivery-of-win32-apps",
+        "name": "Faster delivery of Win32 apps",
+        "summary": "Microsoft Intune now uses push notifications for admin-initiated and service-side changes to Win32 apps. Managed devices can check in sooner after app changes, reducing delivery and refresh delays compared with waiting for normal polling intervals. This update improves Win32 app deployment responsiveness without requiring a new admin workflow. Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#faster-delivery-of-win32-apps"
+       },
+       {
+        "id": "faster-win32-app-delivery-after-windows-enrollment",
+        "name": "Faster Win32 app delivery after Windows enrollment",
+        "summary": "Microsoft Intune Management Extension now checks for Windows app assignments immediately after the Enrollment Status Page (ESP) completes. This reduces the delay before required Win32 apps that weren't installed during ESP begin installing on newly enrolled devices. For more information, see Intune Management Extension for Windows . Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#faster-win32-app-delivery-after-windows-enrollment"
+       },
+       {
+        "id": "windows-11-version-26h2-settings-catalog-update",
+        "name": "Windows 11, version 26H2 Settings Catalog update",
+        "summary": "Microsoft Intune provides day-zero support for validated Windows policy settings introduced with Windows 11, version 26H2 in the Settings Catalog. Admins can use the new and updated settings to manage Windows endpoints with the latest 26H2 capabilities. For more information, see Microsoft Intune Settings Catalog updated to support Windows 11, version 26H2 . Applies to: Windows 11",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#windows-11-version-26h2-settings-catalog-update"
+       },
+       {
+        "id": "configure-mde-ai-agent-runtime-protection-for-windows",
+        "name": "Configure MDE AI agent runtime protection for Windows",
+        "summary": "Microsoft Intune now includes Microsoft Defender for Endpoint AI agent runtime protection settings in the new endpoint security template for Windows. You can use Audit mode to detect and alert on unsafe AI agent activity without blocking it, or Block mode to stop threats before they execute. These settings support Windows devices managed through Intune or MDE security settings management. For more information, see AI agent runtime protection with Microsoft Defender for Endpoint . Applies to: Windows",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#configure-mde-ai-agent-runtime-protection-for-windows"
+       },
+       {
+        "id": "onboard-mdm-compliance-partners-with-new-self-service-functionality",
+        "name": "Onboard MDM compliance partners with new self-service functionality",
+        "summary": "Microsoft Intune now supports bring-your-own connector functionality for MDM compliance partners. Partners can build, test, and onboard compliance connectors using Intune documentation, contracts, and validation hooks. As an admin, you can opt in to a partner connector by providing the vendor's information in the Microsoft Intune admin center, speeding partner onboarding and expanding the compliance solutions available to your organization. For more information, see Self-service onboarding for compliance partners . Applies to: All supported platforms",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#onboard-mdm-compliance-partners-with-new-self-service-functionality"
+       }
+      ]
+     },
+     {
+      "week": "Week of September 21, 2026",
+      "items": [
+       {
+        "id": "stage-app-and-policy-rollout-with-deployment-plans",
+        "name": "Stage app and policy rollout with deployment plans",
+        "summary": "Microsoft Intune now supports deployment plans, a new way to roll out apps and configuration policies in stages instead of all at once. From the new Deployments experience in the Intune admin center, you can stage a rollout across multiple rings, control rollout timing, and integrate with Multiple Admin Approval to reduce risk when deploying changes to large device fleets. For more information, see Deployment plans and deployments in Microsoft Intune . Applies to: Windows Win32 and Enterprise app catalog apps Settings catalog and Endpoint security policies",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#stage-app-and-policy-rollout-with-deployment-plans"
+       }
+      ]
+     }
+    ],
+    "inDevelopment": [
+     {
+      "id": "view-esim-profiles-and-deployment-status-for-windows-devices",
+      "name": "View eSIM profiles and deployment status for Windows devices",
+      "summary": "Microsoft Intune will add Windows eSIM profile information and deployment status to the Properties Catalog. This visibility will make it easier to identify devices that require follow-up and validate profile deployment across your managed Windows estate. Applies to: Windows",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "device-query-for-multiple-devices-for-app-inventory-on-windows",
+      "name": "Device query for multiple devices for app inventory on Windows",
+      "summary": "Advanced Analytics will extend device query for multiple devices to cover app inventory data on Windows. Building on the existing multi-device query for hardware inventory, you'll be able to use Kusto Query Language (KQL) to investigate installed applications across your entire Windows fleet—identifying versions, surfacing outdated or unwanted software, and producing detailed reports without targeting devices one at a time. Multi-device app inventory queries will run against collected inventory ",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "new-endpoint-security-template-for-microsoft-defender-for-endpoint-safe-deployme",
+      "name": "New endpoint security template for Microsoft Defender for Endpoint safe deployment settings",
+      "summary": "We're working on a new endpoint security template in Intune dedicated to Microsoft Defender for Endpoint (MDE) safe deployment settings. This will give you a focused, purpose-built policy for managing how MDE updates roll out across your Windows devices. Microsoft Defender for Endpoint follows a safe deployment practices approach to release updates. You can mirror this in your own environment by assigning devices to update channels that control when MDE platform updates, engine updates, and secu",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "controlled-configuration-for-microsoft-defender-antivirus-on-windows",
+      "name": "Controlled Configuration for Microsoft Defender Antivirus on Windows",
+      "summary": "Intune will support Controlled Configuration for Microsoft Defender Antivirus settings on Windows. When you enable it, antivirus settings delivered by Intune or Microsoft Defender for Endpoint security settings management will take precedence over conflicting settings from Group Policy, Configuration Manager, and local changes or scripts. You'll be able to protect administrator-defined antivirus settings from being overridden, rather than protecting only secure default values. This will help red",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "configure-quality-update-approvals-and-policies-for-quick-machine-recovery-qmr",
+      "name": "Configure Quality Update approvals and policies for Quick Machine Recovery (QMR)",
+      "summary": "Windows Autopatch currently offers limited control over the deployment of quality updates. Today, the expedite mechanism focuses on deploying the latest security update and doesn't let admins select specific quality update releases or apply different deployment schedules, which can limit compliance, validation, and operational planning scenarios. Soon, Windows Autopatch will let you explicitly approve, auto-approve, reject, and schedule quality updates by update type, using the same approval inf",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "new-linux-antivirus-settings-for-microsoft-defender-for-endpoint",
+      "name": "New Linux antivirus settings for Microsoft Defender for Endpoint",
+      "summary": "We're adding a new Microsoft Defender Updates template for Linux endpoint security antivirus policies. This template will include four new settings for managing Microsoft Defender for Endpoint agent auto-update behavior on Linux devices attached via MDE attach. You will be able to configure update channels and scheduling for Defender engine, platform, and security intelligence updates. Applies to: Linux",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "mark-windows-devices-noncompliant-when-prohibited-ai-agents-are-discovered",
+      "name": "Mark Windows devices noncompliant when prohibited AI agents are discovered",
+      "summary": "Automatically mark Windows devices as noncompliant when prohibited local AI agents, such as OpenClaw, are discovered on the device. As an admin, you'll be able to configure a list of prohibited agents in a Windows compliance policy. When a prohibited agent is detected, the device reports as noncompliant and Conditional Access takes effect. The device returns to a compliant state once the agent is removed.",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "support-for-intune-device-control-policy-for-devices-managed-by-microsoft-defend",
+      "name": "Support for Intune Device control policy for devices managed by Microsoft Defender for Endpoint",
+      "summary": "You'll be able to use the endpoint security policy for Device control (Attack surface reduction policy) from Microsoft Intune with the devices you manage through the Microsoft Defender for Endpoint security settings management capability. Device control policies are part of endpoint security Attack surface reduction policy . Applies to the following when you use the Windows platform: Windows 10 Windows 11 When this change takes effect, devices that are assigned this policy while managed by Defen",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "share-device-diagnostics-during-remote-help-sessions-on-windows",
+      "name": "Share device diagnostics during Remote Help sessions on Windows",
+      "summary": "Helpdesk agents will be able to request device diagnostics during an attended Remote Help session on Windows. After the person receiving help consents, the agent will be able to review diagnostic information, such as system details and resource usage, to investigate the issue with less back-and-forth. The person receiving help will be able to view the shared data and stop sharing during the session. Declining the diagnostic request will leave the Remote Help session available, so assistance can ",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "update-firewall-configurations-to-include-new-intune-network-endpoints",
+      "name": "Update firewall configurations to include new Intune network endpoints",
+      "summary": "As part of Microsoft's ongoing Secure Future Initiative (SFI) , starting on or shortly after December 2, 2025 , the network service endpoints for Microsoft Intune will also use the Azure Front Door IP addresses. This improvement supports better alignment with modern security practices and over time will make it easier for organizations using multiple Microsoft products to manage and maintain their firewall configurations. As a result, customers might be required to add these network (firewall) c",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "update-to-support-statement-for-windows-10-in-intune",
+      "name": "Update to support statement for Windows 10 in Intune",
+      "summary": "Windows 10 has reached end of support on October 14, 2025 . Windows 10 no longer receives quality or feature updates. Security updates are only available to commercial customers who have enrolled devices into the Extended Security Updates (ESU) program. For more details, review the following additional information. How does this change affect you or your users? Microsoft Intune continues to maintain core management functionality for Windows 10, including: Continuity of device management. Support",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "plan-for-change-new-intune-connector-for-deploying-microsoft-entra-hybrid-joined",
+      "name": "Plan for Change: New Intune connector for deploying Microsoft Entra hybrid joined devices using Windows Autopilot",
+      "summary": "As part of Microsoft's Secure Future Initiative, we recently released an update to the Intune Connector for Active Directory to use a Managed Service Account instead of a local SYSTEM account for deploying Microsoft Entra hybrid joined devices with Windows Autopilot. The new connector aims to enhance security by reducing unnecessary privileges and permissions associated with the local SYSTEM account. Important At the end of June 2025, we'll remove the old connector that uses the local SYSTEM acc",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "plan-for-change-implement-strong-mapping-for-scep-and-pkcs-certificates",
+      "name": "Plan for Change: Implement strong mapping for SCEP and PKCS certificates",
+      "summary": "With the May 10, 2022, Windows update ( KB5014754 ), changes were made to the Active Directory Kerberos Key Distribution (KDC) behavior in Windows Server 2008 and later versions to mitigate elevation of privilege vulnerabilities associated with certificate spoofing. Windows enforces these changes on February 11, 2025 . To prepare for this change, Intune has released the ability to include the security identifier to strongly map SCEP and PKCS certificates. For more information, review the blog: S",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     }
+    ],
+    "inDevelopmentOk": true,
+    "url": "https://learn.microsoft.com/en-us/intune/whats-new/",
+    "inDevelopmentUrl": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+   }
   },
   "mde": {
-   "label": "mde",
+   "label": "Defender for Endpoint what's new",
    "ok": false,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "checkedAt": "2026-11-16T03:46:58.073Z",
    "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "detail": "No monthly items found",
    "data": null
   },
   "news": {
-   "label": "news",
-   "ok": false,
+   "label": "News feeds",
+   "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-15T21:05:00.000Z",
-   "lastOkAt": "",
-   "detail": "Not checked yet. The first scheduled run fills this in.",
-   "data": null
+   "checkedAt": "2026-11-16T03:46:58.073Z",
+   "lastOkAt": "2026-11-16T03:46:58.073Z",
+   "detail": "12 relevant headlines from 4 feeds (failed: BleepingComputer)",
+   "data": {
+    "items": [
+     {
+      "title": "SCKit abuses ScreenConnect to deploy remote access and target technician sessions",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/13/sckit-abuses-screenconnect-deploy-remote-access-target-technician-sessions/",
+      "source": "Microsoft Security Blog",
+      "published": "2026-11-13T21:31:44.000Z",
+      "summary": "SCKit abuses ScreenConnect to deploy unauthorized remote access and target technicians. Explore the attack chain, mitigations, and Microsoft Defender XDR hunting. The post SCKit abuses ScreenConnect to deploy remote access and target technician sessions appeared first on Microsoft Security Blog .",
+      "id": "https://www.microsoft.com/en-us/security/blog/2026/11/13/sckit-abuses-screenconnect-deploy-remote-access-target-technician-sessions",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-94522 Windows Kernel Transaction Manager Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-94522",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Updated an acknowledgement. This is an informational change only.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-94522",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-95922 Windows Graphics Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95922",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Added Microsoft Office software to the Security Updates table. Customers that are running supported version of Microsoft Office are encouraged to update to the indicated version to be protected from this vulnerability.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95922",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-95942 Windows Graphics Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95942",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Added Microsoft Office software to the Security Updates table. Customers that are running supported version of Microsoft Office are encouraged to update to the indicated version to be protected from this vulnerability.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95942",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-95953 Windows Graphics Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95953",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Added Microsoft Office software to the Security Updates table. Customers that are running supported version of Microsoft Office are encouraged to update to the indicated version to be protected from this vulnerability.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95953",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-96126 Windows Graphics Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96126",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Added Microsoft Office software to the Security Updates table. Customers that are running supported version of Microsoft Office are encouraged to update to the indicated version to be protected from this vulnerability.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-96126",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-95932 Windows Graphics Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95932",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Added Microsoft Office software to the Security Updates table. Customers that are running supported version of Microsoft Office are encouraged to update to the indicated version to be protected from this vulnerability.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95932",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-95948 Windows Graphics Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95948",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Added Microsoft Office software to the Security Updates table. Customers that are running supported version of Microsoft Office are encouraged to update to the indicated version to be protected from this vulnerability.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-95948",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-112765 Windows Print Spooler Components Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-112765",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Updated an acknowledgement. This is an informational change only.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-112765",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "CVE-2026-109473 Windows Kernel Elevation of Privilege Vulnerability",
+      "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-109473",
+      "source": "MSRC Security Update Guide",
+      "published": "2026-11-13T16:00:00.000Z",
+      "summary": "Updated an acknowledgement. This is an informational change only.",
+      "id": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-109473",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "New SignDrop Zero-Day Exploit Turns Windows CLFS Security Feature Into SYSTEM Access",
+      "url": "https://thehackernews.com/2026/11/new-signdrop-zero-day-exploit-turns.html",
+      "source": "The Hacker News",
+      "published": "2026-11-12T17:50:27.000Z",
+      "summary": "Public exploit code released earlier this week claims that a local Windows user can gain SYSTEM privileges through the Common Log File System driver. The proof of concept, called SignDrop, targets a log-authentication feature added to the driver last year. It abuses how clfs.sys creates companion fi",
+      "id": "https://thehackernews.com/2026/11/new-signdrop-zero-day-exploit-turns.html",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
+      "title": "Trained to betray: How post-training supply chain attacks hijack coding agents",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/12/trained-to-betray-how-post-training-supply-chain-attacks-hijack-coding-agents/",
+      "source": "Microsoft Security Blog",
+      "published": "2026-11-12T17:00:00.000Z",
+      "summary": "Microsoft Defender Research and the AI Red Team discuss how poisoned datasets and poisoned model checkpoints can trigger remote code execution and other malicious activities. The post Trained to betray: How post-training supply chain attacks hijack coding agents appeared first on Microsoft Security ",
+      "id": "https://www.microsoft.com/en-us/security/blog/2026/11/12/trained-to-betray-how-post-training-supply-chain-attacks-hijack-coding-agents",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     }
+    ],
+    "feeds": [
+     {
+      "source": "Microsoft Security Blog",
+      "ok": true,
+      "error": ""
+     },
+     {
+      "source": "MSRC Security Update Guide",
+      "ok": true,
+      "error": ""
+     },
+     {
+      "source": "BleepingComputer",
+      "ok": false,
+      "error": "HTTP 403"
+     },
+     {
+      "source": "SecurityWeek",
+      "ok": true,
+      "error": ""
+     },
+     {
+      "source": "The Hacker News",
+      "ok": true,
+      "error": ""
+     }
+    ]
+   }
   }
  }
 }
