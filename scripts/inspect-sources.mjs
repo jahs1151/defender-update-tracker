@@ -25,8 +25,11 @@ async function run(name, fn) {
 await run("product updates", async () => {
   const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates");
   show("product updates headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 25).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
-  show("product updates text", around(plain(html), /4\.18\.2\d{4}\.\d+/i, 3, 700));
-  show("product updates html", around(html, /4\.18\.2\d{4}\.\d+/i, 2, 1200));
+  const sup = html.search(/<h2[^>]*>[^<]*platform and engine support/i);
+  show("support section", sup >= 0 ? plain(html.slice(sup, sup + 5000)).slice(0, 2500) : "(none)");
+  const pu = html.search(/<h2[^>]*>\s*Product updates/i);
+  show("product updates section", pu >= 0 ? plain(html.slice(pu, pu + 4000)).slice(0, 2000) : "(none)");
+  show("links", [...new Set([...html.matchAll(/href="([^"#]+)"/g)].map((m) => m[1]).filter((h) => /update|platform|release|version/i.test(h)))].slice(0, 40).join("\n"));
 });
 await run("mde whats new", async () => {
   const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint");
