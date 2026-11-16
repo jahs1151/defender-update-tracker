@@ -44,8 +44,10 @@ await run("intune weekly", async () => {
   show("weekly headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 40).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
 });
 await run("troubleshoot-sensor", async () => {
-  const res = await fetch("https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-sensor", { redirect: "manual" });
-  show("troubleshoot-sensor", `${res.status} ${res.headers.get("location") || ""}`);
+  for (const slug of ["troubleshoot-sensor", "troubleshoot-onboarding", "troubleshoot-onboarding-error-messages", "check-sensor-status", "troubleshoot-mdatp", "troubleshoot-sense-health", "fix-unhealthy-sensors", "device-health-sensor-health-os", "troubleshoot-microsoft-defender-antivirus"]) {
+    const res = await fetch(`https://learn.microsoft.com/en-us/defender-endpoint/${slug}`, { redirect: "manual" });
+    show(`learn ${slug}`, `${res.status} ${res.headers.get("location") || ""}`);
+  }
 });
 await run("last-modified", async () => {
   const urls = ["https://www.microsoft.com/en-us/wdsi/definitions", "https://learn.microsoft.com/en-us/intune/whats-new/", "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json", "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292", "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes"];
