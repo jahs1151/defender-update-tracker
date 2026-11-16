@@ -152,7 +152,8 @@
     "win11"
    ],
    "docs": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
-   "statusNote": "From the Defender for Endpoint what's new page."
+   "statusNote": "From the Defender for Endpoint what's new page.",
+   "listWithReported": true
   },
   {
    "id": "runtime",

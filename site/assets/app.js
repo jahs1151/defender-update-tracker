@@ -27,14 +27,15 @@ function oobStories() {
   return (data("news")?.items || []).filter((n) => OOB_RE.test(n.title) && (!since || (n.published || "") >= since.slice(0, 10)));
 }
 const slugId = (u) => String(u || "").replace(/^https?:\/\/[^/]+\//, "").replace(/[^a-z0-9]+/gi, "-").slice(0, 60);
-// learn.microsoft.com/.../troubleshoot-sensor returns 404 (checked 16 Nov 2026); these are the live sensor troubleshooting pages.
-const SENSOR_TROUBLESHOOT = { url: "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-onboarding", title: "Sensor troubleshooting: onboarding issues" };
+// James's chosen link (round 6). On 16 Nov 2026 this URL returned 404 from GitHub's runners; the live pages are listed after it.
+const SENSOR_TROUBLESHOOT = { url: "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-sensor", title: "Sensor troubleshooting" };
 const daysOld = (iso) => (iso ? (Date.now() - Date.parse(iso)) / 86400000 : Infinity);
 const size = (b) => (!b ? "" : b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : `${Math.round(b / 1024)} KB`);
 const data = (key) => sec(key)?.data || null;
 
-function checked(key) {
-  const s = sec(key);
+function checked(key, detailOverride) {
+  const base = sec(key);
+  const s = base && detailOverride ? { ...base, detail: detailOverride } : base;
   if (!s) return "";
   const when = s.lastOkAt ? `Last good data ${ago(s.lastOkAt)}` : "No data yet";
   const tone = s.ok ? "" : s.stale ? "warn" : "bad";
@@ -42,9 +43,9 @@ function checked(key) {
   return `<span class="meta" title="${esc(s.detail)}">Checked ${esc(ago(s.checkedAt))} · ${esc(when)}${status}</span>`;
 }
 
-function section(id, title, body, key) {
+function section(id, title, body, key, detail) {
   return `<section class="section" id="${id}" aria-labelledby="${id}-h">
-    <div class="section-head"><h2 id="${id}-h">${esc(title)}</h2>${key ? checked(key) : ""}</div>
+    <div class="section-head"><h2 id="${id}-h">${esc(title)}</h2>${key ? checked(key, detail) : ""}</div>
     ${body}
   </section>`;
 }
@@ -137,12 +138,24 @@ function senseInfo() {
   if (live) {
     const builds = sd.builds?.length ? sd.builds : [{ os: "", date: live.date, channel: live.channel }];
     const channel = live.channel || builds.find((b) => b.channel)?.channel || "";
-    const when = builds.map((b) => `${b.os ? `${b.os}: ` : ""}${b.date ? stamp(b.date) : "date not published"}`).join(" · ");
-    return { version: live.version, when, channel, note: "Microsoft Update Catalog (KB5005292). The catalog publishes a date per OS family, not a time.", url: sd.url };
+    const catalog = builds.map((b) => `${b.os ? `${b.os}: ` : ""}${b.date ? stamp(b.date).replace(/\s*\(date only\)/, "") : "date not published"}`).join(" · ");
+    const f = state.curated?.senseFallback;
+    const release = f?.version === live.version && f.date ? senseReleaseStamp(f.date) : "";
+    const when = release ? `Released ${release}` : catalog;
+    const note = release ? `Release date from the hand-kept record. Microsoft's Update Catalog lists this build as last modified ${catalog} and publishes no time of day.` : "Microsoft Update Catalog (KB5005292). The catalog publishes a date per OS family, not a time.";
+    return { version: live.version, when, channel, note, url: sd.url };
   }
   const f = state.curated?.senseFallback;
   if (f) return { version: f.version, when: stamp(f.date), channel: f.channel, note: f.source, url: f.url };
   return { version: "", when: "", channel: "", note: "", url: "" };
+}
+
+/** "11 Nov 2026 UTC · 11 Nov 2026 CST": a date with no published time, shown in both zones without inventing a time. */
+function senseReleaseStamp(date) {
+  const d = new Date(`${date}T12:00:00Z`);
+  const day = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const zone = d.toLocaleString("en-US", { timeZone: "America/Chicago", timeZoneName: "short" }).split(" ").pop();
+  return `${day} UTC · ${day} ${zone} (time of day not published)`;
 }
 
 /** One release time for the current security intelligence: the changelog's, when it lists the same build. */
@@ -276,9 +289,11 @@ function renderStatus() {
 
 function renderFleet(releases, intel) {
   // Only well-formed versions are ever kept; anything else saved by an older version of this page is dropped.
+  // Values are kept only after someone types them (typed: true); until then SI defaults to the latest build.
   const raw = pref.get("fleet", {});
-  const saved = Object.fromEntries(["platform", "engine", "si"].map((k) => [k, VALID_VERSION.test(String(raw?.[k] || "")) ? raw[k] : ""]));
-  if (JSON.stringify(saved) !== JSON.stringify(raw)) pref.set("fleet", saved);
+  const saved = Object.fromEntries(["platform", "engine", "si"].map((k) => [k, raw?.typed && VALID_VERSION.test(String(raw?.[k] || "")) ? raw[k] : ""]));
+  if (!raw?.typed && Object.keys(raw || {}).length) pref.set("fleet", {});
+  if (!saved.si && intel?.securityIntelligence) saved.si = intel.securityIntelligence;
   return `<div class="card">
     <p>Paste versions from a device (Get-MpComputerStatus: AMProductVersion, AMEngineVersion, AntivirusSignatureVersion). Saved only in this browser.</p>
     <form class="form-grid" id="fleet-form" autocomplete="off">
@@ -331,7 +346,9 @@ function renderUpdates() {
   const month = allMonths.includes(savedMonth) ? savedMonth : ptData?.month || allMonths[0];
   const pt = ptData ? ptData.months?.[month] || (ptData.month === month ? ptData : null) : null;
   const monthTabs = allMonths.length > 1 ? `<div class="seg" role="tablist" aria-label="Patch Tuesday month">${allMonths.map((m) => `<button type="button" role="tab" data-ptmonth="${esc(m)}" aria-selected="${m === month}">${esc(m)}</button>`).join("")}</div>` : "";
-  const ptBody = monthTabs + (pt
+  // The header line follows the picked month, like the cards below it.
+  const ptLine = pt ? `${month}: ${pt.windowsTotal} Windows CVEs, ${pt.critical} Critical, ${pt.endpoint.length} Defender or Intune · ${allMonths.length} months kept` : "";
+  const ptBody = (ptLine ? `<p class="meta" id="pt-line">${esc(ptLine)}</p>` : "") + monthTabs + (pt
     ? `<div class="grid">
         <div class="card"><div class="kpi-label">Release</div><div class="kpi">${esc(month)}</div><div class="when">${month === ptData.month ? `Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.` : "An earlier release, kept for comparison."}</div>${source(ptData.url, "Security Update Guide")}</div>
         <div class="card"><div class="kpi-label">Windows CVEs (in-scope versions)</div><div class="kpi">${esc(pt.windowsTotal)}</div><div class="when">${esc(pt.critical)} rated Critical</div></div>
@@ -445,7 +462,7 @@ function renderUpdates() {
 
   return [
     section("out-of-band", "Out-of-band and zero-day", oobBody, "news"),
-    section("patch-tuesday", "Patch Tuesday", ptBody, "patchTuesday"),
+    section("patch-tuesday", "Patch Tuesday", ptBody, "patchTuesday", ptLine),
     section("qualys", "Qualys QIDs for this Patch Tuesday", qualysBody, "qualys"),
     section("exploited", "Exploited and zero-day", kevBody, "kev"),
     section("known-issues", "Known issues", issuesBody, "knownIssues"),
@@ -525,6 +542,7 @@ const BUILD_TIMEOUT_MS = 10000;
 
 function buildRows(h) {
   if (!h) return { status: "none", rows: [] };
+  if (state.builds[h.version]) return state.builds[h.version];
   if (Array.isArray(h.rows)) return { status: "ok", rows: h.rows };
   const latest = data("changelog");
   if (latest && h.version === latest.version && Array.isArray(latest.rows)) return { status: "ok", rows: latest.rows };
@@ -556,7 +574,9 @@ function rerenderChangelog() {
 
 function selectedBuild() {
   const history = changelogHistory();
-  const wanted = pref.get("siVersion", "");
+  // A picked build is remembered only while it was picked against the current latest build; a new build resets to latest.
+  const pick = pref.get("siPick", null);
+  const wanted = pick && pick.latest === history[0]?.version ? pick.version : "";
   const idx = Math.max(0, history.findIndex((h) => h.version === wanted));
   return { history, idx, h: history[idx], prev: history[idx + 1] };
 }
@@ -615,7 +635,7 @@ function renderChangelog() {
       <span class="meta">Exports the rows shown, for build ${esc(h.version)}.</span>
     </div>
     <div id="cl-table">${table}</div>
-    <p class="meta">Older builds load from this site's own data when picked. If one takes longer than ${BUILD_TIMEOUT_MS / 1000} seconds you get a Retry button.</p>
+    <p class="meta">Older builds load from this site's own data when picked. If one takes longer than ${BUILD_TIMEOUT_MS / 1000} seconds, use Retry. <button type="button" class="btn small" data-action="retry-build" data-version="${esc(h.version)}">Retry</button></p>
     ${source(clData.url, "Security intelligence release notes")}
   </div>`;
 }
@@ -773,12 +793,16 @@ function renderIntel() {
         .join("")}</ul>` : "<p class=\"meta\">No Defender items in Intune's recent notes.</p>"}<p class="meta">From Intune's what's new and in-development pages, Windows only. ${link(intune.url, "Intune what's new ↗")}</p></div>`
     : "";
   const confirmedBy = (f) => fromIntune.find((i) => i.stage === "Released" && f.name.toLowerCase().split(" in intune")[0].split(" ").filter((w) => w.length > 3).every((w) => i.name.toLowerCase().includes(w)));
-  const reported = (state.catalog?.features || []).filter((f) => f.status === "Reported");
+  // The three late-2026 items carried over from the old build (Local AI agent discovery, agent runtime protection, Execution Containers).
+  const reported = (state.catalog?.features || []).filter((f) => f.status === "Reported" || f.listWithReported);
+  const onLearn = (f) => (data("mde")?.items || []).find((i) => f.name.toLowerCase().split(" ").filter((w) => w.length > 3).every((w) => i.name.toLowerCase().includes(w)));
   const reportedBlock = reported.length
-    ? `<div class="card" style="margin-top:12px"><h3>Reported, not yet confirmed on Microsoft Learn</h3><ul class="list">${reported
+    ? `<div class="card" style="margin-top:12px"><h3>Reported, not yet confirmed on Microsoft Learn</h3><p class="meta">Items first seen in news or blogs. Each one says when Microsoft has since confirmed it.</p><ul class="list">${reported
         .map((f) => {
           const c = confirmedBy(f);
-          return `<li><span class="row-title">${esc(f.name)}</span> ${c ? pill("Confirmed in Intune what's new", "ok") : pill("Reported", "warn")}<p>${esc(f.summary)}</p>${c ? `<div>${link(c.url, `Intune: ${c.name} ↗`, "src")}</div>` : ""}${source(f.docs)}</li>`;
+          const l = onLearn(f);
+          const tag = l ? pill("Confirmed on Microsoft Learn", "ok") : c ? pill("Confirmed in Intune what's new", "ok") : pill("Reported", "warn");
+          return `<li><span class="row-title">${esc(f.name)}</span> ${tag}<p>${esc(f.summary)}</p>${l ? `<div>${link(l.url, `Learn: ${l.name} ↗`, "src")}</div>` : c ? `<div>${link(c.url, `Intune: ${c.name} ↗`, "src")}</div>` : ""}${source(f.docs)}</li>`;
         })
         .join("")}</ul></div>`
     : "";
@@ -1007,7 +1031,7 @@ document.addEventListener("input", (e) => {
   if (t.closest("#fleet-form")) {
     const f = new FormData(t.form);
     const v = { platform: String(f.get("platform")).trim(), engine: String(f.get("engine")).trim(), si: String(f.get("si")).trim() };
-    pref.set("fleet", Object.fromEntries(Object.entries(v).map(([k, x]) => [k, VALID_VERSION.test(x) ? x : ""])));
+    pref.set("fleet", { typed: true, ...Object.fromEntries(Object.entries(v).map(([k, x]) => [k, VALID_VERSION.test(x) ? x : ""])) });
     document.getElementById("fleet-out").innerHTML = fleetVerdict(v, data("productUpdates")?.rows || [], data("intelligence"));
   }
 });
@@ -1017,7 +1041,7 @@ document.addEventListener("change", (e) => {
   if (t.id === "issue-scope") pref.set("issueScope", t.value);
   else if (t.id === "win-only") pref.set("winOnly", t.checked);
   else if (t.id === "si-version") {
-    pref.set("siVersion", t.value);
+    pref.set("siPick", { version: t.value, latest: changelogHistory()[0]?.version || "" });
     rerenderChangelog();
     return;
   } else return;
