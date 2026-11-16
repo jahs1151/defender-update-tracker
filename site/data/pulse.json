@@ -1,6 +1,6 @@
 {
- "schema": 1,
- "checkedAt": "2026-11-16T04:59:05.736Z",
+ "schema": 2,
+ "checkedAt": "2026-11-16T05:20:39.056Z",
  "contentChangedAt": "2026-11-16T03:53:28.258Z",
  "changes": [],
  "patch": {
@@ -13,8 +13,10 @@
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
+   "lastModified": "",
    "detail": "3 of 3 packages resolved · file lists for 2 · offline kit platform 4.18.26100.4",
    "data": [
     {
@@ -86,8 +88,10 @@
    "label": "Security intelligence page",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.microsoft.com/en-us/wdsi/definitions",
+   "lastModified": "",
    "detail": "1.463.322.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
    "data": {
     "securityIntelligence": "1.463.322.0",
@@ -104,8 +108,10 @@
    "label": "Platform and engine release list (Learn)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support",
+   "lastModified": "2026-10-29T17:36:51.000Z",
    "detail": "8 monthly releases listed, latest February 2026",
    "data": {
     "rows": [
@@ -181,8 +187,10 @@
    "label": "Detection changelog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
+   "lastModified": "",
    "detail": "1.463.322.0 · 102 detections · 10 versions kept",
    "data": {
     "version": "1.463.322.0",
@@ -6081,15 +6089,30 @@
    "label": "Sense (EDR sensor) build, Update Catalog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "Latest 10.8839.26080.2008",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292",
+   "lastModified": "",
+   "detail": "Latest 10.8839.26080.2008 · Current Channel (Broad)",
    "data": {
     "latest": {
      "version": "10.8839.26080.2008",
-     "date": "2026-11-15",
-     "title": "id=\"30186f65-7777-4534-b132-7c5b8814d9cb_R0\" style=\"border-width:0px;\"> Windows Server 2019+ - Update for Microsoft Defender for Endpoint - KB5005292 (Version 10.8839.26080.2008) - Current Channel (Br"
+     "date": "2026-11-08",
+     "title": "Windows 10/11 - Update for Microsoft Defender for Endpoint - KB5005292 (Version 10.8839.26080.2008) - Current Channel (Broad) Microsoft Defender for Endpoint Definition Updates 11/8/2026 n/a 133.6 MB 140066864",
+     "channel": "Current Channel (Broad)"
     },
+    "builds": [
+     {
+      "date": "2026-11-08",
+      "channel": "Current Channel (Broad)",
+      "os": "Windows 10 and 11"
+     },
+     {
+      "date": "2026-11-15",
+      "channel": "Current Channel (Broad)",
+      "os": "Windows Server 2019 and later"
+     }
+    ],
     "url": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292"
    }
   },
@@ -6097,14 +6120,20 @@
    "label": "Security Update Guide (MSRC API)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://msrc.microsoft.com/update-guide",
+   "lastModified": "",
    "detail": "2026-Nov: 723 Windows CVEs, 35 Critical, 2 Defender or Intune",
    "data": {
     "month": "2026-Nov",
     "windowsTotal": 723,
     "critical": 35,
     "perOs": {
+     "srv2019": {
+      "total": 618,
+      "critical": 28
+     },
      "srv2025": {
       "total": 690,
       "critical": 33
@@ -6116,10 +6145,6 @@
      "srv2022": {
       "total": 651,
       "critical": 30
-     },
-     "srv2019": {
-      "total": 618,
-      "critical": 28
      }
     },
     "endpoint": [
@@ -6147,8 +6172,10 @@
    "label": "CISA Known Exploited Vulnerabilities",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+   "lastModified": "2026-11-13T20:24:18.000Z",
    "detail": "19 Microsoft Windows or endpoint entries in 12 months",
    "data": {
     "rows": [
@@ -6475,6 +6502,399 @@
       "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-62221"
      }
     ],
+    "microsoftCves": [
+     "CVE-2026-124194",
+     "CVE-2026-96951",
+     "CVE-2026-65660",
+     "CVE-2026-81963",
+     "CVE-2026-85880",
+     "CVE-2019-1068",
+     "CVE-2026-33824",
+     "CVE-2026-55040",
+     "CVE-2026-68820",
+     "CVE-2026-50522",
+     "CVE-2026-58644",
+     "CVE-2026-56155",
+     "CVE-2026-56164",
+     "CVE-2026-45659",
+     "CVE-2008-4250",
+     "CVE-2009-1537",
+     "CVE-2010-0249",
+     "CVE-2010-0806",
+     "CVE-2026-41091",
+     "CVE-2026-45498",
+     "CVE-2026-42897",
+     "CVE-2026-32202",
+     "CVE-2026-33825",
+     "CVE-2009-0238",
+     "CVE-2026-32201",
+     "CVE-2012-1854",
+     "CVE-2025-60710",
+     "CVE-2023-21529",
+     "CVE-2023-36424",
+     "CVE-2026-20963",
+     "CVE-2008-0015",
+     "CVE-2024-43468",
+     "CVE-2026-21513",
+     "CVE-2026-21525",
+     "CVE-2026-21510",
+     "CVE-2026-21533",
+     "CVE-2026-21519",
+     "CVE-2026-21514",
+     "CVE-2026-21509",
+     "CVE-2026-20805",
+     "CVE-2009-0556",
+     "CVE-2025-62221",
+     "CVE-2025-62215",
+     "CVE-2025-59287",
+     "CVE-2025-33073",
+     "CVE-2025-24990",
+     "CVE-2025-59230",
+     "CVE-2010-3962",
+     "CVE-2021-43226",
+     "CVE-2013-3918",
+     "CVE-2011-3402",
+     "CVE-2007-0671",
+     "CVE-2013-3893",
+     "CVE-2025-49704",
+     "CVE-2025-49706",
+     "CVE-2025-53770",
+     "CVE-2025-33053",
+     "CVE-2025-32709",
+     "CVE-2025-30397",
+     "CVE-2025-32706",
+     "CVE-2025-32701",
+     "CVE-2025-30400",
+     "CVE-2025-24054",
+     "CVE-2025-29824",
+     "CVE-2025-24993",
+     "CVE-2025-24991",
+     "CVE-2025-24985",
+     "CVE-2025-24984",
+     "CVE-2025-24983",
+     "CVE-2025-26633",
+     "CVE-2018-8639",
+     "CVE-2024-49035",
+     "CVE-2025-24989",
+     "CVE-2025-21418",
+     "CVE-2025-21391",
+     "CVE-2024-21413",
+     "CVE-2024-29059",
+     "CVE-2025-21335",
+     "CVE-2025-21334",
+     "CVE-2025-21333",
+     "CVE-2024-35250",
+     "CVE-2024-49138",
+     "CVE-2024-43451",
+     "CVE-2024-49039",
+     "CVE-2024-38094",
+     "CVE-2024-30088",
+     "CVE-2024-43573",
+     "CVE-2024-43572",
+     "CVE-2020-0618",
+     "CVE-2024-43461",
+     "CVE-2024-38217",
+     "CVE-2024-38014",
+     "CVE-2024-38226",
+     "CVE-2021-31196",
+     "CVE-2024-38107",
+     "CVE-2024-38106",
+     "CVE-2024-38193",
+     "CVE-2024-38213",
+     "CVE-2024-38178",
+     "CVE-2024-38189",
+     "CVE-2018-0824",
+     "CVE-2012-4792",
+     "CVE-2024-38080",
+     "CVE-2024-38112",
+     "CVE-2024-26169",
+     "CVE-2024-30040",
+     "CVE-2024-30051",
+     "CVE-2024-29988",
+     "CVE-2022-38028",
+     "CVE-2023-24955",
+     "CVE-2024-21338",
+     "CVE-2023-29360",
+     "CVE-2024-21410",
+     "CVE-2024-21412",
+     "CVE-2024-21351",
+     "CVE-2023-29357",
+     "CVE-2023-36584",
+     "CVE-2023-36033",
+     "CVE-2023-36025",
+     "CVE-2023-36036",
+     "CVE-2023-41763",
+     "CVE-2023-36563",
+     "CVE-2023-28229",
+     "CVE-2023-36761",
+     "CVE-2023-36802",
+     "CVE-2023-38180",
+     "CVE-2023-36884",
+     "CVE-2023-32046",
+     "CVE-2023-32049",
+     "CVE-2023-35311",
+     "CVE-2023-36874",
+     "CVE-2016-0165",
+     "CVE-2023-29336",
+     "CVE-2023-28252",
+     "CVE-2019-1388",
+     "CVE-2013-3163",
+     "CVE-2023-23397",
+     "CVE-2023-24880",
+     "CVE-2023-21715",
+     "CVE-2023-23376",
+     "CVE-2023-21823",
+     "CVE-2022-41080",
+     "CVE-2023-21674",
+     "CVE-2022-44698",
+     "CVE-2022-41049",
+     "CVE-2022-41091",
+     "CVE-2022-41073",
+     "CVE-2022-41125",
+     "CVE-2022-41128",
+     "CVE-2022-41033",
+     "CVE-2022-41082",
+     "CVE-2022-41040",
+     "CVE-2010-2568",
+     "CVE-2022-37969",
+     "CVE-2022-26923",
+     "CVE-2022-21971",
+     "CVE-2022-34713",
+     "CVE-2022-22047",
+     "CVE-2022-26925",
+     "CVE-2022-30190",
+     "CVE-2013-1331",
+     "CVE-2012-4969",
+     "CVE-2012-1889",
+     "CVE-2012-0151",
+     "CVE-2010-2572",
+     "CVE-2009-0563",
+     "CVE-2009-0557",
+     "CVE-2006-2492",
+     "CVE-2016-3393",
+     "CVE-2016-7256",
+     "CVE-2016-0034",
+     "CVE-2015-0016",
+     "CVE-2015-0071",
+     "CVE-2015-2360",
+     "CVE-2015-2425",
+     "CVE-2015-1769",
+     "CVE-2015-6175",
+     "CVE-2015-1671",
+     "CVE-2014-4148",
+     "CVE-2014-4123",
+     "CVE-2014-2817",
+     "CVE-2014-4077",
+     "CVE-2013-7331",
+     "CVE-2013-3896",
+     "CVE-2013-0074",
+     "CVE-2018-8611",
+     "CVE-2017-0147",
+     "CVE-2017-0022",
+     "CVE-2017-0005",
+     "CVE-2017-0149",
+     "CVE-2017-0210",
+     "CVE-2017-8543",
+     "CVE-2016-0162",
+     "CVE-2016-3351",
+     "CVE-2016-3298",
+     "CVE-2020-1027",
+     "CVE-2020-0638",
+     "CVE-2019-0676",
+     "CVE-2019-0703",
+     "CVE-2019-0880",
+     "CVE-2019-1385",
+     "CVE-2019-1130",
+     "CVE-2018-8589",
+     "CVE-2014-4113",
+     "CVE-2014-0322",
+     "CVE-2022-26904",
+     "CVE-2022-21919",
+     "CVE-2021-41357",
+     "CVE-2021-40450",
+     "CVE-2022-22718",
+     "CVE-2022-24521",
+     "CVE-2015-2502",
+     "CVE-2021-42287",
+     "CVE-2021-42278",
+     "CVE-2021-31166",
+     "CVE-2017-0148",
+     "CVE-2021-34484",
+     "CVE-2021-38646",
+     "CVE-2021-34486",
+     "CVE-2018-8440",
+     "CVE-2018-8406",
+     "CVE-2018-8405",
+     "CVE-2017-0213",
+     "CVE-2017-0059",
+     "CVE-2017-0037",
+     "CVE-2016-7201",
+     "CVE-2016-7200",
+     "CVE-2016-0189",
+     "CVE-2016-0151",
+     "CVE-2016-0040",
+     "CVE-2015-2426",
+     "CVE-2015-2419",
+     "CVE-2015-1770",
+     "CVE-2013-3660",
+     "CVE-2013-2551",
+     "CVE-2012-2539",
+     "CVE-2011-2005",
+     "CVE-2010-4398",
+     "CVE-2022-21999",
+     "CVE-2019-0903",
+     "CVE-2018-8414",
+     "CVE-2018-8373",
+     "CVE-2017-0146",
+     "CVE-2014-6332",
+     "CVE-2014-6324",
+     "CVE-2019-1405",
+     "CVE-2019-1322",
+     "CVE-2019-1315",
+     "CVE-2019-1253",
+     "CVE-2019-1132",
+     "CVE-2019-1129",
+     "CVE-2019-1069",
+     "CVE-2019-1064",
+     "CVE-2019-0841",
+     "CVE-2019-0543",
+     "CVE-2018-8120",
+     "CVE-2017-0101",
+     "CVE-2016-3309",
+     "CVE-2015-2546",
+     "CVE-2021-41379",
+     "CVE-2019-1297",
+     "CVE-2018-8581",
+     "CVE-2017-8540",
+     "CVE-2017-11826",
+     "CVE-2017-0261",
+     "CVE-2017-0001",
+     "CVE-2016-7262",
+     "CVE-2016-7193",
+     "CVE-2016-0099",
+     "CVE-2015-2545",
+     "CVE-2015-2424",
+     "CVE-2015-2387",
+     "CVE-2015-1701",
+     "CVE-2015-1642",
+     "CVE-2014-4114",
+     "CVE-2013-5065",
+     "CVE-2013-3897",
+     "CVE-2013-1347",
+     "CVE-2012-1856",
+     "CVE-2011-1889",
+     "CVE-2010-3333",
+     "CVE-2010-0232",
+     "CVE-2009-3129",
+     "CVE-2009-1123",
+     "CVE-2004-0210",
+     "CVE-2002-0367",
+     "CVE-2017-8570",
+     "CVE-2017-0222",
+     "CVE-2014-6352",
+     "CVE-2019-0752",
+     "CVE-2018-8174",
+     "CVE-2014-1761",
+     "CVE-2013-3906",
+     "CVE-2021-36934",
+     "CVE-2020-0796",
+     "CVE-2017-8464",
+     "CVE-2017-0263",
+     "CVE-2017-0262",
+     "CVE-2017-0145",
+     "CVE-2017-0144",
+     "CVE-2015-1635",
+     "CVE-2022-21882",
+     "CVE-2020-0787",
+     "CVE-2014-1776",
+     "CVE-2018-8453",
+     "CVE-2021-33766",
+     "CVE-2019-1458",
+     "CVE-2013-3900",
+     "CVE-2021-43890",
+     "CVE-2021-40449",
+     "CVE-2021-42321",
+     "CVE-2021-42292",
+     "CVE-2014-1812",
+     "CVE-2021-38647",
+     "CVE-2016-0167",
+     "CVE-2020-0878",
+     "CVE-2021-31955",
+     "CVE-2021-1647",
+     "CVE-2021-33739",
+     "CVE-2016-0185",
+     "CVE-2020-0683",
+     "CVE-2020-17087",
+     "CVE-2021-33742",
+     "CVE-2021-31199",
+     "CVE-2021-33771",
+     "CVE-2021-31956",
+     "CVE-2021-31201",
+     "CVE-2021-31979",
+     "CVE-2020-0938",
+     "CVE-2020-17144",
+     "CVE-2020-0986",
+     "CVE-2020-1020",
+     "CVE-2021-38645",
+     "CVE-2021-34523",
+     "CVE-2017-7269",
+     "CVE-2021-36948",
+     "CVE-2021-38649",
+     "CVE-2020-0688",
+     "CVE-2017-0143",
+     "CVE-2016-7255",
+     "CVE-2019-0708",
+     "CVE-2021-34473",
+     "CVE-2020-1464",
+     "CVE-2021-1732",
+     "CVE-2021-34527",
+     "CVE-2021-31207",
+     "CVE-2019-0803",
+     "CVE-2020-1040",
+     "CVE-2021-28310",
+     "CVE-2020-1350",
+     "CVE-2021-26411",
+     "CVE-2019-0859",
+     "CVE-2021-40444",
+     "CVE-2017-8759",
+     "CVE-2018-8653",
+     "CVE-2019-0797",
+     "CVE-2021-36942",
+     "CVE-2019-1215",
+     "CVE-2018-0798",
+     "CVE-2018-0802",
+     "CVE-2012-0158",
+     "CVE-2015-1641",
+     "CVE-2021-27085",
+     "CVE-2019-0541",
+     "CVE-2017-11882",
+     "CVE-2020-0674",
+     "CVE-2021-27059",
+     "CVE-2019-1367",
+     "CVE-2017-0199",
+     "CVE-2020-1380",
+     "CVE-2019-1429",
+     "CVE-2017-11774",
+     "CVE-2020-0968",
+     "CVE-2020-1472",
+     "CVE-2021-26855",
+     "CVE-2021-26858",
+     "CVE-2021-27065",
+     "CVE-2020-1054",
+     "CVE-2021-1675",
+     "CVE-2021-34448",
+     "CVE-2020-0601",
+     "CVE-2019-0604",
+     "CVE-2020-0646",
+     "CVE-2019-0808",
+     "CVE-2021-26857",
+     "CVE-2020-1147",
+     "CVE-2019-1214",
+     "CVE-2016-3235",
+     "CVE-2019-0863",
+     "CVE-2021-36955",
+     "CVE-2021-38648"
+    ],
     "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
    }
   },
@@ -6482,8 +6902,10 @@
    "label": "Windows release health",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://learn.microsoft.com/en-us/windows/release-health/",
+   "lastModified": "2026-11-13T18:07:39.000Z",
    "detail": "1 open across 5 pages",
    "data": {
     "rows": [
@@ -6608,9 +7030,11 @@
    "label": "Intune what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "8 weeks, 18 Windows or security items",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://learn.microsoft.com/en-us/intune/whats-new/",
+   "lastModified": "2026-11-15T23:39:37.000Z",
+   "detail": "7 weeks with 19 Windows or security items · 15 in-development items",
    "data": {
     "weeks": [
      {
@@ -6684,10 +7108,6 @@
       ]
      },
      {
-      "week": "Week of October 26, 2026",
-      "items": []
-     },
-     {
       "week": "Week of October 19, 2026",
       "items": []
      },
@@ -6758,9 +7178,26 @@
         "url": "https://learn.microsoft.com/en-us/intune/whats-new/#stage-app-and-policy-rollout-with-deployment-plans"
        }
       ]
+     },
+     {
+      "week": "Week of September 14, 2026",
+      "items": [
+       {
+        "id": "faster-compliance-updates-for-windows-devices",
+        "name": "Faster compliance updates for Windows devices",
+        "summary": "Microsoft Intune now supports client-driven compliance evaluation for Windows devices. Supported devices can detect changes to compliance signals, including firewall, antivirus, BitLocker, Microsoft Defender status, operating system build, real-time protection, and Secure Boot, and proactively request reevaluation rather than waiting for a scheduled check-in. This provides faster compliance updates for remediation, reporting, and access decisions. Evaluation of compliance policies during check-in also occurs when a calculation is triggered. For more information, see Create a compliance policy ",
+        "url": "https://learn.microsoft.com/en-us/intune/whats-new/#faster-compliance-updates-for-windows-devices"
+       }
+      ]
      }
     ],
     "inDevelopment": [
+     {
+      "id": "scope-tags-support-for-endpoint-privilege-management-reports",
+      "name": "Scope tags support for Endpoint Privilege Management reports",
+      "summary": "We're fixing how scope tags work with Endpoint Privilege Management (EPM) reports. With this change, EPM reports will respect the report viewer's assigned scope and display the details for only the users and devices that the report user is scoped to view.",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
      {
       "id": "view-esim-profiles-and-deployment-status-for-windows-devices",
       "name": "View eSIM profiles and deployment status for Windows devices",
@@ -6771,6 +7208,12 @@
       "id": "device-query-for-multiple-devices-for-app-inventory-on-windows",
       "name": "Device query for multiple devices for app inventory on Windows",
       "summary": "Advanced Analytics will extend device query for multiple devices to cover app inventory data on Windows. Building on the existing multi-device query for hardware inventory, you'll be able to use Kusto Query Language (KQL) to investigate installed applications across your entire Windows fleet—identifying versions, surfacing outdated or unwanted software, and producing detailed reports without targeting devices one at a time. Multi-device app inventory queries will run against collected inventory ",
+      "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
+     },
+     {
+      "id": "agentic-identity-for-the-policy-configuration-agent-public-preview",
+      "name": "Agentic identity for the Policy Configuration Agent (public preview)",
+      "summary": "The Intune Policy Configuration Agent will update to use a Microsoft Entra agentic identity instead of a human user identity. This enables the agent to run policy configuration actions securely and independently. For existing agents, admins will be able to transition to an agentic identity from the agent's Settings tab by selecting Create new identity . After the identity is provisioned, the agent will now run on behalf of the logged-in user and the information will be scoped by the permissions ",
       "url": "https://learn.microsoft.com/en-us/intune/whats-new/in-development"
      },
      {
@@ -6849,9 +7292,11 @@
    "label": "Defender for Endpoint what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "5 Windows items",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
+   "lastModified": "2026-11-13T23:35:06.000Z",
+   "detail": "4 Windows items",
    "data": {
     "items": [
      {
@@ -6861,7 +7306,8 @@
       "name": "Local AI agent discovery on Windows and macOS",
       "stage": "GA",
       "text": "Discover supported local AI agents and their configured MCP servers on onboarded Windows and macOS devices, and investigate them in the AI agent inventory and advanced hunting. Windows requires Microsoft Defender Antivirus platform version 4.18.26090.9 (2609) or later. macOS requires Microsoft Defender for Endpoint version 101.26072.0017 or later. Discovery in WSL remains in preview. See the discovery prerequisites and support matrix .",
-      "url": "https://learn.microsoft.com/en-us/defender-endpoint/local-agent-discovery-overview"
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/local-agent-discovery-overview",
+      "history": []
      },
      {
       "id": "october-2026-vulnerability-assessment-for-microsoft-store-applications",
@@ -6870,7 +7316,8 @@
       "name": "Vulnerability assessment for Microsoft Store applications",
       "stage": "GA",
       "text": "Vulnerability assessment for applications installed via the Microsoft Store is now generally available. Defender Vulnerability Management detects supported Microsoft Store applications, adds them to the software inventory, and assesses them for vulnerabilities. Coverage is currently limited to a select set of commonly used applications. Use the Software evidence area on the software page to view the file path for the vulnerable application, along with a suggested query showing the vulnerable app",
-      "url": "https://learn.microsoft.com/en-us/defender-vulnerability-management/tvm-software-inventory#microsoft-store-applications"
+      "url": "https://learn.microsoft.com/en-us/defender-vulnerability-management/tvm-software-inventory#microsoft-store-applications",
+      "history": []
      },
      {
       "id": "september-2026-microsoft-defender-for-endpoint-plug-in-support-for-wsl-containers-wslc",
@@ -6879,7 +7326,13 @@
       "name": "Microsoft Defender for Endpoint plug-in support for WSL containers (WSLc)",
       "stage": "GA",
       "text": "Extend Microsoft Defender for Endpoint protection to workloads running in WSL containers (WSLc). Gain visibility into WSL container activity through device inventory, alerts, incidents, device timeline, and Advanced Hunting, helping security teams investigate and respond to threats across both Windows and Linux workloads. MDE plugin version 2.26.921.1.",
-      "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-plugin-wsl"
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-plugin-wsl",
+      "history": [
+       {
+        "stage": "Preview",
+        "when": "September 2026"
+       }
+      ]
      },
      {
       "id": "september-2026-new-microsoft-secure-score-recommendations-for-ai-readiness",
@@ -6888,16 +7341,8 @@
       "name": "New Microsoft Secure Score recommendations for AI-Readiness",
       "stage": "GA",
       "text": "Microsoft Defender now brings together six security recommendations for AI-Readiness to help organizations strengthen endpoint trust against AI-accelerated cyberattacks. Together, these recommendations provide a layered security baseline that helps reduce externally visible entry points, establish hardware-backed trust in device startup, isolate critical Windows security functions, protect kernel code integrity, and limit the reuse of local administrator credentials for lateral movement. In the ",
-      "url": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint"
-     },
-     {
-      "id": "september-2026-microsoft-defender-for-endpoint-plug-in-support-for-wsl-containers-wslc",
-      "when": "September 2026",
-      "type": "Feature",
-      "name": "Microsoft Defender for Endpoint plug-in support for WSL containers (WSLc)",
-      "stage": "Preview",
-      "text": "Extend Microsoft Defender for Endpoint protection to workloads running in WSL containers (WSLc). Gain visibility into WSL container activity through device inventory, alerts, incidents, device timeline, and Advanced Hunting, helping security teams investigate and respond to threats across both Windows and Linux workloads. Available in Public Preview. To enroll, complete the registration form .",
-      "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-plugin-wsl"
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
+      "history": []
      }
     ],
     "url": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint"
@@ -6907,9 +7352,11 @@
    "label": "News feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "12 relevant headlines from 4 feeds (failed: BleepingComputer)",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.microsoft.com/en-us/security/blog/",
+   "lastModified": "",
+   "detail": "13 relevant headlines from 5 feeds",
    "data": {
     "items": [
      {
@@ -7053,6 +7500,20 @@
       ]
      },
      {
+      "title": "Microsoft confirms Windows activation failures after November updates",
+      "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-confirms-windows-activation-failures-after-november-updates/",
+      "source": "BleepingComputer",
+      "published": "2026-11-13T09:36:18.000Z",
+      "summary": "Microsoft has confirmed that this month's Patch Tuesday security updates are causing Windows activation and licensing failures with 0x80041008 error codes. [...]",
+      "id": "https://www.bleepingcomputer.com/news/microsoft/microsoft-confirms-windows-activation-failures-after-november-updates",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
+     {
       "title": "New SignDrop Zero-Day Exploit Turns Windows CLFS Security Feature Into SYSTEM Access",
       "url": "https://thehackernews.com/2026/11/new-signdrop-zero-day-exploit-turns.html",
       "source": "The Hacker News",
@@ -7094,8 +7555,8 @@
      },
      {
       "source": "BleepingComputer",
-      "ok": false,
-      "error": "HTTP 403"
+      "ok": true,
+      "error": ""
      },
      {
       "source": "SecurityWeek",
@@ -7114,9 +7575,11 @@
    "label": "Reddit (via Arctic Shift)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "29 posts (failed: r/Intune)",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.reddit.com/r/DefenderATP/",
+   "lastModified": "",
+   "detail": "30 posts",
    "data": {
     "posts": [
      {
@@ -7126,6 +7589,22 @@
       "url": "https://www.reddit.com/r/DefenderATP/comments/1xvg3ti/post_outage_checks/",
       "published": "2026-11-13T18:46:05.000Z",
       "summary": ""
+     },
+     {
+      "id": "/r/Intune/comments/1xua63p/issues_with_microsoft_defender_endpoint_risk/",
+      "community": "r/Intune",
+      "title": "Issues with Microsoft Defender Endpoint Risk Level Setting in App Protection Policy",
+      "url": "https://www.reddit.com/r/Intune/comments/1xua63p/issues_with_microsoft_defender_endpoint_risk/",
+      "published": "2026-11-12T11:15:38.000Z",
+      "summary": "Hi everyone, I'm new to Microsoft Defender MTD deployment, and I'm currently working on my first implementation for a client. I've successfully deployed the solution to 6 test devices. However, after adding 16 new pilot users, they were all affected by the App Protection Policy t"
+     },
+     {
+      "id": "/r/Intune/comments/1xtisml/workplace_ninjas_us_2027_chuck_norris_golden/",
+      "community": "r/Intune",
+      "title": "Workplace Ninjas US 2027 | Chuck Norris Golden Clippy Award Nominees",
+      "url": "https://www.reddit.com/r/Intune/comments/1xtisml/workplace_ninjas_us_2027_chuck_norris_golden/",
+      "published": "2026-11-11T14:13:56.000Z",
+      "summary": "Happy Wednesday Everyone!! Now, we announce the final Golden Clippy nominees for the Chuck Norris Award. RIP Chuck Norris, you've served us well. Our 4 finalists are very special people that do amazing things. The Chuck Norris Award is for people who excel in multiple areas and m"
      },
      {
       "id": "/r/DefenderATP/comments/1xsi6i2/asr_rules_are_in_audit_mode_and_nobody_wants_to/",
@@ -7342,14 +7821,6 @@
       "url": "https://www.reddit.com/r/DefenderATP/comments/1xbjjqv/github_urls_being_flagged_as_malicious_by/",
       "published": "2026-10-21T10:30:44.000Z",
       "summary": "Hey, We've recently started testing Microsoft's AI agent security capabilities and noticed that many GitHub links returned by Copilot are being flagged as malicious. The URL reputation details consistently reference VenusTech as the source identifying these websites as malicious."
-     },
-     {
-      "id": "/r/DefenderATP/comments/1xbjhr8/github_repos_tagged_as_malicious_url_was_detected/",
-      "community": "r/DefenderATP",
-      "title": "GitHub repos tagged as \"Malicious URL was detected in AI agent activity (Preview)\" by VenusTech",
-      "url": "https://www.reddit.com/r/DefenderATP/comments/1xbjhr8/github_repos_tagged_as_malicious_url_was_detected/",
-      "published": "2026-10-21T10:27:39.000Z",
-      "summary": "Hey, Just activated agent365 and we are getting alerts on more or less every GitHub link Copilot sends, as being malicious URLs. Every alert has this: URL Description, Website has been identified as malicious by VenusTech Anyone else?"
      }
     ],
     "subs": [
@@ -7359,7 +7830,7 @@
      },
      {
       "sub": "Intune",
-      "ok": false
+      "ok": true
      },
      {
       "sub": "sysadmin",
@@ -7372,11 +7843,74 @@
    "label": "Qualys Patch Tuesday QIDs",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "19 QIDs for 2026-Nov",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://threatprotect.qualys.com/",
+   "lastModified": "",
+   "detail": "19 QIDs for 2026-Nov, 28 QIDs for 2026-Oct",
    "data": {
     "month": "2026-Nov",
+    "months": {
+     "2026-Nov": {
+      "url": "https://threatprotect.qualys.com/2026/11/11/microsoft-patch-tuesday-november-2026-security-update-review/",
+      "qids": [
+       "50153",
+       "92504",
+       "92505",
+       "92506",
+       "92507",
+       "92508",
+       "92509",
+       "92511",
+       "92512",
+       "92513",
+       "92514",
+       "92515",
+       "110541",
+       "110542",
+       "110543",
+       "389347",
+       "389348",
+       "389349",
+       "389350"
+      ],
+      "query": "vulnerabilities.vulnerability.qid:[50153, 92504, 92505, 92506, 92507, 92508, 92509, 92511, 92512, 92513, 92514, 92515, 110541, 110542, 110543, 389347, 389348, 389349, 389350]"
+     },
+     "2026-Oct": {
+      "url": "https://threatprotect.qualys.com/2026/10/14/microsoft-patch-tuesday-october-2026-security-update-review/",
+      "qids": [
+       "50152",
+       "92473",
+       "92474",
+       "92475",
+       "92476",
+       "92477",
+       "92478",
+       "92479",
+       "92480",
+       "92481",
+       "92482",
+       "92483",
+       "92484",
+       "92485",
+       "92486",
+       "92487",
+       "92488",
+       "92489",
+       "92490",
+       "92491",
+       "92492",
+       "92493",
+       "92494",
+       "92495",
+       "110538",
+       "110539",
+       "388977",
+       "388978"
+      ],
+      "query": "vulnerabilities.vulnerability.qid:[50152, 92473, 92474, 92475, 92476, 92477, 92478, 92479, 92480, 92481, 92482, 92483, 92484, 92485, 92486, 92487, 92488, 92489, 92490, 92491, 92492, 92493, 92494, 92495, 110538, 110539, 388977, 388978]"
+     }
+    },
     "url": "https://threatprotect.qualys.com/2026/11/11/microsoft-patch-tuesday-november-2026-security-update-review/",
     "qids": [
      "50153",
@@ -7406,9 +7940,11 @@
    "label": "Public hashes (TweetFeed + AlienVault OTX)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "1 Windows hashes, 0 analysed, 0 where another scanner names it and Defender does not",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://tweetfeed.live/",
+   "lastModified": "2026-11-16T04:45:03.000Z",
+   "detail": "1 Windows hashes kept, 0 analysed, 0 where another scanner names it and Defender does not",
    "data": {
     "rows": [
      {
@@ -7421,6 +7957,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
+      "checkedAt": "2026-11-16T05:20:40.937Z",
       "vt": "https://www.virustotal.com/gui/file/aeded16494d74590f5fce1fe58b6b0d0195d50dbe94e9c8cf75581c0f7703188",
       "otx": "https://otx.alienvault.com/indicator/file/aeded16494d74590f5fce1fe58b6b0d0195d50dbe94e9c8cf75581c0f7703188"
      }
@@ -7431,9 +7968,11 @@
    "label": "Microsoft 365 roadmap",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-16T04:59:05.736Z",
-   "lastOkAt": "2026-11-16T04:59:05.736Z",
-   "detail": "25 Defender or Intune items",
+   "checkedAt": "2026-11-16T05:20:39.056Z",
+   "lastOkAt": "2026-11-16T05:20:39.056Z",
+   "page": "https://www.microsoft.com/microsoft-365/roadmap",
+   "lastModified": "",
+   "detail": "23 items stored, 21 for Defender for Endpoint or Intune",
    "data": {
     "rows": [
      {
@@ -7443,7 +7982,8 @@
       "description": "The protected downloads feature for Intune MAM will now save downloaded files to the Documents > Microsoft Edge > Downloads folder in OneDrive.",
       "release": "July CY2026",
       "updated": "2026-07-07T23:01:01.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=561551"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=561551",
+      "core": false
      },
      {
       "id": "499154",
@@ -7452,7 +7992,8 @@
       "description": "Remotely access devices over the cloud without requiring end user involvement by signing in with credentials.",
       "release": "August CY2026",
       "updated": "2026-06-24T23:15:55.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=499154"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=499154",
+      "core": true
      },
      {
       "id": "557187",
@@ -7461,7 +8002,8 @@
       "description": "Edge for Business extends its capability to deliver Intune App Protection Policies via Intune MAM. Organizations are enabled to apply data loss prevention controls to Edge for Business profiles even on devices managed by another tenant. This capability enforces Intune MAM policies—such as clipboard boundaries, watermarking, and protected downloads—within the Edge work profile, ensuring sensitive d",
       "release": "April CY2026",
       "updated": "2026-04-27T23:15:13.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=557187"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=557187",
+      "core": false
      },
      {
       "id": "553222",
@@ -7470,7 +8012,8 @@
       "description": "This feature will enable users to use discovery script and json file to define compliance policy to specific organziational needs. The experience mirrors Windows and Linux custom compliance experience.",
       "release": "May CY2026",
       "updated": "2026-01-30T00:15:33.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=553222"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=553222",
+      "core": true
      },
      {
       "id": "536575",
@@ -7479,7 +8022,8 @@
       "description": "Admins can use assignment filters when targeting Apple DDM policies.",
       "release": "January CY2026",
       "updated": "2025-12-05T23:45:06.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=536575"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=536575",
+      "core": true
      },
      {
       "id": "501457",
@@ -7488,7 +8032,8 @@
       "description": "This feature adds the ability to manage the password used to access the macOS recovery partition. Configuring a recovery OS password prevents users from booting company-owned devices into recovery mode, reinstalling macOS, and bypassing remote management.",
       "release": "February CY2026",
       "updated": "2025-12-02T00:16:00.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501457"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501457",
+      "core": true
      },
      {
       "id": "501438",
@@ -7497,7 +8042,8 @@
       "description": "Windows Backup for Organizations will be generally available in Intune with controls for backing up and restoring backups in OOBE. Backup and restore experience of user settings, especially for enterprises transitioning to Windows 11.",
       "release": "December CY2025",
       "updated": "2025-10-24T22:00:49.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501438"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501438",
+      "core": true
      },
      {
       "id": "399933",
@@ -7506,7 +8052,8 @@
       "description": "This improvement expands the types of elevation actions in Windows that EPM can detect and control elevation for.",
       "release": "June CY2026",
       "updated": "2025-10-14T23:15:41.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=399933"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=399933",
+      "core": true
      },
      {
       "id": "399928",
@@ -7515,7 +8062,8 @@
       "description": "With this release, you can use Endpoint Privilege Management elevation rules and policy to more easily manage standard users on Azure Virtual Desktop.",
       "release": "January CY2026",
       "updated": "2025-10-14T23:15:41.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=399928"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=399928",
+      "core": true
      },
      {
       "id": "501450",
@@ -7524,7 +8072,8 @@
       "description": "Manage individual Windows quality updates including non-Security and out of band updates. Choose which update types to automatically approve and the rollout options for those approvals.",
       "release": "February CY2026",
       "updated": "2025-10-03T22:00:02.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501450"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501450",
+      "core": true
      },
      {
       "id": "501456",
@@ -7533,7 +8082,8 @@
       "description": "Adminless settings able to be configured in settings catalog and account protection template.",
       "release": "November CY2025",
       "updated": "2025-10-01T23:01:01.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501456"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501456",
+      "core": true
      },
      {
       "id": "498899",
@@ -7542,7 +8092,8 @@
       "description": "Expanded granular RBAC controls to manage Endpoint Security workloads. The ‘Security baselines’ permission previously included all security policies and now all security workloads have their own permission set",
       "release": "November CY2025",
       "updated": "2025-10-01T23:01:01.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=498899"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=498899",
+      "core": true
      },
      {
       "id": "499156",
@@ -7551,16 +8102,8 @@
       "description": "We're updating Endpoint Privilege Management to allow users who are not assigned as the primary user of a device to initiate support approval requests. Previously, these requests would fail, but with this change, they will be processed successfully.",
       "release": "November CY2025",
       "updated": "2025-10-01T23:01:01.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=499156"
-     },
-     {
-      "id": "501437",
-      "title": "Microsoft Intune: Windows Backup for organizations in Intune",
-      "status": "In development",
-      "description": "Windows Backup for Organizations will be generally available in Intune with controls for backing up and restoring backups in OOBE. Backup and restore experience of user settings, especially for enterprises transitioning to Windows 11.",
-      "release": "October CY2025",
-      "updated": "2025-09-10T23:15:44.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501437"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=499156",
+      "core": true
      },
      {
       "id": "499155",
@@ -7569,7 +8112,8 @@
       "description": "EPM will introduce a per-rule option to run elevated apps with the original user's identity context, preserving app data, save locations, and preferences. This offers a more personalized app runtime experience compared to the default virtual account.",
       "release": "October CY2025",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=499155"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=499155",
+      "core": true
      },
      {
       "id": "491027",
@@ -7578,7 +8122,8 @@
       "description": "The dashboard focuses EPM insights on rollout status as well as elevations in the environment and suggestions for new rules to create.",
       "release": "October CY2025",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=491027"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=491027",
+      "core": true
      },
      {
       "id": "406907",
@@ -7587,7 +8132,8 @@
       "description": "Enrollment time grouping for iOS/iPadOS automated device enrollment (ADE) ensures targeted apps and policies can get to devices faster and reduce latency of device setup. ETG will only be part of new iOS/iPadOS enrollment policies. Admins can add a static Entra ID group into the enrollment policy, so devices will be part of that group upon enrollment, reducing latency of targeted policies and apps",
       "release": "January CY2026",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=406907"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=406907",
+      "core": true
      },
      {
       "id": "469032",
@@ -7596,7 +8142,8 @@
       "description": "These enrollment policies for iOS/iPadOS contains enrollment time grouping, improved UI, and removes automatic deployment of the Company Portal app and deprecated settings.",
       "release": "January CY2026",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=469032"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=469032",
+      "core": true
      },
      {
       "id": "468887",
@@ -7605,7 +8152,8 @@
       "description": "Support for visionOS and tvOS through automated device enrollment for userless enrollment with Microsoft Intune Suite including Intune Plan 2",
       "release": "February CY2026",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=468887"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=468887",
+      "core": true
      },
      {
       "id": "389857",
@@ -7614,7 +8162,8 @@
       "description": "Intune is bringing ACME and managed device attestation support for eligible Apple devices to GA. This includes device enrollment and ADE enrollments, including AC2. This applies to new enrollments with device enrollment (BYOD) and new enrollments with ADE or Apple Configurator tool.",
       "release": "March CY2026",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=389857"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=389857",
+      "core": true
      },
      {
       "id": "378649",
@@ -7623,7 +8172,8 @@
       "description": "Physical Windows devices will be attested at enrollment that enrollment credentials are stored in the hardware of the device. Administrators can view device attestations in the new Device attestation status report and manually force attestation from that report.",
       "release": "March CY2026",
       "updated": "2025-09-09T23:15:14.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=378649"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=378649",
+      "core": true
      },
      {
       "id": "501559",
@@ -7632,16 +8182,8 @@
       "description": "Admins can use Windows Autopilot device preparation to provision their Windows 365 Frontline shared devices.",
       "release": "November CY2025",
       "updated": "2025-09-04T23:15:49.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501559"
-     },
-     {
-      "id": "501449",
-      "title": "Microsoft Intune: Windows Quality Update management policies",
-      "status": "In development",
-      "description": "Manage individual Windows quality updates including non-Security and out of band updates. Choose which update types to automatically approve and the rollout options for those approvals.",
-      "release": "February CY2026",
-      "updated": "2025-08-28T23:00:27.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501449"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=501559",
+      "core": true
      },
      {
       "id": "109560",
@@ -7650,7 +8192,8 @@
       "description": "Allows people to use a single device with multiple managed accounts to access company information through Teams iOS app, with Outlook to follow.",
       "release": "March CY2026",
       "updated": "2025-07-23T23:00:18.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=109560"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=109560",
+      "core": true
      },
      {
       "id": "124890",
@@ -7659,7 +8202,8 @@
       "description": "Remediations are script packages that can detect and fix common support issues on a user's device before they even realize there's a problem. These remediations can help reduce support calls. On demand remediations enables admins to execute a remediation on demand and as soon as possible on a single device.",
       "release": "December CY2025",
       "updated": "2025-06-11T23:00:02.000Z",
-      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=124890"
+      "url": "https://www.microsoft.com/microsoft-365/roadmap?id=124890",
+      "core": true
      }
     ],
     "url": "https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Defender%20for%20Endpoint,Microsoft%20Intune"
