@@ -31,6 +31,16 @@ await run("product updates", async () => {
   show("product updates section", pu >= 0 ? plain(html.slice(pu, pu + 4000)).slice(0, 2000) : "(none)");
   show("links", [...new Set([...html.matchAll(/href="([^"#]+)"/g)].map((m) => m[1]).filter((h) => /update|platform|release|version/i.test(h)))].slice(0, 40).join("\n"));
 });
+await run("definitionupdates info", async () => {
+  const html = await getText("https://definitionupdates.microsoft.com/packages?action=info");
+  show("info text", plain(html).slice(0, 3000));
+});
+await run("previous versions", async () => {
+  const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support");
+  show("prev headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 12).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
+  const at = html.search(/<h3[^>]*>/i);
+  show("prev first html", at >= 0 ? html.slice(at, at + 1500) : "(none)");
+});
 await run("mde whats new", async () => {
   const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint");
   show("mde headings", [...html.matchAll(/<h([23])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 15).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
