@@ -38,36 +38,34 @@ export function resolveDefinitionsClock(releasedRaw, zoneLabel, mpamLastModified
   if (/P[SD]?T/i.test(zoneLabel)) {
     return { zone: "America/Los_Angeles", releasedAt: parseUsClock(releasedRaw, "America/Los_Angeles").toISOString(), basis: "The page labels its clock Pacific time." };
   }
+  const utcAt = parseUsClock(releasedRaw, "UTC");
+  const pacAt = parseUsClock(releasedRaw, "America/Los_Angeles");
+  const slack = 5 * 60000;
+  // 1. A release cannot be in the future. Read as Pacific, the clock is 7 to 8 hours later than read as UTC,
+  //    so whenever the page is fetched within that window after a release, this settles it.
+  if (pacAt.getTime() > now.getTime() + slack && utcAt.getTime() <= now.getTime() + slack) {
+    return { zone: "UTC", releasedAt: utcAt.toISOString(), basis: "Verified this run: read as Pacific time the release would be in the future, so the page clock is UTC." };
+  }
+  // 2. The mpam-fe.exe Last-Modified header (GMT) for the same version, when it is close to one reading.
   const lm = mpamLastModified ? new Date(mpamLastModified) : null;
-  const candidates = ["UTC", "America/Los_Angeles"].map((zone) => {
-    const at = parseUsClock(releasedRaw, zone);
-    return { zone, at, gap: lm && !Number.isNaN(lm.getTime()) ? Math.abs(lm.getTime() - at.getTime()) : Infinity };
-  });
-  candidates.sort((a, b) => a.gap - b.gap);
-  const best = candidates[0];
-  if (best.gap <= 3 * 3600 * 1000) {
-    const mins = Math.round(best.gap / 60000);
-    return {
-      zone: best.zone,
-      releasedAt: best.at.toISOString(),
-      basis: `Verified: the page clock matches the mpam-fe.exe Last-Modified header (GMT) within ${mins} min when read as ${best.zone === "UTC" ? "UTC" : "Pacific time"}.`,
-    };
+  if (lm && !Number.isNaN(lm.getTime())) {
+    const gaps = [
+      { zone: "UTC", at: utcAt, gap: Math.abs(lm - utcAt) },
+      { zone: "America/Los_Angeles", at: pacAt, gap: Math.abs(lm - pacAt) },
+    ].sort((x, y) => x.gap - y.gap);
+    if (gaps[0].gap <= 60 * 60000 && gaps[1].gap > 3 * 3600000) {
+      return {
+        zone: gaps[0].zone,
+        releasedAt: gaps[0].at.toISOString(),
+        basis: `Verified this run: the clock matches the mpam-fe.exe Last-Modified header (GMT) within ${Math.round(gaps[0].gap / 60000)} min when read as ${gaps[0].zone === "UTC" ? "UTC" : "Pacific time"}.`,
+      };
+    }
   }
-  const utc = candidates.find((c) => c.zone === "UTC");
-  // A release cannot be in the future. If reading the clock as Pacific time would put it
-  // ahead of now while UTC does not, the clock is UTC.
-  const pac = candidates.find((c) => c.zone === "America/Los_Angeles");
-  if (pac.at.getTime() > now.getTime() + 5 * 60000 && utc.at.getTime() <= now.getTime() + 5 * 60000) {
-    return {
-      zone: "UTC",
-      releasedAt: utc.at.toISOString(),
-      basis: "Verified: read as Pacific time the release would be in the future, so the page clock is UTC.",
-    };
-  }
+  // 3. Not provable on this run. UTC was confirmed on 16 Nov 2026 (a 2:41 AM release seen at 3:45 AM UTC).
   return {
     zone: "UTC",
-    releasedAt: utc.at.toISOString(),
-    basis: "Unverified: assumed UTC, because the mpam-fe.exe download date did not line up with either UTC or Pacific time on this run.",
+    releasedAt: utcAt.toISOString(),
+    basis: "Read as UTC. Not provable on this run; UTC was last confirmed on 16 Nov 2026, when a 2:41 AM release was already listed at 3:45 AM UTC.",
   };
 }
 

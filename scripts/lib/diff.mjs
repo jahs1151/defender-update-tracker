@@ -4,7 +4,6 @@ const pick = (pulse) => {
   const s = pulse?.sections || {};
   const d = (k) => s[k]?.data || {};
   const packages = Array.isArray(s.packages?.data) ? s.packages.data : [];
-  const latestProduct = d("productUpdates").rows?.[0] || {};
   return {
     "Security intelligence": d("intelligence").securityIntelligence || "",
     Engine: d("intelligence").engine || "",
@@ -12,8 +11,6 @@ const pick = (pulse) => {
     "mpam-fe.exe": packages.find((p) => p.id === "mpam-fe")?.version || "",
     "updateplatform.exe": packages.find((p) => p.id === "updateplatform")?.version || "",
     "Offline image kit": packages.find((p) => p.id === "wim")?.version || "",
-    "Monthly platform release": latestProduct.platform || "",
-    "Monthly engine release": latestProduct.engine || "",
     "Sense build": d("sense").latest?.version || "",
     "Patch Tuesday month": d("patchTuesday").month || "",
     "Patch Tuesday Windows CVEs": String(d("patchTuesday").windowsTotal ?? ""),

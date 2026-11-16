@@ -17,24 +17,25 @@ test("definitions page versions", () => {
   assert.equal(P.parseDefinitions("<html>maintenance</html>"), null);
 });
 
-test("definitions clock is verified against mpam-fe Last-Modified", () => {
-  const utc = P.resolveDefinitionsClock("11/15/2026 9:05:12 PM", "", "Sun, 15 Nov 2026 21:20:00 GMT");
-  assert.equal(utc.zone, "UTC");
-  assert.equal(utc.releasedAt, "2026-11-15T21:05:12.000Z");
-  assert.match(utc.basis, /^Verified/);
-
-  const pacific = P.resolveDefinitionsClock("11/15/2026 9:05:12 PM", "", "Mon, 16 Nov 2026 05:15:00 GMT");
-  assert.equal(pacific.zone, "America/Los_Angeles");
-  assert.equal(pacific.releasedAt, "2026-11-16T05:05:12.000Z");
-
+test("definitions clock time zone is decided from evidence", () => {
   // Seen live on 16 Nov 2026 ~03:45 UTC: "2:41:33 AM" as Pacific would be 10:41 UTC, in the future.
   const future = P.resolveDefinitionsClock("11/16/2026 2:41:33 AM", "", "", new Date("2026-11-16T03:45:00Z"));
   assert.equal(future.zone, "UTC");
   assert.equal(future.releasedAt, "2026-11-16T02:41:33.000Z");
+  assert.match(future.basis, /^Verified/);
 
-  const unknown = P.resolveDefinitionsClock("11/15/2026 9:05:12 PM", "", "", new Date("2026-11-17T00:00:00Z"));
-  assert.equal(unknown.zone, "UTC");
-  assert.match(unknown.basis, /^Unverified/);
+  const byHeader = P.resolveDefinitionsClock("11/15/2026 9:05:12 PM", "", "Sun, 15 Nov 2026 21:20:00 GMT", new Date("2026-11-17T00:00:00Z"));
+  assert.equal(byHeader.zone, "UTC");
+  assert.match(byHeader.basis, /within 15 min/);
+
+  const pacific = P.resolveDefinitionsClock("11/15/2026 9:05:12 PM", "", "Mon, 16 Nov 2026 05:15:00 GMT", new Date("2026-11-17T00:00:00Z"));
+  assert.equal(pacific.zone, "America/Los_Angeles");
+  assert.equal(pacific.releasedAt, "2026-11-16T05:05:12.000Z");
+
+  // A header 3 hours off proves nothing.
+  const weak = P.resolveDefinitionsClock("11/16/2026 2:41:33 AM", "", "Sun, 15 Nov 2026 23:50:30 GMT", new Date("2026-11-17T00:00:00Z"));
+  assert.equal(weak.zone, "UTC");
+  assert.match(weak.basis, /^Read as UTC. Not provable/);
 
   assert.equal(P.resolveDefinitionsClock("11/15/2026 9:05:12 PM", "UTC", "").basis, "The page labels its clock UTC.");
 });

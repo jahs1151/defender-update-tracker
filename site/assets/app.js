@@ -260,6 +260,7 @@ function renderUpdates() {
         <div class="card"><div class="kpi-label">Defender or Intune CVEs</div><div class="kpi">${esc(pt.endpoint.length)}</div><div class="when">${pt.endpoint.length ? "Listed below" : "None this month"}</div></div>
       </div>
       <div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>Operating system</th><th>CVEs</th><th>Critical</th></tr></thead><tbody>${Object.entries(pt.perOs || {})
+        .sort(([a], [b]) => ALL_OS.indexOf(a) - ALL_OS.indexOf(b))
         .filter(([os]) => state.os === "all" || os === state.os)
         .map(([os, c]) => `<tr><td>${esc(OS[os] || os)}</td><td>${esc(c.total)}</td><td>${esc(c.critical)}</td></tr>`)
         .join("")}</tbody></table><p class="meta" style="margin-top:6px">Windows 11 counts 24H2 and 25H2 together. Counts include CVEs Microsoft added to the release after Patch Tuesday.</p></div>

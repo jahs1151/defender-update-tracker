@@ -25,7 +25,7 @@ The browser only reads `data/pulse.json`, so the first paint is never empty and 
 
 ### The definitions page clock
 
-Microsoft's security intelligence page prints its release time with no time zone (for example `11/15/2026 9:05:12 PM`). On every run the collector compares that clock with the `Last-Modified` header of `mpam-fe.exe` (always GMT) for the same version, and picks UTC or Pacific time accordingly. The result and the evidence are shown under the Security intelligence card.
+Microsoft's security intelligence page prints its release time with no time zone (for example `11/15/2026 9:05:12 PM`). It is UTC: on 16 Nov 2026 the page listed a `2:41:33 AM` release at 3:45 AM UTC, which would be in the future if it were Pacific time. The collector re-checks this on every run (the same "not in the future" test, plus the `Last-Modified` header of `mpam-fe.exe` when it is within an hour) and shows the evidence under the Security intelligence card.
 
 ## Files
 

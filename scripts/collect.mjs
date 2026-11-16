@@ -87,7 +87,8 @@ async function main() {
   const changed = !previous || contentKey(previous) !== contentKey(pulse);
   if (changed) {
     pulse.contentChangedAt = checkedAt;
-    pulse.changes = previous ? diffPulse(previous, pulse) : [];
+    // No diff against the seed snapshot: its gaps would all show up as "new".
+    pulse.changes = previous && !previous.seed ? diffPulse(previous, pulse) : [];
   }
 
   await writeFile(OUT, `${JSON.stringify(pulse, null, 1)}\n`);
