@@ -73,7 +73,12 @@ export async function loadPackages() {
   );
   const good = results.filter((r) => r.version);
   if (!good.length) return { ok: false, detail: results.map((r) => `${r.file}: ${r.error}`).join("; "), data: null };
-  return ok(`${good.length} of ${results.length} packages resolved${wimPage ? "" : " (offline image page not read)"}`, results);
+  const lists = results.filter((r) => r.contents?.length).length;
+  const wim = results.find((r) => r.id === "wim");
+  return ok(
+    `${good.length} of ${results.length} packages resolved · file lists for ${lists} · offline kit platform ${wim?.platform || "not found"}${wimPage ? "" : " (offline image page not read)"}`,
+    results,
+  );
 }
 
 const SUBREDDITS = [
