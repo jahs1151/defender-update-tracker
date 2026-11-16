@@ -38,6 +38,7 @@ Microsoft's security intelligence page prints its release time with no time zone
 | `site/data/link-report.json` | Written by the weekly link check; the page hides hand-kept entries whose link failed |
 | `scripts/collect.mjs` | Collector entry point (Node 20+, no npm packages) |
 | `scripts/lib/parsers.mjs` | Pure parsers, covered by `test/parsers.test.mjs` |
+| `scripts/inspect-sources.mjs` | Prints live page excerpts to the Actions log (workflow **Inspect sources**), for fixing a parser after Microsoft changes a page |
 | `scripts/check-links.mjs` | Checks every hand-kept URL, every curated CVE against MSRC, and that each OMA-URI name appears on its docs page |
 
 ## Run locally
