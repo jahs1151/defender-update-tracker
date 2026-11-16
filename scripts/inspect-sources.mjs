@@ -22,39 +22,35 @@ async function run(name, fn) {
   }
 }
 
-await run("product updates", async () => {
-  const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates");
-  show("product updates headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 25).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
-  const sup = html.search(/<h2[^>]*>[^<]*platform and engine support/i);
-  show("support section", sup >= 0 ? plain(html.slice(sup, sup + 5000)).slice(0, 2500) : "(none)");
-  const pu = html.search(/<h2[^>]*>\s*Product updates/i);
-  show("product updates section", pu >= 0 ? plain(html.slice(pu, pu + 4000)).slice(0, 2000) : "(none)");
-  show("links", [...new Set([...html.matchAll(/href="([^"#]+)"/g)].map((m) => m[1]).filter((h) => /update|platform|release|version/i.test(h)))].slice(0, 40).join("\n"));
+await run("sense catalog", async () => {
+  const html = await getText("https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292", { timeoutMs: 30000 });
+  show("sense rows", html.split(/<tr[\s>]/i).slice(1).map((r) => plain(r).replace(/\s+/g, " ").slice(0, 300)).filter((t) => /10\.8\d{3}/.test(t)).slice(0, 8).join("\n"));
 });
-await run("definitionupdates info", async () => {
-  const html = await getText("https://definitionupdates.microsoft.com/packages?action=info");
-  show("info text", plain(html).slice(0, 3000));
+await run("bleepingcomputer", async () => {
+  const res = await fetch("https://www.bleepingcomputer.com/feed/", { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", accept: "application/rss+xml,*/*" } });
+  show("bleeping", `${res.status} ${res.headers.get("content-type")} ${(await res.text()).slice(0, 300)}`);
 });
-await run("previous versions", async () => {
-  const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support");
-  show("prev headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 12).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
-  const at = html.search(/<h3[^>]*>/i);
-  show("prev first html", at >= 0 ? html.slice(at, at + 1500) : "(none)");
+await run("arctic intune", async () => {
+  const res = await fetch("https://arctic-shift.photon-reddit.com/api/posts/search?subreddit=Intune&limit=40&sort=desc");
+  show("arctic intune", `${res.status} ${(await res.text()).slice(0, 400)}`);
 });
-await run("mde whats new", async () => {
-  const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint");
-  show("mde headings", [...html.matchAll(/<h([23])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 15).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
-  const at = html.search(/<h2[^>]*>[^<]*20\d\d/i);
-  show("mde first month html", at >= 0 ? html.slice(at, at + 1500) : "(no month h2)");
+await run("intune in development", async () => {
+  const html = await getText("https://learn.microsoft.com/en-us/intune/whats-new/in-development");
+  show("in-dev headings", [...html.matchAll(/<h([23])[^>]*>([\s\S]*?)<\/h\1>/gi)].map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
+  show("scope tags", around(plain(html), /Scope tags support|Agentic identity/i, 2, 600));
 });
-await run("msrc", async () => {
-  const q = new URLSearchParams({ $filter: "releaseNumber eq '2026-Nov'", $top: "2", $count: "true" });
-  const j = await getJson(`https://api.msrc.microsoft.com/sug/v2.0/en-US/vulnerability?${q}`);
-  show("msrc vulnerability", JSON.stringify({ count: j["@odata.count"], next: j["@odata.nextLink"], keys: Object.keys(j.value?.[0] || {}), first: j.value?.[0] }, null, 1).slice(0, 2500));
-  const q2 = new URLSearchParams({ $filter: "releaseNumber eq '2026-Nov' and isMariner eq false", $top: "1", $count: "true" });
-  const j2 = await getJson(`https://api.msrc.microsoft.com/sug/v2.0/en-US/vulnerability?${q2}`);
-  show("msrc non-mariner", String(j2["@odata.count"]));
-  const q3 = new URLSearchParams({ $filter: "releaseNumber eq '2026-Nov' and severity eq 'Critical'", $top: "2", $count: "true" });
-  const j3 = await getJson(`https://api.msrc.microsoft.com/sug/v2.0/en-US/affectedProduct?${q3}`);
-  show("msrc affectedProduct critical", JSON.stringify({ count: j3["@odata.count"], first: j3.value?.[0] }, null, 1).slice(0, 1800));
+await run("intune weekly", async () => {
+  const html = await getText("https://learn.microsoft.com/en-us/intune/whats-new/");
+  show("weekly headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 40).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
+});
+await run("troubleshoot-sensor", async () => {
+  const res = await fetch("https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-sensor", { redirect: "manual" });
+  show("troubleshoot-sensor", `${res.status} ${res.headers.get("location") || ""}`);
+});
+await run("last-modified", async () => {
+  const urls = ["https://www.microsoft.com/en-us/wdsi/definitions", "https://learn.microsoft.com/en-us/intune/whats-new/", "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json", "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292", "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes"];
+  for (const u of urls) {
+    const res = await fetch(u, { method: "HEAD" }).catch((e) => ({ status: e.message, headers: new Map() }));
+    show(u, `${res.status} last-modified=${res.headers.get("last-modified")}`);
+  }
 });
