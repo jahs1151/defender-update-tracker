@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Defender Update Tracker</title>
+  <meta name="description" content="Microsoft Defender engine, platform, security intelligence and Sense versions, Patch Tuesday, known issues and Intune policy notes for Windows 11 and Windows Server 2019, 2022 and 2025. Public Microsoft sources only.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z' fill='%232563eb'/%3E%3Cpath d='m11 16 4 4 7-8' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script type="module" src="assets/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top">
+    <div class="wrap top-row">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true" width="28" height="28"><path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z" fill="var(--accent)"/><path d="m11 16 4 4 7-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <h1>Defender Update Tracker</h1>
+          <p class="sub">Windows 11 · Server 2019 · 2022 · 2025. Public Microsoft sources only. Never signs in to a tenant.</p>
+        </div>
+      </div>
+      <div class="asof" id="asof" role="status" aria-live="polite">Loading data…</div>
+    </div>
+    <div class="wrap bar">
+      <nav class="tabs" aria-label="Sections" id="tabs">
+        <a href="#status" data-tab="status">Status</a>
+        <a href="#updates" data-tab="updates">Updates</a>
+        <a href="#intune" data-tab="intune">Intune and policy</a>
+        <a href="#intel" data-tab="intel">Intel</a>
+      </nav>
+      <div class="chips" role="group" aria-label="Filter by operating system" id="os-chips">
+        <button type="button" data-os="all" aria-pressed="true">All</button>
+        <button type="button" data-os="win11" aria-pressed="false">Win 11</button>
+        <button type="button" data-os="srv2019" aria-pressed="false">Server 2019</button>
+        <button type="button" data-os="srv2022" aria-pressed="false">Server 2022</button>
+        <button type="button" data-os="srv2025" aria-pressed="false">Server 2025</button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap" tabindex="-1">
+    <noscript><p class="card">This page needs JavaScript to show the data. The raw data is at <a href="data/pulse.json">data/pulse.json</a>.</p></noscript>
+    <div id="view"></div>
+  </main>
+  <footer class="wrap foot">
+    <p>Times are shown in UTC, then US Central (CST or CDT). Data refreshes hourly, and every 15 minutes in Patch Tuesday week, by a scheduled GitHub Action. Not affiliated with Microsoft.</p>
+    <p><a href="data/pulse.json">Raw data</a> · <a id="repo-link" href="https://github.com/jahs1151/defender-update-tracker">Source on GitHub</a> · <a id="run-link" href="https://github.com/jahs1151/defender-update-tracker/actions/workflows/refresh-and-deploy.yml">Refresh runs</a></p>
+  </footer>
+</body>
+</html>

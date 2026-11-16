@@ -1,0 +1,53 @@
+{
+ "note": "Hand-maintained facts. Every URL here is checked weekly by scripts/check-links.mjs. Entries whose link fails are hidden by the page until fixed.",
+ "lastReviewed": "2026-11-16",
+ "senseFallback": {
+  "version": "10.8839.26080.2008",
+  "date": "2026-11-11",
+  "channel": "Current Channel (Broad)",
+  "source": "Carried over from the previous site. Replaced automatically once the Update Catalog lookup succeeds.",
+  "url": "https://www.catalog.update.microsoft.com/Search.aspx?q=10.8839.26080.2008"
+ },
+ "incidents": [
+  {
+   "id": "CVE-2026-33825",
+   "name": "BlueHammer: Microsoft Defender elevation of privilege",
+   "summary": "TOCTOU in Defender signature updates. Proof of concept published 2 Apr 2026, patched 14 Apr, added to the CISA catalog 22 Apr.",
+   "date": "2026-04-02",
+   "status": "Patched",
+   "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-33825"
+  },
+  {
+   "id": "CVE-2026-50656",
+   "name": "RoguePlanet: Microsoft Defender elevation of privilege",
+   "summary": "Race condition in mpengine.dll, disclosed 9 Jun 2026 and fixed in engine 1.1.26060.3008.",
+   "date": "2026-06-09",
+   "status": "Patched",
+   "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-50656"
+  },
+  {
+   "id": "CVE-2026-69414",
+   "name": "ShieldBreak: Microsoft Defender elevation of privilege",
+   "summary": "Public exploit released 11 Aug 2026 against the malware protection engine. Microsoft shipped a fix on 3 Sep.",
+   "date": "2026-08-11",
+   "status": "Patched",
+   "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-69414"
+  },
+  {
+   "id": "ShieldCrash",
+   "name": "ShieldCrash: Defender arbitrary file read (no CVE)",
+   "summary": "Reported 8 Sep 2026 as a bypass of the ShieldBreak fix. Microsoft has not assigned a separate CVE. Reported by news, not confirmed by Microsoft.",
+   "date": "2026-09-08",
+   "status": "Reported",
+   "url": "https://www.securityweek.com/new-shieldcrash-zero-day-exploit-targets-microsoft-defender/"
+  }
+ ],
+ "references": [
+  { "title": "Microsoft Defender Antivirus security intelligence and product updates", "url": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates" },
+  { "title": "Manage the gradual rollout process for Microsoft Defender updates", "url": "https://learn.microsoft.com/en-us/defender-endpoint/manage-gradual-rollout" },
+  { "title": "Defender CSP", "url": "https://learn.microsoft.com/en-us/windows/client-management/mdm/defender-csp" },
+  { "title": "Windows compliance settings in Intune", "url": "https://learn.microsoft.com/en-us/intune/intune-service/protect/compliance-policy-create-windows" },
+  { "title": "Device Health Attestation and Intune compliance", "url": "https://learn.microsoft.com/en-us/intune/intune-service/protect/compliance-policy-create-windows#device-health" },
+  { "title": "Sensor health and operating system reports", "url": "https://learn.microsoft.com/en-us/defender-endpoint/device-health-sensor-health-os" }
+ ]
+}

@@ -1,0 +1,165 @@
+{
+ "schema": 1,
+ "seed": true,
+ "checkedAt": "2026-11-15T21:05:00.000Z",
+ "contentChangedAt": "2026-11-15T21:05:00.000Z",
+ "changes": [],
+ "patch": {
+  "last": "2026-11-10",
+  "next": "2026-12-08",
+  "inWindow": true
+ },
+ "sections": {
+  "packages": {
+   "label": "Download packages (go.microsoft.com)",
+   "ok": true,
+   "stale": true,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "2026-11-15T21:05:00.000Z",
+   "detail": "Seed snapshot carried over from the previous site. Replaced on the first scheduled run.",
+   "data": [
+    {
+     "id": "mpam-fe",
+     "name": "Security intelligence package",
+     "file": "mpam-fe.exe",
+     "kb": "KB2267602",
+     "latestUrl": "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64",
+     "page": "https://www.microsoft.com/en-us/wdsi/definitions",
+     "version": "1.463.320.0",
+     "engine": "1.1.26100.4",
+     "lastModified": "",
+     "bytes": 0,
+     "downloadUrl": "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64",
+     "error": ""
+    },
+    {
+     "id": "updateplatform",
+     "name": "Antimalware platform package",
+     "file": "updateplatform.exe",
+     "kb": "KB4052623",
+     "latestUrl": "https://go.microsoft.com/fwlink/?LinkID=870379&arch=x64",
+     "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
+     "version": "4.18.26100.4",
+     "engine": "",
+     "lastModified": "",
+     "bytes": 0,
+     "downloadUrl": "https://go.microsoft.com/fwlink/?LinkID=870379&arch=x64",
+     "error": ""
+    },
+    {
+     "id": "wim",
+     "name": "Offline image (WIM/VHD) update kit",
+     "file": "defender-update-kit-x64.zip",
+     "kb": "",
+     "latestUrl": "https://go.microsoft.com/fwlink/?linkid=2144531",
+     "page": "https://support.microsoft.com/en-us/servicing/management-tools/microsoft-defender/update/microsoft-defender-update-for-windows-operating-system-installation-images",
+     "version": "1.463.217.0",
+     "engine": "",
+     "lastModified": "2026-11-10T03:07:38.000Z",
+     "bytes": 0,
+     "downloadUrl": "https://go.microsoft.com/fwlink/?linkid=2144531",
+     "error": ""
+    }
+   ]
+  },
+  "intelligence": {
+   "label": "Security intelligence page",
+   "ok": true,
+   "stale": true,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "2026-11-15T21:05:00.000Z",
+   "detail": "Seed snapshot carried over from the previous site. ",
+   "data": {
+    "securityIntelligence": "1.463.320.0",
+    "engine": "1.1.26100.4",
+    "platform": "4.18.26100.4",
+    "releasedAt": "",
+    "releasedRaw": "",
+    "clockZone": "",
+    "clockBasis": "Not checked yet.",
+    "url": "https://www.microsoft.com/en-us/wdsi/definitions"
+   }
+  },
+  "sense": {
+   "label": "Sense (EDR sensor) build, Update Catalog",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet.",
+   "data": null
+  },
+  "productUpdates": {
+   "label": "productUpdates",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "changelog": {
+   "label": "changelog",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "patchTuesday": {
+   "label": "patchTuesday",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "kev": {
+   "label": "kev",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "knownIssues": {
+   "label": "knownIssues",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "intune": {
+   "label": "intune",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "mde": {
+   "label": "mde",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  },
+  "news": {
+   "label": "news",
+   "ok": false,
+   "stale": false,
+   "checkedAt": "2026-11-15T21:05:00.000Z",
+   "lastOkAt": "",
+   "detail": "Not checked yet. The first scheduled run fills this in.",
+   "data": null
+  }
+ }
+}
