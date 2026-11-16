@@ -92,12 +92,17 @@ export async function loadCommunity() {
   for (const { sub, filter } of SUBREDDITS) {
     try {
       const q = new URLSearchParams({ subreddit: sub, limit: "40", sort: "desc" });
-      const json = await getJson(`https://arctic-shift.photon-reddit.com/api/posts/search?${q}`, { timeoutMs: 15000 });
+      const url = `https://arctic-shift.photon-reddit.com/api/posts/search?${q}`;
+      // Arctic Shift rate-limits bursts: one slow retry before giving up on a subreddit.
+      const json = await getJson(url, { timeoutMs: 20000, retries: 1 }).catch(async () => {
+        await new Promise((r) => setTimeout(r, 6000));
+        return getJson(url, { timeoutMs: 25000, retries: 1 });
+      });
       packs.push({ sub, ok: true, posts: P.parseRedditPosts(json, sub, filter) });
     } catch (error) {
       packs.push({ sub, ok: false, posts: [], error: errorText(error) });
     }
-    await new Promise((r) => setTimeout(r, 900));
+    await new Promise((r) => setTimeout(r, 2500));
   }
   if (!packs.some((p) => p.ok)) return { ok: false, detail: packs.map((p) => `r/${p.sub}: ${p.error}`).join("; "), data: null };
   const posts = packs.flatMap((p) => p.posts).sort((a, b) => (b.published || "").localeCompare(a.published || "")).slice(0, 30);
@@ -221,8 +226,11 @@ export async function loadPatchTuesday(now = new Date()) {
 
 export async function loadKev() {
   try {
-    const rows = P.filterKev(await getJson(URLS.kev, { timeoutMs: 30000 }));
-    return ok(`${rows.length} Microsoft Windows or endpoint entries in 12 months`, { rows: rows.slice(0, 60), url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog" });
+    const json = await getJson(URLS.kev, { timeoutMs: 30000 });
+    const rows = P.filterKev(json);
+    // Every Microsoft CVE in the catalog, so hand-kept incidents can say whether CISA lists them.
+    const microsoftCves = (json.vulnerabilities || []).filter((v) => /microsoft/i.test(v.vendorProject)).map((v) => v.cveID);
+    return ok(`${rows.length} Microsoft Windows or endpoint entries in 12 months`, { rows: rows.slice(0, 60), microsoftCves, url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog" });
   } catch (error) {
     return fail(error);
   }
@@ -285,7 +293,8 @@ export async function loadIntune() {
         .catch(() => null),
     ]);
     if (!whatsNew.length) throw new Error("No weekly headings found");
-    return ok(`${whatsNew.length} weeks, ${whatsNew.reduce((n, w) => n + w.items.length, 0)} Windows or security items`, {
+    const filled = whatsNew.filter((w) => w.items.length);
+    return ok(`${filled.length} weeks with ${filled.reduce((n, w) => n + w.items.length, 0)} Windows or security items · ${inDev ? inDev.length : "no"} in-development items`, {
       weeks: whatsNew,
       inDevelopment: inDev || [],
       inDevelopmentOk: Boolean(inDev),
@@ -299,7 +308,13 @@ export async function loadIntune() {
 
 export async function loadMdeWhatsNew() {
   try {
-    const items = P.parseMdeWhatsNew(await getText(URLS.mdeWhatsNew), URLS.mdeWhatsNew);
+    // A feature listed twice (preview, then GA) is shown once with both stages.
+    const items = [];
+    for (const item of P.parseMdeWhatsNew(await getText(URLS.mdeWhatsNew), URLS.mdeWhatsNew)) {
+      const same = items.find((i) => i.name.toLowerCase() === item.name.toLowerCase());
+      if (!same) items.push({ ...item, history: [] });
+      else same.history.push({ stage: item.stage, when: item.when });
+    }
     if (!items.length) throw new Error("No monthly items found");
     return ok(`${items.length} Windows items`, { items, url: URLS.mdeWhatsNew });
   } catch (error) {
@@ -319,7 +334,11 @@ export async function loadNews() {
   const packs = await Promise.all(
     FEEDS.map(async (f) => {
       try {
-        return { source: f.source, ok: true, items: P.parseFeed(await getText(f.url), f.source, f.limit || 30) };
+        // RSS accept header: some feeds behind Cloudflare refuse a browser-style HTML accept from cloud runners.
+        const text = await getText(f.url, { accept: "application/rss+xml,application/xml;q=0.9,*/*;q=0.8", timeoutMs: 25000 });
+        const items = P.parseFeed(text, f.source, f.limit || 30);
+        if (!items.length) throw new Error("Feed returned no items");
+        return { source: f.source, ok: true, items };
       } catch (error) {
         return { source: f.source, ok: false, items: [], error: errorText(error) };
       }
@@ -337,7 +356,7 @@ export async function loadNews() {
   }
   items.sort((a, b) => (b.published || "").localeCompare(a.published || ""));
   const failed = packs.filter((p) => !p.ok).map((p) => p.source);
-  return ok(`${items.length} relevant headlines from ${packs.length - failed.length} feeds${failed.length ? ` (failed: ${failed.join(", ")})` : ""}`, {
+  return ok(`${items.length} relevant headlines from ${packs.length - failed.length} feeds${failed.length ? ` (failed: ${packs.filter((p) => !p.ok).map((p) => `${p.source}: ${p.error}`).join(", ")})` : ""}`, {
     items: items.slice(0, 40),
     feeds: packs.map(({ source, ok: feedOk, error }) => ({ source, ok: feedOk, error: error || "" })),
   });
@@ -347,13 +366,41 @@ export async function loadSense() {
   try {
     const rows = P.parseSenseCatalog(await getText(URLS.senseCatalog, { timeoutMs: 30000 }));
     if (!rows.length) throw new Error("No Sense build found in the Update Catalog");
-    return ok(`Latest ${rows[0].version}`, { latest: rows[0], url: URLS.senseCatalog });
+    // The catalog lists one row per OS family, each with its own "last updated" date (no time).
+    const builds = rows
+      .filter((r) => r.version === rows[0].version)
+      .map((r) => ({ date: r.date, channel: r.channel, os: /Windows Server 2019\+/i.test(r.title) ? "Windows Server 2019 and later" : /Windows 10\/11/i.test(r.title) ? "Windows 10 and 11" : /Windows 7/i.test(r.title) ? "Windows 7 / Server 2008 R2" : "Other" }));
+    return ok(`Latest ${rows[0].version} · ${rows[0].channel || "channel not stated"}`, { latest: { ...rows[0], title: rows[0].title.replace(/^[^>]*>\s*/, "") }, builds, url: URLS.senseCatalog });
   } catch (error) {
     return fail(error);
   }
 }
 
-export async function loadQualys(month) {
+/** Qualys QIDs for this month and the month before, merged with months already stored. */
+export async function loadQualys(month, previous) {
+  const months = { ...(previous?.months || {}) };
+  if (previous?.month && previous?.qids && !months[previous.month]) months[previous.month] = { url: previous.url, qids: previous.qids, query: previous.query };
+  const prevMonth = (() => {
+    const d = new Date(`${month.slice(5)} 1, ${month.slice(0, 4)} UTC`);
+    if (Number.isNaN(d.getTime())) return "";
+    d.setUTCMonth(d.getUTCMonth() - 1);
+    return `${d.getUTCFullYear()}-${d.toLocaleString("en-US", { month: "short", timeZone: "UTC" })}`;
+  })();
+  const errors = [];
+  for (const m of [month, prevMonth].filter(Boolean)) {
+    if (m !== month && months[m]) continue;
+    const r = await loadQualysMonth(m);
+    if (r.ok) months[m] = r.data;
+    else errors.push(`${m}: ${r.detail}`);
+  }
+  const order = Object.keys(months).sort((a, b) => Date.parse(`${b.slice(5)} 1, ${b.slice(0, 4)}`) - Date.parse(`${a.slice(5)} 1, ${a.slice(0, 4)}`)).slice(0, 6);
+  if (!order.length) return { ok: false, detail: errors.join("; ") || "No Qualys review found", data: null };
+  const kept = Object.fromEntries(order.map((m) => [m, months[m]]));
+  const latest = kept[month] ? month : order[0];
+  return ok(`${order.map((m) => `${kept[m].qids.length} QIDs for ${m}`).join(", ")}${errors.length ? ` (not yet: ${errors.join("; ")})` : ""}`, { month: latest, months: kept, ...kept[latest] });
+}
+
+async function loadQualysMonth(month) {
   try {
     const links = {};
     for (let page = 1; page <= 4; page += 1) {
@@ -365,13 +412,13 @@ export async function loadQualys(month) {
     if (!url) throw new Error(`No Qualys Patch Tuesday review for ${month} yet`);
     const qids = P.parseQualysQids(await getText(url, { timeoutMs: 20000 }));
     if (!qids.length) throw new Error("Review found but no QIDs listed");
-    return ok(`${qids.length} QIDs for ${month}`, { month, url, qids, query: `vulnerabilities.vulnerability.qid:[${qids.join(", ")}]` });
+    return ok(`${qids.length} QIDs for ${month}`, { url, qids, query: `vulnerabilities.vulnerability.qid:[${qids.join(", ")}]` });
   } catch (error) {
     return fail(error);
   }
 }
 
-export async function loadPublicHashes() {
+export async function loadPublicHashes(previous) {
   try {
     const rows = await getJson("https://api.tweetfeed.live/v1/today/sha256", { timeoutMs: 20000 });
     const picked = [];
@@ -383,15 +430,22 @@ export async function loadPublicHashes() {
       picked.push({ hash, reportedAt: r.date ? toIso(`${String(r.date).replace(" ", "T")}Z`) : "", reporter: r.user || "", tags: (r.tags || []).join(" "), tweet: r.tweet || "" });
       if (picked.length >= 10) break;
     }
+    // Re-check earlier hashes that had no analysis yet, then add today's new ones. Keep the latest 20.
+    const earlier = (previous?.rows || []).filter((r) => !seen.has(r.hash));
+    const queue = [...picked, ...earlier.filter((r) => !r.analysed).slice(0, 6)];
     const out = [];
-    for (const item of picked) {
+    for (const item of queue) {
       const res = await getJson(`https://otx.alienvault.com/api/v1/indicators/file/${item.hash}/analysis`, { timeoutMs: 15000, retries: 0 }).catch(() => null);
       const a = res ? P.parseOtxAnalysis(item.hash, res) : { hash: item.hash, analysed: false, fileType: "", defender: "", other: "" };
       if (a.fileType && !/pe32|pe64|windows|win32|dll|executable|ms-dos/i.test(a.fileType)) continue;
-      out.push({ ...item, ...a, vt: `https://www.virustotal.com/gui/file/${item.hash}`, otx: `https://otx.alienvault.com/indicator/file/${item.hash}` });
+      out.push({ ...item, ...a, checkedAt: new Date().toISOString(), vt: `https://www.virustotal.com/gui/file/${item.hash}`, otx: `https://otx.alienvault.com/indicator/file/${item.hash}` });
     }
+    const done = new Set(out.map((r) => r.hash));
+    out.push(...earlier.filter((r) => !done.has(r.hash)));
+    out.sort((a, b) => (b.reportedAt || "").localeCompare(a.reportedAt || ""));
+    out.splice(20);
     const gaps = out.filter((r) => r.other && !r.defender).length;
-    return ok(`${out.length} Windows hashes, ${out.filter((r) => r.analysed).length} analysed, ${gaps} where another scanner names it and Defender does not`, { rows: out });
+    return ok(`${out.length} Windows hashes kept, ${out.filter((r) => r.analysed).length} analysed, ${gaps} where another scanner names it and Defender does not`, { rows: out });
   } catch (error) {
     return fail(error);
   }
@@ -402,8 +456,18 @@ export async function loadRoadmap() {
     const res = await getText("https://www.microsoft.com/releasecommunications/api/v1/m365", { timeoutMs: 25000, accept: "application/json" });
     const t = res.trim();
     if (!t.startsWith("{") && !t.startsWith("[")) throw new Error("The roadmap API did not return JSON on this run");
-    const rows = P.filterRoadmap(JSON.parse(t)).sort((a, b) => (b.updated || "").localeCompare(a.updated || "")).slice(0, 30);
-    return ok(`${rows.length} Defender or Intune items`, { rows, url: "https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Defender%20for%20Endpoint,Microsoft%20Intune" });
+    const seen = new Set();
+    const rows = P.filterRoadmap(JSON.parse(t))
+      .sort((a, b) => (b.updated || "").localeCompare(a.updated || ""))
+      .filter((r) => {
+        const key = r.title.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((r) => ({ ...r, core: /^Microsoft (Intune|Defender for Endpoint)\b/i.test(r.title) }))
+      .slice(0, 40);
+    return ok(`${rows.length} items stored, ${rows.filter((r) => r.core).length} for Defender for Endpoint or Intune`, { rows, url: "https://www.microsoft.com/microsoft-365/roadmap?filters=Microsoft%20Defender%20for%20Endpoint,Microsoft%20Intune" });
   } catch (error) {
     return fail(error);
   }

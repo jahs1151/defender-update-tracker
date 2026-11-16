@@ -7,6 +7,7 @@ import { readFile, writeFile, appendFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import * as S from "./lib/sources.mjs";
+import { lastModifiedSeen } from "./lib/http.mjs";
 import { parseUsClock, patchWindow } from "../site/assets/time.js";
 import { diffPulse, contentKey } from "./lib/diff.mjs";
 
@@ -39,6 +40,32 @@ const LABELS = {
   roadmap: "Microsoft 365 roadmap",
 };
 
+// The page a reader can open for each source, and the URL whose Last-Modified header is shown.
+const PAGES = {
+  packages: [S.URLS.productUpdates, S.URLS.wimPage],
+  intelligence: [S.URLS.definitions, S.URLS.definitions],
+  productUpdates: [S.URLS.monthlyReleases, S.URLS.monthlyReleases],
+  changelog: [S.URLS.changelog, S.URLS.changelog],
+  sense: [S.URLS.senseCatalog, S.URLS.senseCatalog],
+  patchTuesday: ["https://msrc.microsoft.com/update-guide", ""],
+  kev: ["https://www.cisa.gov/known-exploited-vulnerabilities-catalog", S.URLS.kev],
+  knownIssues: ["https://learn.microsoft.com/en-us/windows/release-health/", "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2"],
+  intune: [S.URLS.intuneWhatsNew, S.URLS.intuneWhatsNew],
+  mde: [S.URLS.mdeWhatsNew, S.URLS.mdeWhatsNew],
+  news: ["https://www.microsoft.com/en-us/security/blog/", "https://www.microsoft.com/en-us/security/blog/feed/"],
+  community: ["https://www.reddit.com/r/DefenderATP/", ""],
+  qualys: ["https://threatprotect.qualys.com/", ""],
+  hashes: ["https://tweetfeed.live/", "https://api.tweetfeed.live/v1/today/sha256"],
+  roadmap: ["https://www.microsoft.com/microsoft-365/roadmap", "https://www.microsoft.com/releasecommunications/api/v1/m365"],
+};
+
+function pageInfo(key) {
+  const [page, fetched] = PAGES[key] || ["", ""];
+  const raw = fetched ? lastModifiedSeen.get(fetched) : "";
+  const at = raw ? new Date(raw) : null;
+  return { page, lastModified: at && !Number.isNaN(at.getTime()) ? at.toISOString() : "" };
+}
+
 async function main() {
   const started = Date.now();
   const now = new Date();
@@ -58,10 +85,10 @@ async function main() {
     S.loadMdeWhatsNew(),
     S.loadNews(),
     S.loadCommunity(),
-    S.loadPublicHashes(),
+    S.loadPublicHashes(previous?.sections?.hashes?.data),
     S.loadRoadmap(),
   ]);
-  const qualys = await S.loadQualys(patchTuesday.data?.month || previous?.sections?.patchTuesday?.data?.month || "");
+  const qualys = await S.loadQualys(patchTuesday.data?.month || previous?.sections?.patchTuesday?.data?.month || "", previous?.sections?.qualys?.data);
 
   // The changelog uses the same unlabeled clock as the definitions page.
   if (changelog.ok) {
@@ -79,11 +106,11 @@ async function main() {
   for (const [key, result] of Object.entries(fresh)) {
     const prev = previous?.sections?.[key];
     if (result.ok) {
-      sections[key] = { label: LABELS[key], ok: true, stale: false, checkedAt, lastOkAt: checkedAt, detail: result.detail, data: result.data };
+      sections[key] = { label: LABELS[key], ok: true, stale: false, checkedAt, lastOkAt: checkedAt, ...pageInfo(key), detail: result.detail, data: result.data };
     } else if (prev?.data) {
-      sections[key] = { ...prev, label: LABELS[key], ok: false, stale: true, checkedAt, detail: `${result.detail}. Showing data from the last good check.` };
+      sections[key] = { ...prev, label: LABELS[key], ok: false, stale: true, checkedAt, page: pageInfo(key).page, detail: `${result.detail}. Showing data from the last good check.` };
     } else {
-      sections[key] = { label: LABELS[key], ok: false, stale: false, checkedAt, lastOkAt: "", detail: result.detail, data: null };
+      sections[key] = { label: LABELS[key], ok: false, stale: false, checkedAt, lastOkAt: "", page: pageInfo(key).page, lastModified: "", detail: result.detail, data: null };
     }
   }
 

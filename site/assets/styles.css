@@ -133,3 +133,20 @@ details > summary { cursor: pointer; color: var(--accent); font-size: 13.5px; }
   .kpi { font-size: 18px; }
   .section { scroll-margin-top: 190px; }
 }
+
+/* round 2 */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.top-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.intro { margin: 14px 0 10px; color: var(--muted); max-width: 70em; }
+.search { margin: 0 0 6px; }
+.search input, .field input[type="search"] { width: 100%; font: inherit; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); }
+#search-out .card { margin-bottom: 12px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.seg button { font: inherit; font-size: 13px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--fg); cursor: pointer; }
+.seg button[aria-selected="true"], .seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--card); font-weight: 600; }
+.clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: var(--accent); cursor: pointer; text-decoration: underline; }
+.invalid { color: var(--bad); font-weight: 600; }
+.delta { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 10px 0; background: var(--bg); }
+.legend { display: grid; gap: 4px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.loading-row { opacity: .55; }

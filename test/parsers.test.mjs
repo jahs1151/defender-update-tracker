@@ -215,3 +215,24 @@ test("changelog lists older versions from links and options", () => {
   const html = `<a href="?versionid=1.463.300.0">x</a><option>1.463.299.0</option><option> 1.463.300.0 </option>`;
   assert.deepEqual(P.parseChangelog(html).versions, ["1.463.300.0", "1.463.299.0"]);
 });
+
+test("intune weekly merges a week split into two headings", () => {
+  const html = `<h2>Week of October 26, 2026 (Service release 2610)</h2><h4 id="a">Windows thing</h4><p>For Windows devices.</p>
+    <h2>Week of October 26, 2026</h2><h4 id="b">Defender setting</h4><p>Defender change.</p><h2>Week of October 19, 2026</h2><h4 id="c">macOS only</h4><p>macOS.</p>`;
+  const weeks = P.parseIntuneWhatsNew(html, "https://x/");
+  assert.deepEqual(weeks.map((w) => [w.week, w.items.length]), [["Week of October 26, 2026 (Service release 2610)", 2], ["Week of October 19, 2026", 0]]);
+});
+
+test("intune in development keeps EPM and agent items", () => {
+  const html = `<h3>Scope tags support for Endpoint Privilege Management reports</h3><p>EPM reports respect scope.</p>
+    <h3>Agentic identity for the Policy Configuration Agent (public preview)</h3><p>The agent uses an agentic identity.</p>
+    <h3>Disable MAC address randomization on macOS Wi-Fi profiles</h3><p>macOS only.</p>`;
+  assert.deepEqual(P.parseIntuneInDevelopment(html, "https://x/").map((i) => i.name), ["Scope tags support for Endpoint Privilege Management reports", "Agentic identity for the Policy Configuration Agent (public preview)"]);
+});
+
+test("sense catalog reads the ring and puts the earliest row of the newest build first", () => {
+  const row = (os, v, d) => `<tr><td>${os} - Update for Microsoft Defender for Endpoint - KB5005292 (Version ${v}) - Current Channel (Broad)</td><td>${d}</td></tr>`;
+  const rows = P.parseSenseCatalog(row("Windows Server 2019+", "10.8839.26080.2008", "11/15/2026") + row("Windows 10/11", "10.8839.26080.2008", "11/8/2026") + row("x", "10.8837.26060.14017", "9/16/2026"));
+  assert.equal(rows[0].date, "2026-11-08");
+  assert.equal(rows[0].channel, "Current Channel (Broad)");
+});

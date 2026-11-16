@@ -153,3 +153,10 @@ export function monthsBetween(a, b) {
   const y = versionMonth(b);
   return x == null || y == null ? null : x - y;
 }
+
+/** "October 2026" from a Defender version's month code, or "". */
+export function versionMonthLabel(version) {
+  const m = versionMonth(version);
+  if (m == null) return "";
+  return new Date(Date.UTC(2000 + Math.floor(m / 12), m % 12, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+}

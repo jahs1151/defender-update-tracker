@@ -20,7 +20,10 @@
           <p class="sub">Windows 11 · Server 2019 · 2022 · 2025. Public Microsoft sources only. Never signs in to a tenant.</p>
         </div>
       </div>
-      <div class="asof" id="asof" role="status" aria-live="polite">Loading data…</div>
+      <div class="top-tools">
+        <div class="asof" id="asof" role="status" aria-live="polite">Loading data…</div>
+        <button type="button" class="btn small" id="refresh-btn" title="Fetch the latest published data file">Refresh data</button>
+      </div>
     </div>
     <div class="wrap bar">
       <nav class="tabs" aria-label="Sections" id="tabs">
@@ -39,6 +42,12 @@
     </div>
   </header>
   <main id="main" class="wrap" tabindex="-1">
+    <p class="intro" id="intro">This page tracks Microsoft Defender Antivirus and Defender for Endpoint on Windows 11 and Windows Server 2019, 2022 and 2025: the current security intelligence, engine, platform and sensor versions, Patch Tuesday and exploited vulnerabilities, Windows known issues, Intune changes, and security news. It is for the people who run Defender and Intune for an organisation. It reads only public Microsoft and security pages, refreshed by a scheduled job. It cannot see your devices, your tenant or your policies.</p>
+    <form class="search" id="search-form" role="search" autocomplete="off">
+      <label for="search-q" class="sr-only">Search</label>
+      <input type="search" id="search-q" placeholder="Search CVE, KB, QID, feature or news" spellcheck="false">
+    </form>
+    <div id="search-out" aria-live="polite"></div>
     <noscript><p class="card">This page needs JavaScript to show the data. The raw data is at <a href="data/pulse.json">data/pulse.json</a>.</p></noscript>
     <div id="view"></div>
   </main>

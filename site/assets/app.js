@@ -1,4 +1,4 @@
-import { stamp, ago, cmpVersion, monthsBetween } from "./time.js";
+import { stamp, ago, cmpVersion, monthsBetween, versionMonthLabel } from "./time.js";
 
 const OS = { win11: "Win 11", srv2019: "Server 2019", srv2022: "Server 2022", srv2025: "Server 2025" };
 const ALL_OS = Object.keys(OS);
@@ -20,6 +20,15 @@ const sec = (key) => state.pulse?.sections?.[key] || null;
 const CHATTER =
   /false[-\s]?positive|faulty (signature|update|detection|intelligence)|bad (signature|definition|update)|mass (detection|alert|quarantine)|detection storm|signature (revision|rollback)|reverted (signature|update)|security intelligence.{0,48}(issue|problem|false|revision)|SenseIR|MsSense|sense\.exe|impaired communication|no sensor data|sensor health|quarantin\w+ (legit|good|our|everything)/i;
 const CONTROLS = /\busb\b|removable|device control|firewall|attack surface|\basr\b|bitlocker/i;
+const OOB_RE = /out-of-band|emergency (update|patch|fix)|zero-day|0-day|actively exploited/i;
+/** News stories whose one home is the Out-of-band and zero-day section. */
+function oobStories() {
+  const since = state.pulse?.patch?.last || "";
+  return (data("news")?.items || []).filter((n) => OOB_RE.test(n.title) && (!since || (n.published || "") >= since.slice(0, 10)));
+}
+const slugId = (u) => String(u || "").replace(/^https?:\/\/[^/]+\//, "").replace(/[^a-z0-9]+/gi, "-").slice(0, 60);
+// learn.microsoft.com/.../troubleshoot-sensor returns 404 (checked 16 Nov 2026); these are the live sensor troubleshooting pages.
+const SENSOR_TROUBLESHOOT = { url: "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-onboarding", title: "Sensor troubleshooting: onboarding issues" };
 const daysOld = (iso) => (iso ? (Date.now() - Date.parse(iso)) / 86400000 : Infinity);
 const size = (b) => (!b ? "" : b >= 1048576 ? `${(b / 1048576).toFixed(b >= 10485760 ? 0 : 1)} MB` : `${Math.round(b / 1024)} KB`);
 const data = (key) => sec(key)?.data || null;
@@ -123,11 +132,26 @@ function versionCard(label, value, when, sourceUrl, extra = "") {
 }
 
 function senseInfo() {
-  const live = data("sense")?.latest;
-  if (live) return { version: live.version, when: live.date ? stamp(live.date) : "", note: "From the Microsoft Update Catalog (KB5005292).", url: data("sense").url };
+  const sd = data("sense");
+  const live = sd?.latest;
+  if (live) {
+    const builds = sd.builds?.length ? sd.builds : [{ os: "", date: live.date, channel: live.channel }];
+    const channel = live.channel || builds.find((b) => b.channel)?.channel || "";
+    const when = builds.map((b) => `${b.os ? `${b.os}: ` : ""}${b.date ? stamp(b.date) : "date not published"}`).join(" · ");
+    return { version: live.version, when, channel, note: "Microsoft Update Catalog (KB5005292). The catalog publishes a date per OS family, not a time.", url: sd.url };
+  }
   const f = state.curated?.senseFallback;
-  if (f) return { version: f.version, when: `${stamp(f.date)} · ${f.channel}`, note: f.source, url: f.url };
-  return { version: "", when: "", note: "", url: "" };
+  if (f) return { version: f.version, when: stamp(f.date), channel: f.channel, note: f.source, url: f.url };
+  return { version: "", when: "", channel: "", note: "", url: "" };
+}
+
+/** One release time for the current security intelligence: the changelog's, when it lists the same build. */
+function siRelease() {
+  const intel = data("intelligence");
+  const cl = data("changelog");
+  if (cl?.releasedAt && cl.version === intel?.securityIntelligence) return { at: cl.releasedAt, basis: "changelog" };
+  if (intel?.releasedAt) return { at: intel.releasedAt, basis: "definitions" };
+  return { at: "", basis: "" };
 }
 
 function renderChanges() {
@@ -160,20 +184,31 @@ function renderStatus() {
   const platRelease = releases.find((r) => r.platform === intel?.platform);
   const engRelease = releases.find((r) => r.engine === intel?.engine);
 
-  const siWhen = intel?.releasedAt ? `Released ${stamp(intel.releasedAt)}` : mpam?.lastModified ? `Package dated ${stamp(mpam.lastModified)}` : "";
-  const clockNote = intel?.clockBasis ? `<p class="meta" style="margin-top:6px">${esc(intel.clockBasis)}</p>` : "";
+  const si = siRelease();
+  const siWhen = si.at ? `Released ${stamp(si.at)}` : mpam?.lastModified ? `Package dated ${stamp(mpam.lastModified)}` : "";
+  const pageTime = intel?.releasedAt && si.basis === "changelog" && intel.releasedAt !== si.at ? ` The definitions page shows ${stamp(intel.releasedAt).split(" · ")[0]} for the same build; this site uses the changelog time everywhere.` : "";
+  const clockNote = intel?.clockBasis ? `<p class="meta" style="margin-top:6px">${esc(intel.clockBasis + pageTime)}</p>` : "";
+  const engMonth = versionMonthLabel(intel?.engine || "");
+  const engineWhen = engRelease?.released
+    ? `Monthly release ${stamp(engRelease.released)}`
+    : si.at
+      ? `Delivered with security intelligence released ${stamp(si.at)}`
+      : "";
+  const engineNote = `<p class="meta" style="margin-top:6px">${engMonth ? `Build month ${esc(engMonth)} (from the version number). ` : ""}The engine ships inside the security intelligence package, so its time is that package's release time.</p>`;
+  const platWhen = platRelease?.released ? `Monthly release ${stamp(platRelease.released)}` : plat?.lastModified ? `Package dated ${stamp(plat.lastModified)}` : "";
 
   const cards = `<div class="grid">
     ${versionCard("Security intelligence", intel?.securityIntelligence || mpam?.version, siWhen, intel?.url || "https://www.microsoft.com/en-us/wdsi/definitions", clockNote)}
-    ${versionCard("Engine", intel?.engine || mpam?.engine, engRelease?.released ? `Monthly release ${stamp(engRelease.released)}` : "Ships with security intelligence", intel?.url)}
-    ${versionCard("Platform", intel?.platform || plat?.version, platRelease?.released ? `Monthly release ${stamp(platRelease.released)}` : plat?.lastModified ? `Package dated ${stamp(plat.lastModified)}` : "", "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates")}
-    ${versionCard("Sense (MsSense.exe)", sense.version, sense.when, sense.url, sense.note ? `<p class="meta" style="margin-top:6px">${esc(sense.note)}</p>` : "")}
+    ${versionCard("Engine", intel?.engine || mpam?.engine, engineWhen, intel?.url, engineNote)}
+    ${versionCard("Platform", intel?.platform || plat?.version, platWhen, "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates")}
+    ${versionCard("Sense (MsSense.exe)", sense.version, sense.when, sense.url, `${sense.channel ? `<div class="when">Ring: ${esc(sense.channel)}</div>` : ""}${sense.note ? `<p class="meta" style="margin-top:6px">${esc(sense.note)}</p>` : ""}`)}
   </div>`;
 
+  const wimBehind = (p) => p.id === "wim" && p.version && mpam?.version && cmpVersion(p.version, mpam.version) < 0;
   const pkgRows = pkgs
     .map(
       (p) => `<tr>
-        <td><div class="row-title">${esc(p.name)}</div><div class="meta">${esc(p.file)}${p.kb ? ` · ${esc(p.kb)}` : ""}</div></td>
+        <td><div class="row-title">${esc(p.name)}</div><div class="meta">${esc(p.file)}${p.kb ? ` · ${esc(p.kb)}` : ""}</div>${wimBehind(p) ? `<div style="margin-top:4px">${pill("WIM is behind — use mpam-fe.exe", "warn")}</div>` : ""}</td>
         <td class="mono">${p.version ? esc(p.version) : na()}${p.engine ? `<div class="meta">engine ${esc(p.engine)}</div>` : ""}${p.id === "wim" && p.platform ? `<div class="meta" title="${esc(p.platformSource || "")}">platform ${esc(p.platform)}</div>` : ""}</td>
         <td>${p.lastModified ? esc(stamp(p.lastModified)) : na("Time not published")}${p.contents?.length ? `<div class="meta">Contains ${esc(p.contents.join(", "))}${p.contentsDate ? `, files dated ${esc(stamp(p.contentsDate))}` : ""}</div>` : ""}</td>
         <td>${esc(size(p.bytes))}</td>
@@ -183,7 +218,7 @@ function renderStatus() {
     .join("");
   const packages = pkgs.length
     ? `<div class="card table-wrap"><table><thead><tr><th>Package</th><th>Version</th><th>File date (Last-Modified)</th><th>Size</th><th>Links</th></tr></thead><tbody>${pkgRows}</tbody></table>
-       <p class="meta" style="margin-top:8px">mpam-fe.exe updates security intelligence and the engine, not the platform. updateplatform.exe updates only the platform. The offline image kit trails the daily signatures between Patch Tuesdays${(() => {
+       <p class="meta" style="margin-top:8px">mpam-fe.exe updates security intelligence and the engine, not the platform. updateplatform.exe updates only the platform. The offline image kit (WIM) is for servicing install images${(() => {
          const w = pkgs.find((p) => p.id === "wim");
          return w?.platformSource ? `. Its platform version is ${esc(w.platformSource.charAt(0).toLowerCase() + w.platformSource.slice(1))}` : "";
        })()}.</p></div>`
@@ -199,20 +234,35 @@ function renderStatus() {
   };
   const latestListed = releases[0];
   const lag = latestListed ? monthsBetween(currentPlatform, latestListed.platform) : null;
-  const relRows = releases
+  const listedCurrent = releases.some((r) => r.platform === currentPlatform);
+  const currentRow =
+    currentPlatform && !listedCurrent
+      ? `<tr><td><strong>Current build</strong> ${pill("Not on the release notes page yet", "warn")}<div class="meta">Build month ${esc(versionMonthLabel(currentPlatform) || "unknown")}</div></td><td class="mono">${esc(currentPlatform)}</td><td class="mono">${esc(intel?.engine || "")}</td><td>${plat?.lastModified ? `${esc(stamp(plat.lastModified))}<div class="meta">updateplatform.exe file date</div>` : na("Not published")}</td><td>${pill("Current (N)", "ok")}</td></tr>`
+      : "";
+  const relRows = currentRow + releases
     .map((r) => `<tr><td>${esc(r.label)}</td><td class="mono">${esc(r.platform)}</td><td class="mono">${esc(r.engine)}</td><td>${r.released ? esc(stamp(r.released)) : na("Not published")}</td><td>${support(r.platform)}</td></tr>`)
     .join("");
   const releaseTable = `<div class="card">
       <p>Microsoft supports the current platform and engine plus the two monthly releases before them (N-2). Older clients stop receiving security intelligence. Defender versions carry their build month (4.18.<strong>2610</strong>0.x is an October 2026 build), so this site estimates N-2 from that month code against the current platform ${currentPlatform ? `<code>${esc(currentPlatform)}</code>` : ""}.</p>
       ${lag != null && lag > 2 ? `<div class="notice">Microsoft's release-notes page currently lists releases only up to ${esc(latestListed.label)}, ${lag} months behind the current platform. Use the month-code estimate and Fleet compare for recent builds.</div>` : ""}
-      ${releases.length ? `<div class="table-wrap"><table><thead><tr><th>Release notes entry</th><th>Platform</th><th>Engine</th><th>Released</th><th>Support today</th></tr></thead><tbody>${relRows}</tbody></table></div>` : sectionError("productUpdates", "The monthly release notes")}
+      ${releases.length || currentRow ? `<div class="table-wrap"><table><thead><tr><th>Release notes entry</th><th>Platform</th><th>Engine</th><th>Released</th><th>Support today</th></tr></thead><tbody>${relRows}</tbody></table></div>` : sectionError("productUpdates", "The monthly release notes")}
       ${source("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates", "Microsoft Defender Antivirus security intelligence and product updates")}
       ${source(data("productUpdates")?.url, "Monthly platform and engine release notes")}
     </div>`;
 
   const sources = Object.entries(state.pulse.sections)
-    .map(([, s]) => `<li><span class="row-title">${esc(s.label)}</span> ${s.ok ? pill("OK", "ok") : s.stale ? pill("Stale", "warn") : pill("Failed", "bad")}<div class="meta">${esc(s.detail)}</div></li>`)
+    .map(
+      ([, s]) => `<li><span class="row-title">${esc(s.label)}</span> ${s.ok ? pill("Live", "ok") : s.stale ? pill("Stale", "warn") : pill("Failed", "bad")}
+        <div class="meta">${esc(s.detail)}</div>
+        <div class="meta">${s.page ? `${link(s.page, "Source page ↗")} · ` : ""}Last-Modified: ${s.lastModified ? esc(stamp(s.lastModified)) : "not sent by this source"} · Checked ${esc(stamp(s.checkedAt))}</div></li>`,
+    )
     .join("");
+  const legend = `<div class="legend">
+    <div>${pill("Live", "ok")} Read successfully on the last scheduled refresh.</div>
+    <div>${pill("Stale", "warn")} The last read failed; the page shows the last good data and says how old it is.</div>
+    <div>${pill("Failed", "bad")} The last read failed and there is no earlier data to show.</div>
+    <div>A source that is Stale or Failed is retried at the next scheduled refresh (hourly, every 15 minutes in Patch Tuesday week). Last-Modified is the date the source's server gave for the page, when it sends one.</div>
+  </div>`;
 
   return [
     section("changes", "What changed since the last refresh", renderChanges()),
@@ -220,7 +270,7 @@ function renderStatus() {
     section("packages", "Download packages", packages, "packages"),
     section("monthly", "Monthly platform and engine releases (N-2)", releaseTable, "productUpdates"),
     section("fleet", "Fleet compare", renderFleet(releases, intel)),
-    section("sources", "Source health", `<div class="card"><ul class="list">${sources}</ul></div>`),
+    section("sources", "Source health", `<div class="card"><ul class="list">${sources}</ul>${legend}</div>`),
   ].join("");
 }
 
@@ -237,12 +287,16 @@ function renderFleet(releases, intel) {
   </div>`;
 }
 
+const VALID_VERSION = /^\d+\.\d+\.\d+\.\d+$/;
+const invalid = (example) => `<span class="invalid">Not a valid version — use e.g. ${esc(example)}</span>`;
+
 function fleetVerdict(v, releases, intel) {
   const out = [];
   const rank = (value, current) => {
     if (!value) return "";
+    if (!VALID_VERSION.test(value)) return invalid(current || "4.18.26100.4");
     if (!current) return pill("Current version not known yet", "warn");
-    if (cmpVersion(value, current) >= 0) return pill("Current (N)", "ok");
+    if (cmpVersion(value, current) >= 0) return pill("Matches the polled build", "ok");
     const gap = monthsBetween(current, value);
     if (gap == null) return pill("Unrecognised version format", "warn");
     if (gap <= 2) return pill(`Supported (about N-${Math.max(gap, 1)})`, "ok");
@@ -250,15 +304,20 @@ function fleetVerdict(v, releases, intel) {
   };
   if (v.platform) out.push(`<li>Platform <code>${esc(v.platform)}</code> ${rank(v.platform, intel?.platform)}</li>`);
   if (v.engine) out.push(`<li>Engine <code>${esc(v.engine)}</code> ${rank(v.engine, intel?.engine)}</li>`);
-  if (v.si && intel?.securityIntelligence) {
+  if (v.si && !VALID_VERSION.test(v.si)) out.push(`<li>Security intelligence <code>${esc(v.si)}</code> ${invalid(intel?.securityIntelligence || "1.463.322.0")}</li>`);
+  else if (v.si && intel?.securityIntelligence) {
     const d = cmpVersion(intel.securityIntelligence, v.si);
-    out.push(`<li>Security intelligence <code>${esc(v.si)}</code> ${d <= 0 ? pill("Current", "ok") : pill(`Behind the current ${intel.securityIntelligence}`, "warn")}</li>`);
+    out.push(`<li>Security intelligence <code>${esc(v.si)}</code> ${d <= 0 ? pill("Matches the polled build", "ok") : pill(`Behind the current ${intel.securityIntelligence}`, "warn")}</li>`);
   }
   return out.length ? `<ul class="list">${out.join("")}</ul><p class="meta">Platform and engine support is estimated from the build month in the version number.</p>` : `<p class="meta">Enter a version to compare.</p>`;
 }
 
 // ---------- Updates tab ----------
 function renderUpdates() {
+  const kevAll = data("kev")?.rows || [];
+  const kev = kevAll.filter((r) => osOk(r.os));
+  const kevSet = new Set([...(data("kev")?.microsoftCves || []), ...kevAll.map((r) => r.cve)]);
+  const cisa = (cve) => (!data("kev") ? "" : /^CVE-/.test(cve) && kevSet.has(cve) ? pill("CISA catalog", "bad") : pill("Not in the CISA catalog"));
   const pt = data("patchTuesday");
   const p = state.pulse.patch;
   const ptBody = pt
@@ -273,65 +332,98 @@ function renderUpdates() {
         .map(([os, c]) => `<tr><td>${esc(OS[os] || os)}</td><td>${esc(c.total)}</td><td>${esc(c.critical)}</td></tr>`)
         .join("")}</tbody></table><p class="meta" style="margin-top:6px">Windows 11 counts 24H2 and 25H2 together. Counts include CVEs Microsoft added to the release after Patch Tuesday.</p></div>
       ${pt.endpoint.length ? `<div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>CVE</th><th>Title</th><th>Severity</th><th>CVSS</th><th>Released</th></tr></thead><tbody>${pt.endpoint
-        .map((r) => `<tr><td>${link(r.url, r.cve)}</td><td>${esc(r.title)}</td><td>${esc(r.severity)}</td><td>${esc(r.score)}</td><td>${r.released ? esc(stamp(r.released)) : na("Time not published")}</td></tr>`)
+        .map((r) => `<tr><td>${link(r.url, r.cve)} ${cisa(r.cve)}</td><td>${esc(r.title)}</td><td>${esc(r.severity)}</td><td>${esc(r.score)}</td><td>${r.released ? esc(stamp(r.released)) : na("Time not published")}</td></tr>`)
         .join("")}</tbody></table></div>` : ""}`
     : `${sectionError("patchTuesday", "The Security Update Guide")}<div class="card"><p>Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.</p></div>`;
 
   const q = data("qualys");
+  const qMonths = q ? (q.months ? Object.keys(q.months) : [q.month]) : [];
+  const qPick = qMonths.includes(pref.get("qualysMonth", "")) ? pref.get("qualysMonth", "") : q?.month;
+  const qm = q ? (q.months?.[qPick] || q) : null;
   const qualysBody = q
     ? `<div class="card">
-        <p>${esc(q.qids.length)} Qualys QIDs detect the ${esc(q.month)} Patch Tuesday fixes. Paste the query into Qualys VMDR to find unpatched hosts.</p>
-        <div class="policy"><dl class="kv"><dt>Query</dt><dd><code>${esc(q.query)}</code><button type="button" class="btn small" data-copy="${esc(q.query)}">Copy</button></dd></dl></div>
-        <p class="meta" style="margin-top:8px">Scraped from Qualys ThreatPROTECT, a third-party blog. Check the review if the list looks short.</p>
-        ${source(q.url, "Qualys Patch Tuesday review")}
+        ${qMonths.length > 1 ? `<div class="seg" role="tablist" aria-label="Patch Tuesday month">${qMonths.map((m) => `<button type="button" role="tab" data-qmonth="${esc(m)}" aria-selected="${m === qPick}">${esc(m)}</button>`).join("")}</div>` : ""}
+        <p>${esc(qm.qids.length)} Qualys QIDs detect the ${esc(qPick)} Patch Tuesday fixes. Paste the query into Qualys VMDR to find unpatched hosts.</p>
+        <div class="policy"><dl class="kv"><dt>Query</dt><dd><code>${esc(qm.query)}</code><button type="button" class="btn small" data-copy="${esc(qm.query)}" data-label="Copy Qualys QQL">Copy Qualys QQL</button></dd></dl></div>
+        <p class="meta" style="margin-top:8px">CVE data from the Microsoft Security Update Guide, QIDs from Qualys's public monthly review.</p>
+        ${source(qm.url, `Qualys ${qPick} Patch Tuesday review`)}
       </div>`
     : `<div class="card"><p class="meta">${esc(sec("qualys")?.detail || "Not checked yet.")} Qualys usually posts its review on Patch Tuesday evening, US time.</p></div>`;
 
-  const kev = (data("kev")?.rows || []).filter((r) => osOk(r.os));
   // Hand-kept entries whose link failed the weekly check are hidden until fixed.
   const incidents = (state.curated?.incidents || []).filter((i) => !state.failedUrls?.has(i.url));
   const kevBody = `<div class="card">
     ${incidents.length ? `<h3>Defender exploits tracked by hand</h3><ul class="list" style="margin-bottom:14px">${incidents
-      .map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span> ${pill(i.status, i.status === "Patched" ? "ok" : "warn")}<div class="meta">${esc(stamp(i.date))}</div><p>${esc(i.summary)}</p></li>`)
+      .map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span> ${pill(i.status, i.status === "Patched" ? "ok" : "warn")} ${cisa(i.id)}<div class="meta">${esc(stamp(i.date))}</div><p>${esc(i.summary)}</p></li>`)
       .join("")}</ul>` : ""}
     <h3>CISA Known Exploited Vulnerabilities, Microsoft Windows and endpoint, last 12 months</h3>
+    ${data("kev") ? `<p class="meta">Showing ${kev.length} of ${kevAll.length} entries${state.os === "all" ? "" : ` (the ${esc(OS[state.os])} filter hides ${kevAll.length - kev.length} that do not apply to it)`}. Every row here is in the CISA catalog.</p>` : ""}
     ${kev.length ? `<div class="table-wrap"><table><thead><tr><th>CVE</th><th>Name</th><th>Added</th><th>Due</th></tr></thead><tbody>${kev
       .slice(0, 25)
-      .map((r) => `<tr><td>${link(r.url, r.cve)}${r.endpointSecurity ? ` ${pill("Defender/Intune", "bad")}` : ""}</td><td>${esc(r.name)}${r.ransomware === "Known" ? ` ${pill("Ransomware", "bad")}` : ""}</td><td>${esc(stamp(r.dateAdded))}</td><td>${r.dueDate ? esc(stamp(r.dueDate)) : ""}</td></tr>`)
+      .map((r) => `<tr><td>${link(r.url, r.cve)} ${pill("CISA catalog", "bad")}${r.endpointSecurity ? ` ${pill("Defender/Intune", "bad")}` : ""}</td><td>${esc(r.name)}${r.ransomware === "Known" ? ` ${pill("Ransomware", "bad")}` : ""}</td><td>${esc(stamp(r.dateAdded))}</td><td>${r.dueDate ? esc(stamp(r.dueDate)) : ""}</td></tr>`)
       .join("")}</tbody></table></div>` : data("kev") ? `<p>No entries match this filter.</p>` : sectionError("kev", "The CISA catalog")}
     ${source(data("kev")?.url, "CISA catalog")}
   </div>`;
 
-  const scope = pref.get("issueScope", "security");
-  const inScope = (r) => scope === "all" || (scope === "controls" ? CONTROLS.test(`${r.title} ${r.detail}`) : r.scope === "security");
-  const issues = (data("knownIssues")?.rows || []).filter((r) => osOk(r.os)).filter(inScope);
-  const scopeLabel = { security: "Defender, Intune or BitLocker", controls: "USB, Firewall, ASR or BitLocker", all: "Windows" }[scope];
+  const allIssues = (data("knownIssues")?.rows || []).filter((r) => osOk(r.os));
+  const ISSUE_TABS = {
+    endpoint: { label: "Defender and Intune", test: (r) => r.scope === "security" || CONTROLS.test(`${r.title} ${r.detail}`) || /defender|intune|bitlocker|autopilot|mdm|enrol/i.test(`${r.title} ${r.detail}`) },
+    win11: { label: "Windows 11", test: (r) => r.os.includes("win11") },
+    server: { label: "Server", test: (r) => r.os.some((o) => o.startsWith("srv")) },
+    bios: { label: "HP and Dell BIOS", test: (r) => /\b(hp|dell|bios|uefi|firmware)\b/i.test(`${r.title} ${r.detail}`) },
+  };
+  const counts = Object.fromEntries(Object.entries(ISSUE_TABS).map(([k, t]) => [k, allIssues.filter(t.test).length]));
+  // Default: Defender and Intune when it has entries, otherwise the first tab that does.
+  const savedTab = pref.get("issueTab", "");
+  const scope = ISSUE_TABS[savedTab] ? savedTab : counts.endpoint ? "endpoint" : Object.keys(ISSUE_TABS).find((k) => counts[k]) || "endpoint";
+  const issues = allIssues.filter(ISSUE_TABS[scope].test);
+  const scopeLabel = ISSUE_TABS[scope].label;
   const issuesBody = data("knownIssues")
     ? `<div class="card">
-        <div class="controls"><label class="field">Show <select id="issue-scope">
-          <option value="security" ${scope === "security" ? "selected" : ""}>Defender, Intune and BitLocker issues</option>
-          <option value="controls" ${scope === "controls" ? "selected" : ""}>Intune controls: USB, Firewall, ASR, BitLocker</option>
-          <option value="all" ${scope === "all" ? "selected" : ""}>Every Windows known issue</option>
-        </select></label></div>
+        <div class="seg" role="tablist" aria-label="Known issue filter">${Object.entries(ISSUE_TABS)
+          .map(([k, t]) => `<button type="button" role="tab" data-issue-tab="${k}" aria-selected="${k === scope}">${esc(t.label)} (${counts[k]})</button>`)
+          .join("")}</div>
+        ${!counts.endpoint && scope !== "endpoint" && !savedTab ? `<p class="meta">No open or recent Defender, Intune, BitLocker or device-control known issues right now, so this opens on ${esc(scopeLabel)}.</p>` : ""}
         ${issues.length ? `<ul class="list">${issues
           .map((r) => `<li><span class="row-title">${link(r.url, r.title)}</span> ${pill(r.status, /resolved/i.test(r.status) ? "ok" : "warn")} ${osPills(r.os)}
             <div class="meta">${esc(r.sources.join(", "))}${r.updated ? ` · updated ${esc(stamp(r.updated))}` : ""}</div><p>${esc(r.detail)}</p></li>`)
-          .join("")}</ul>` : `<p>No open or recent ${esc(scopeLabel)} known issues for this filter.</p>`}
-        <p class="meta">From Windows release health. ${(data("knownIssues").pages || []).map((pg) => link(pg.url, pg.label)).join(" · ")}</p>
+          .join("")}</ul>` : `<p>No open or recent ${esc(scopeLabel)} known issues${state.os === "all" ? "" : ` for ${esc(OS[state.os])}`}.</p>`}
+        <p class="meta">From Windows release health. Resolved items are kept for 45 days. ${(data("knownIssues").pages || []).map((pg) => link(pg.url, pg.label)).join(" · ")}</p>
       </div>`
     : sectionError("knownIssues", "Windows release health");
 
+  const sense = senseInfo();
+  const channelRows = [
+    ["Security intelligence", data("intelligence")?.securityIntelligence, "No ring. The definitions page does not assign one."],
+    ["Engine", data("intelligence")?.engine, "No ring is published next to this version."],
+    ["Platform", data("intelligence")?.platform, "Same as the engine."],
+    ["Sense (MsSense.exe)", sense.version, sense.channel || "Not stated in the Update Catalog."],
+  ];
   const channels = `<div class="card">
-    <p>Defender has three separate update channel settings: engine, platform and security intelligence. Each one decides when in Microsoft's gradual rollout a device takes a new release.</p>
+    <div class="table-wrap"><table><thead><tr><th>Component</th><th>Current version</th><th>Ring</th></tr></thead><tbody>${channelRows
+      .map(([a, v, r]) => `<tr><td>${esc(a)}</td><td class="mono">${v ? esc(v) : na()}</td><td>${esc(r)}</td></tr>`)
+      .join("")}</tbody></table></div>
+    <p style="margin-top:10px">Defender has three separate update channel settings: engine, platform and security intelligence. Each one decides when in Microsoft's gradual rollout a device takes a new release.</p>
     <ul>
       <li><strong>Engine and platform:</strong> Beta Channel, then Current Channel (Preview), then Current Channel (Staged), then Current Channel (Broad). Critical: Time delay holds a release back further.</li>
       <li><strong>Security intelligence:</strong> Current Channel (Staged) or Current Channel (Broad). It ships several times a day.</li>
     </ul>
-    <p>The public definitions page does not say which channel the current versions above are on.</p>
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/manage-gradual-rollout", "Manage the gradual rollout process for Microsoft Defender updates")}
   </div>`;
 
+  const stories = oobStories();
+  const since = p.last ? stamp(p.last).split(",")[0] : "the last Patch Tuesday";
+  const oobBody = `<div class="card">
+    <p>No out-of-band Defender security-intelligence or engine release since ${esc(since)}. Security intelligence ships several times a day and the engine monthly, so neither has an "out-of-band" release in the Windows sense; this line changes if Microsoft or the news feeds report one.</p>
+    <h3 style="margin-top:10px">Zero-day and out-of-band stories since ${esc(since)}</h3>
+    ${stories.length ? `<ul class="list">${stories
+      .map((n) => `<li id="story-${esc(slugId(n.url))}"><span class="row-title">${link(n.url, n.title)}</span><div class="meta">${esc(n.source)} · ${n.published ? esc(stamp(n.published)) : "time not published"}</div>${n.summary ? `<p>${esc(n.summary)}</p>` : ""}</li>`)
+      .join("")}</ul>` : `<p class="meta">None in the news feeds.</p>`}
+    <p class="meta">This is the one place these stories are shown. The alert banner and the news feed link here.</p>
+  </div>`;
+
   return [
+    section("out-of-band", "Out-of-band and zero-day", oobBody, "news"),
     section("patch-tuesday", "Patch Tuesday", ptBody, "patchTuesday"),
     section("qualys", "Qualys QIDs for this Patch Tuesday", qualysBody, "qualys"),
     section("exploited", "Exploited and zero-day", kevBody, "kev"),
@@ -354,20 +446,32 @@ function renderIntune() {
   </div>`;
 
   const intune = data("intune");
+  // One heading per week (the collector merges split headings); weeks with nothing for Windows or security are left out.
+  const weekList = [];
+  for (const w of intune?.weeks || []) {
+    const date = w.week.replace(/\s*\(.*$/, "").trim();
+    const same = weekList.find((x) => x.week.replace(/\s*\(.*$/, "").trim() === date);
+    if (same) {
+      same.items = [...same.items, ...w.items];
+      if (w.week.length > same.week.length) same.week = w.week;
+    } else weekList.push({ ...w });
+  }
+  const filledWeeks = weekList.filter((w) => w.items.length);
+  const skipped = weekList.length - filledWeeks.length;
   const weeks = intune
-    ? `<div class="card">${intune.weeks
+    ? `<div class="card">${filledWeeks
         .slice(0, 6)
-        .map((w) => `<h3>${esc(w.week)}</h3>${w.items.length ? `<ul class="list" style="margin-bottom:12px">${w.items.map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span><p>${esc(i.summary)}</p></li>`).join("")}</ul>` : `<p class="meta">No Windows or security items this week.</p>`}`)
-        .join("")}${source(intune.url, "Intune what's new")}</div>`
+        .map((w) => `<h3>${esc(w.week)}</h3><ul class="list" style="margin-bottom:12px">${w.items.map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span><p>${esc(i.summary)}</p></li>`).join("")}</ul>`)
+        .join("")}${skipped ? `<p class="meta">${skipped} recent ${skipped === 1 ? "week has" : "weeks have"} no Windows or security items and ${skipped === 1 ? "is" : "are"} not shown.</p>` : ""}${source(intune.url, "Intune what's new")}</div>`
     : sectionError("intune", "Intune what's new");
   const dev = intune?.inDevelopment?.length
-    ? `<div class="card"><ul class="list">${intune.inDevelopment.map((i) => `<li><span class="row-title">${esc(i.name)}</span><p>${esc(i.summary)}</p></li>`).join("")}</ul>${source(intune.inDevelopmentUrl, "In development for Intune")}</div>`
+    ? `<div class="card"><p class="meta">${intune.inDevelopment.length} Windows, security or Endpoint Privilege Management items Microsoft lists as in development.</p><ul class="list">${intune.inDevelopment.map((i) => `<li><span class="row-title">${esc(i.name)}</span><p>${esc(i.summary)}</p></li>`).join("")}</ul>${source(intune.inDevelopmentUrl, "In development for Intune")}</div>`
     : `<div class="card"><p>${intune ? "No Windows or security items, or the page could not be read." : "Not available yet."}</p>${source("https://learn.microsoft.com/en-us/intune/whats-new/in-development", "In development for Intune")}</div>`;
 
   return [
     section("compliance", "Intune compliance: antivirus, versions and BitLocker", compliance),
     section("intune-weekly", "Intune weekly notes (Windows and security)", weeks, "intune"),
-    section("intune-dev", "Intune in development", dev, "intune"),
+    section("intune-dev", "Intune in development", dev),
     section("roadmap", "Microsoft 365 roadmap: Defender and Intune", renderRoadmap(), "roadmap"),
   ].join("");
 }
@@ -375,62 +479,190 @@ function renderIntune() {
 function renderRoadmap() {
   const r = data("roadmap");
   if (!r) return `<div class="card"><p class="meta">${esc(sec("roadmap")?.detail || "Not checked yet.")} Microsoft's public roadmap feed is often unavailable; this section fills in when it answers.</p>${source("https://www.microsoft.com/microsoft-365/roadmap", "Microsoft 365 roadmap")}</div>`;
-  return `<div class="card">${r.rows.length ? `<ul class="list">${r.rows
+  const mode = pref.get("roadmapMode", "core");
+  const hasCore = r.rows.some((i) => "core" in i);
+  const rows = mode === "core" && hasCore ? r.rows.filter((i) => i.core) : r.rows;
+  const seg = hasCore
+    ? `<div class="seg" role="tablist" aria-label="Roadmap filter"><button type="button" role="tab" data-roadmap="core" aria-selected="${mode === "core"}">Defender and Intune (${r.rows.filter((i) => i.core).length})</button><button type="button" role="tab" data-roadmap="all" aria-selected="${mode === "all"}">All stored items (${r.rows.length})</button></div>`
+    : "";
+  return `<div class="card">${seg}${rows.length ? `<ul class="list">${rows
     .map((i) => `<li><span class="row-title">${link(i.url, i.title)}</span> ${pill(i.status || "Roadmap", /launched|rolling/i.test(i.status) ? "ok" : "")}${i.release ? ` <span class="meta">${esc(i.release)}</span>` : ""}<p>${esc(i.description)}</p></li>`)
     .join("")}</ul>` : "<p>No Defender or Intune items in the feed right now.</p>"}${source(r.url, "Microsoft 365 roadmap")}</div>`;
 }
 
 // ---------- Intel tab ----------
-function renderIntel() {
+const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(n);
+
+function changelogHistory() {
   const clData = data("changelog");
-  const history = clData?.history?.length ? clData.history : clData ? [clData] : [];
+  return clData?.history?.length ? clData.history : clData ? [clData] : [];
+}
+
+function renderChangelog() {
+  const clData = data("changelog");
+  if (!clData) {
+    const s = sec("changelog");
+    return `<div class="card"><p>${/timed out/i.test(s?.detail || "") ? "The detection changelog timed out on the last check." : "The detection changelog could not be read on the last check."} ${esc(s?.detail || "")}</p>
+      <button type="button" class="btn" data-action="retry">Retry</button> <span class="meta">Retry reloads the latest published data file. The changelog itself is re-read at the next scheduled refresh.</span></div>`;
+  }
+  const history = changelogHistory();
   const wanted = pref.get("siVersion", "");
-  const cl = clData ? { ...clData, ...(history.find((h) => h.version === wanted) || history[0]) } : null;
+  const idx = Math.max(0, history.findIndex((h) => h.version === wanted));
+  const cl = { ...clData, ...history[idx] };
+  const prev = history[idx + 1];
   const winOnly = pref.get("winOnly", true);
-  const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(n);
-  const rows = (cl?.rows || []).filter((r) => !winOnly || isWin(r.name));
-  const changelog = cl
-    ? `<div class="card">
-        <p><strong>${esc(cl.version)}</strong> · ${cl.releasedAt ? esc(stamp(cl.releasedAt)) : na("Time not published")} · ${cl.rows.filter((r) => r.change === "added").length} added, ${cl.rows.filter((r) => r.change === "updated").length} updated</p>
-        <div class="controls">
-          ${history.length > 1 ? `<label class="field">Version <select id="si-version">${history.map((h, i) => `<option value="${esc(h.version)}" ${h.version === cl.version ? "selected" : ""}>${esc(h.version)}${i === 0 ? " (latest)" : ""}${h.releasedAt ? ` · ${esc(stamp(h.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
-          <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Hide Android, macOS and Linux detections</label>
-        </div>
-        <div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th><th>Change</th></tr></thead><tbody>${rows
-          .slice(0, 60)
+  const q = (state.threatQ || "").trim().toLowerCase();
+  const rows = (cl.rows || []).filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q)));
+  const added = cl.rows.filter((r) => r.change === "added");
+  const updated = cl.rows.filter((r) => r.change === "updated");
+  let delta = "";
+  if (prev) {
+    const before = new Set(prev.rows.map((r) => r.name));
+    const now = new Set(cl.rows.map((r) => r.name));
+    const fresh = cl.rows.filter((r) => !before.has(r.name)).length;
+    const dropped = prev.rows.filter((r) => !now.has(r.name)).length;
+    delta = `<div class="delta"><strong>${esc(prev.version)} → ${esc(cl.version)}</strong>: ${added.length} added (was ${prev.rows.filter((r) => r.change === "added").length}), ${updated.length} updated (was ${prev.rows.filter((r) => r.change === "updated").length}). ${fresh} detection names are new in this build's list and ${dropped} from the previous build's list are not repeated.</div>`;
+  } else if (history.length > 1) delta = `<div class="delta">This is the oldest build kept, so there is no earlier build to compare.</div>`;
+  const loading = state.loadingBuild ? ` ${pill("Loading this build", "warn")}` : "";
+  const table = state.loadingBuild
+    ? `<div class="skeleton" style="height:180px"></div>`
+    : rows.length
+      ? `<div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th><th>Change</th></tr></thead><tbody>${rows
+          .slice(0, 80)
           .map((r) => `<tr><td>${link(r.url, r.name)}</td><td>${esc(r.severity)}</td><td>${esc(r.change)}</td></tr>`)
-          .join("")}</tbody></table></div>
-        ${source(cl.url, "Security intelligence release notes")}
-      </div>`
-    : sectionError("changelog", "The detection changelog");
+          .join("")}</tbody></table></div>${rows.length > 80 ? `<p class="meta">Showing 80 of ${rows.length}. Use the search or the exports for the full list.</p>` : ""}`
+      : `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(cl.version)} matches "${esc(state.threatQ)}".` : cl.rows.length ? "Every detection in this build is for Android, macOS or Linux. Clear the checkbox to see them." : "Microsoft lists no detections for this build."}</p>`;
+  return `<div class="card">
+    <p><strong>${esc(cl.version)}</strong>${loading} · ${cl.releasedAt ? esc(stamp(cl.releasedAt)) : na("Time not published")} · ${added.length} added, ${updated.length} updated</p>
+    <div class="controls">
+      ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((h, i) => `<option value="${esc(h.version)}" ${i === idx ? "selected" : ""}>${esc(h.version)}${i === 0 ? " (latest)" : ""}${h.releasedAt ? ` · ${esc(stamp(h.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
+      <label class="field" style="flex:1 1 220px">Threat name <input type="search" id="threat-q" value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
+      <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Hide Android, macOS and Linux detections</label>
+    </div>
+    ${delta}
+    <div class="controls" style="margin:6px 0">
+      <button type="button" class="btn small" data-export="json">Download JSON</button>
+      <button type="button" class="btn small" data-export="csv">Download CSV</button>
+      <button type="button" class="btn small" data-export="copy">Copy JSON</button>
+      <span class="meta">Exports the rows shown, for build ${esc(cl.version)}.</span>
+    </div>
+    <div id="cl-table">${table}</div>
+    ${source(cl.url, "Security intelligence release notes")}
+  </div>`;
+}
 
+function exportRows() {
+  const history = changelogHistory();
+  const wanted = pref.get("siVersion", "");
+  const h = history.find((x) => x.version === wanted) || history[0];
+  if (!h) return { version: "", rows: [] };
+  const winOnly = pref.get("winOnly", true);
+  const q = (state.threatQ || "").trim().toLowerCase();
+  return { version: h.version, releasedAt: h.releasedAt || "", rows: h.rows.filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q))) };
+}
+
+function renderTrend() {
+  const history = changelogHistory().slice(0, 8);
+  if (!history.length) return sectionError("changelog", "The detection changelog");
+  return `<div class="card table-wrap"><table><thead><tr><th>Build</th><th>Released (UTC)</th><th>Released (Chicago)</th><th>Added</th><th>Updated</th></tr></thead><tbody>${history
+    .map((h, i) => {
+      const [utc, chi] = h.releasedAt ? stamp(h.releasedAt).split(" · ") : ["Time not published", ""];
+      return `<tr><td class="mono">${esc(h.version)}${i === 0 ? ` ${pill("Latest", "ok")}` : ""}</td><td>${esc(utc)}</td><td>${esc(chi || "")}</td><td>${h.rows.filter((r) => r.change === "added").length}</td><td>${h.rows.filter((r) => r.change === "updated").length}</td></tr>`;
+    })
+    .join("")}</tbody></table><p class="meta" style="margin-top:6px">The last ${history.length} builds in Microsoft's detection changelog. Chicago times carry CST or CDT.</p></div>`;
+}
+
+function renderFeatures() {
   const mde = data("mde");
-  const features = mde
-    ? `<div class="card"><ul class="list">${mde.items
-        .slice(0, 20)
-        .map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span> ${pill(i.stage, i.stage === "GA" ? "ok" : "")} <span class="meta">${esc(i.when)} · ${esc(i.type)}</span><p>${esc(i.text)}</p></li>`)
-        .join("")}</ul>${source(mde.url, "What's new in Defender for Endpoint")}</div>`
-    : sectionError("mde", "Defender for Endpoint what's new");
-  const reported = (state.catalog?.features || []).filter((f) => f.status === "Reported");
-  const reportedBlock = reported.length
-    ? `<div class="card" style="margin-top:12px"><h3>Reported, not yet confirmed on Microsoft Learn</h3><ul class="list">${reported
-        .map((f) => `<li><span class="row-title">${esc(f.name)}</span> ${pill("Reported", "warn")}<p>${esc(f.summary)}</p>${source(f.docs)}</li>`)
-        .join("")}</ul></div>`
-    : "";
+  if (!mde) return sectionError("mde", "Defender for Endpoint what's new");
+  const seen = new Map();
+  for (const i of mde.items) {
+    const k = i.name.toLowerCase();
+    if (!seen.has(k)) seen.set(k, { ...i, history: [...(i.history || [])] });
+    else seen.get(k).history.push({ stage: i.stage, when: i.when });
+  }
+  const items = [...seen.values()].slice(0, 20);
+  return `<div class="card"><ul class="list">${items
+    .map((i, n) => {
+      const also = i.history?.length ? ` <span class="meta">(also listed: ${i.history.map((h) => `${esc(h.stage)} ${esc(h.when)}`).join(", ")})</span>` : "";
+      const long = (i.text || "").length > 220;
+      return `<li><span class="row-title">${link(i.url, i.name)}</span> ${pill(i.stage, i.stage === "GA" ? "ok" : "")} <span class="meta">${esc(i.when)} · ${esc(i.type)}</span>${also}
+        <p class="${long ? "clamp" : ""}" id="feat-${n}">${esc(i.text)}</p>${long ? `<button type="button" class="linkbtn" data-expand="feat-${n}" aria-expanded="false">Read more</button>` : ""}</li>`;
+    })
+    .join("")}</ul>
+    <p class="meta">Source: Microsoft's Defender for Endpoint what's new page. Windows rows that Microsoft lists more than once (for example in preview and again at GA) are listed here once.</p>
+    ${source(mde.url, "What's new in Defender for Endpoint")}</div>`;
+}
 
-  const news = (data("news")?.items || []).filter((n) => osOk(n.os));
-  const newsBody = data("news")
-    ? `<div class="card">${news.length ? `<ul class="list">${news
-        .slice(0, 30)
-        .map((n) => `<li><span class="row-title">${link(n.url, n.title)}</span><div class="meta">${esc(n.source)} · ${n.published ? esc(stamp(n.published)) : "time not published"}</div>${n.summary ? `<p>${esc(n.summary)}</p>` : ""}</li>`)
-        .join("")}</ul>` : "<p>No headlines match this filter.</p>"}</div>`
-    : sectionError("news", "The news feeds");
-
-  const posts = data("community")?.posts || [];
-  const chatter = [
-    ...news.map((n) => ({ ...n, where: n.source })),
-    ...posts.map((p) => ({ ...p, where: p.community })),
+function renderFeed() {
+  const homeIds = new Set(oobStories().map((n) => n.url));
+  const news = (data("news")?.items || []).filter((n) => osOk(n.os)).map((n) => ({ ...n, kind: "news", where: n.source }));
+  const posts = (data("community")?.posts || []).map((p) => ({ ...p, kind: "reddit", where: p.community }));
+  const filter = pref.get("feedFilter", "all");
+  const DEF = /defender|mde\b|mssense|senseir|intune|antivirus|edr\b/i;
+  const tests = {
+    all: () => true,
+    defender: (x) => DEF.test(`${x.title} ${x.summary || ""}`),
+    windows: (x) => x.kind === "news" && !DEF.test(`${x.title} ${x.summary || ""}`),
+    reddit: (x) => x.kind === "reddit",
+  };
+  const all = [...news, ...posts].sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+  const items = all.filter(tests[filter] || tests.all);
+  const count = (k) => all.filter(tests[k]).length;
+  const failed = [
+    ...(data("news")?.feeds || []).filter((f) => !f.ok).map((f) => f.source),
+    ...(data("community")?.subs || []).filter((x) => !x.ok).map((x) => `r/${x.sub}`),
+  ];
+  const seg = `<div class="seg" role="tablist" aria-label="Feed filter">${[
+    ["all", "All"],
+    ["defender", "Defender"],
+    ["windows", "Windows endpoint"],
+    ["reddit", "Reddit"],
   ]
+    .map(([k, l]) => `<button type="button" role="tab" data-feed="${k}" aria-selected="${k === filter}">${l} (${count(k)})</button>`)
+    .join("")}</div>`;
+  if (!data("news") && !data("community")) return sectionError("news", "The news feeds");
+  return `<div class="card">${seg}
+    ${items.length ? `<ul class="list">${items
+      .slice(0, 40)
+      .map((x) =>
+        homeIds.has(x.url)
+          ? `<li><span class="row-title">${esc(x.title)}</span> ${pill("Zero-day", "bad")}<div class="meta">${esc(x.where)} · shown under <a href="#out-of-band">Out-of-band and zero-day</a></div></li>`
+          : `<li><span class="row-title">${link(x.url, x.title)}</span> ${x.kind === "reddit" ? pill("Reddit") : ""}<div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div>${x.summary ? `<p>${esc(x.summary)}</p>` : ""}</li>`,
+      )
+      .join("")}</ul>` : "<p>Nothing matches this filter.</p>"}
+    <p class="meta">${failed.length ? `Not loaded on the last refresh: ${esc(failed.join(", "))}. Retried at the next scheduled refresh. ` : "All news feeds and subreddits loaded on the last refresh. "}Reddit posts are community posts, not Microsoft guidance: r/DefenderATP in full, r/Intune and r/sysadmin only when a post mentions Defender.</p>
+  </div>`;
+}
+
+function renderHashes() {
+  const hashes = data("hashes")?.rows || [];
+  const short = (h) => `${h.slice(0, 12)}…${h.slice(-6)}`;
+  return `<div class="card">
+    <p>SHA-256 hashes posted publicly (TweetFeed), checked against AlienVault OTX's analysis, which includes a Microsoft Defender scan. A row marked <strong>Gap</strong> is one where another scanner names the file and Defender does not: a candidate to submit to Microsoft.</p>
+    <h3>Latest public hashes checked</h3>
+    ${data("hashes") ? (hashes.length ? `<div class="table-wrap"><table><thead><tr><th>Hash</th><th>Reported</th><th>Checked</th><th>File type</th><th>Defender (OTX)</th><th>Other scanner</th><th>Links</th></tr></thead><tbody>${hashes
+      .map((h) => `<tr><td class="mono" title="${esc(h.hash)}">${esc(short(h.hash))} <button type="button" class="btn small" data-copy="${esc(h.hash)}" aria-label="Copy hash">Copy</button></td>
+        <td>${h.reportedAt ? esc(stamp(h.reportedAt)) : ""}${h.reporter ? `<div class="meta">${esc(h.reporter)}</div>` : ""}</td>
+        <td>${h.checkedAt ? esc(stamp(h.checkedAt)) : esc(stamp(sec("hashes").lastOkAt || sec("hashes").checkedAt))}</td>
+        <td>${h.analysed ? esc(h.fileType || "unknown") : pill("Reported only")}</td>
+        <td>${h.defender ? esc(h.defender) : h.analysed ? pill(h.other ? "Gap" : "Not detected", h.other ? "bad" : "") : ""}</td>
+        <td>${esc(h.other || "")}</td>
+        <td>${link(h.vt, "VirusTotal")} · ${link(h.otx, "OTX")}</td></tr>`)
+      .join("")}</tbody></table></div>` : "<p>No Windows hashes in the feed yet.</p>") : sectionError("hashes", "The public hash feed")}
+    <p class="meta" style="margin-top:8px">Third-party, unvetted data. "Reported only" means OTX has no analysis yet; those hashes are checked again on later refreshes. The latest 20 are kept.</p>
+    <form id="hash-form" class="controls" style="margin-top:10px">
+      <label class="field" style="flex:1 1 260px">Look up a hash <input type="text" id="hash-q" placeholder="MD5, SHA-1 or SHA-256" autocomplete="off" spellcheck="false"></label>
+      <button type="submit" class="btn" style="align-self:end">Check Microsoft detection</button>
+    </form>
+    <p class="meta">Opens the hash on VirusTotal (which lists Microsoft's verdict) and on AlienVault OTX, in new tabs. Nothing is sent from this site.</p>
+  </div>`;
+}
+
+function renderIntel() {
+  const news = (data("news")?.items || []).filter((n) => osOk(n.os));
+  const posts = data("community")?.posts || [];
+  const chatter = [...news.map((n) => ({ ...n, where: n.source })), ...posts.map((p) => ({ ...p, where: p.community }))]
     .filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 14)
     .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
   const chatterBody = `<div class="card">
@@ -440,32 +672,6 @@ function renderIntel() {
       .map((x) => `<li><span class="row-title">${link(x.url, x.title)}</span><div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div></li>`)
       .join("")}</ul>` : `<p class="meta">Nothing matches right now. That is a real empty result, not a missing feed (see Source health).</p>`}
   </div>`;
-  const redditBody = data("community")
-    ? `<div class="card">${posts.length ? `<ul class="list">${posts
-        .slice(0, 20)
-        .map((p) => `<li><span class="row-title">${link(p.url, p.title)}</span><div class="meta">${esc(p.community)} · ${p.published ? esc(stamp(p.published)) : ""}</div>${p.summary ? `<p>${esc(p.summary)}</p>` : ""}</li>`)
-        .join("")}</ul>` : "<p>No posts right now.</p>"}<p class="meta">Community posts, not Microsoft guidance. r/DefenderATP is shown in full; r/Intune and r/sysadmin only when a post mentions Defender.</p></div>`
-    : sectionError("community", "Reddit");
-
-  const hashes = data("hashes")?.rows || [];
-  const short = (h) => `${h.slice(0, 12)}…${h.slice(-6)}`;
-  const hashBody = `<div class="card">
-    <p>SHA-256 hashes posted publicly today (TweetFeed), checked against AlienVault OTX's analysis, which includes a Microsoft Defender scan. A row marked <strong>Gap</strong> is one where another scanner names the file and Defender does not: a candidate to submit to Microsoft.</p>
-    ${data("hashes") ? (hashes.length ? `<div class="table-wrap"><table><thead><tr><th>Hash</th><th>Reported</th><th>File type</th><th>Defender (OTX)</th><th>Other scanner</th><th>Links</th></tr></thead><tbody>${hashes
-      .map((h) => `<tr><td class="mono" title="${esc(h.hash)}">${esc(short(h.hash))} <button type="button" class="btn small" data-copy="${esc(h.hash)}" aria-label="Copy hash">Copy</button></td>
-        <td>${h.reportedAt ? esc(ago(h.reportedAt)) : ""}${h.reporter ? `<div class="meta">${esc(h.reporter)}</div>` : ""}</td>
-        <td>${h.analysed ? esc(h.fileType || "unknown") : pill("Reported only")}</td>
-        <td>${h.defender ? esc(h.defender) : h.analysed ? pill(h.other ? "Gap" : "Not detected", h.other ? "bad" : "") : ""}</td>
-        <td>${esc(h.other || "")}</td>
-        <td>${link(h.vt, "VirusTotal")} · ${link(h.otx, "OTX")}</td></tr>`)
-      .join("")}</tbody></table></div>` : "<p>No Windows hashes in today's feed.</p>") : sectionError("hashes", "The public hash feed")}
-    <p class="meta" style="margin-top:8px">Third-party, unvetted data. "Reported only" means OTX has no analysis yet. Use it as a lead, not as proof of a miss.</p>
-    <form id="hash-form" class="controls" style="margin-top:10px">
-      <label class="field" style="flex:1 1 260px">Look up a hash <input type="text" id="hash-q" placeholder="MD5, SHA-1 or SHA-256" autocomplete="off" spellcheck="false"></label>
-      <button type="submit" class="btn" style="align-self:end">Open in VirusTotal and OTX</button>
-    </form>
-    <p class="meta">Opens the public pages in new tabs. Nothing is sent from this site.</p>
-  </div>`;
 
   const states = [
     ["Active", "The sensor is reporting. A bad signature still shows up as alerts and quarantines, not as an inactive sensor."],
@@ -473,24 +679,35 @@ function renderIntel() {
     ["No sensor data", "The device reaches the service but sends only partial data. Check that the Connected User Experiences and Telemetry service (DiagTrack) is running and that antivirus was not disabled by policy."],
     ["Inactive", "No signals for about seven days, or the device was offboarded. It is not a signature-version problem."],
   ];
+  const sense = senseInfo();
   const sensor = `<div class="card">
+    ${sense.version ? `<p><strong>Current sensor build:</strong> <code>${esc(sense.version)}</code>${sense.channel ? ` · ${esc(sense.channel)}` : ""}. ${esc(sense.when)}</p>` : ""}
     <p><strong>MsSense.exe</strong> is the Defender for Endpoint EDR sensor (service name <code>Sense</code>). It collects telemetry and sends it to the Defender portal. Its version is separate from the antivirus platform and is updated through KB5005292.</p>
     <p><strong>SenseIR.exe</strong> runs automated investigation and live response actions. It often starts PowerShell as SYSTEM, which can look alarming in process trees but is expected. Do not add allow indicators or exclusions for either file.</p>
     <p>Sensor health is in the Defender portal's device health reports, not in the antivirus signature version.</p>
     <h3 style="margin-top:12px">Sensor health states</h3>
     <div class="table-wrap"><table><thead><tr><th>State</th><th>What it means</th></tr></thead><tbody>${states.map(([a, b]) => `<tr><td><strong>${esc(a)}</strong></td><td>${esc(b)}</td></tr>`).join("")}</tbody></table></div>
+    ${source(SENSOR_TROUBLESHOOT.url, SENSOR_TROUBLESHOOT.title)}
+    ${source("https://learn.microsoft.com/en-us/defender-endpoint/check-sensor-status", "Check sensor health state")}
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors", "Fix unhealthy sensors")}
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/device-health-sensor-health-os", "Device health and sensor health reports")}
   </div>`;
 
+  const reported = (state.catalog?.features || []).filter((f) => f.status === "Reported");
+  const reportedBlock = reported.length
+    ? `<div class="card" style="margin-top:12px"><h3>Reported, not yet confirmed on Microsoft Learn</h3><ul class="list">${reported
+        .map((f) => `<li><span class="row-title">${esc(f.name)}</span> ${pill("Reported", "warn")}<p>${esc(f.summary)}</p>${source(f.docs)}</li>`)
+        .join("")}</ul></div>`
+    : "";
+
   return [
-    section("changelog", "Detection changelog", changelog, "changelog"),
-    section("features", "New Defender for Endpoint features", features + reportedBlock, "mde"),
+    section("changelog", "Detection changelog", renderChangelog(), "changelog"),
+    section("si-trend", "Security intelligence builds: last 8", renderTrend(), "changelog"),
+    section("features", "New Defender for Endpoint features", renderFeatures() + reportedBlock, "mde"),
     section("chatter", "Bad-detection chatter", chatterBody),
-    section("sensor", "Sensor (MsSense / SenseIR)", sensor),
-    section("news", "News", newsBody, "news"),
-    section("reddit", "Reddit", redditBody, "community"),
-    section("hashes", "Public hashes and Defender coverage", hashBody, "hashes"),
+    section("sensor", "Sensor (MsSense / SenseIR)", sensor, "sense"),
+    section("news", "News and Reddit", renderFeed(), "news"),
+    section("hashes", "Public hashes and Defender coverage", renderHashes(), "hashes"),
   ].join("");
 }
 
@@ -507,8 +724,9 @@ function renderAlerts() {
   for (const i of state.curated?.incidents || []) {
     if (i.status !== "Patched" && daysOld(i.date) <= 60 && !state.failedUrls?.has(i.url)) alerts.push({ tone: "bad", html: `${esc(i.name)} (${esc(i.status.toLowerCase())}). ${go("exploited", "Details")}` });
   }
-  const oob = (data("news")?.items || []).filter((n) => /out-of-band|emergency (update|patch|fix)|zero-day|actively exploited/i.test(n.title) && daysOld(n.published) <= 7 && osOk(n.os));
-  for (const n of oob.slice(0, 2)) alerts.push({ tone: "", html: `${esc(n.title)} (${esc(n.source)}, ${esc(ago(n.published))}). ${link(n.url, "Read")}` });
+  // Zero-day and out-of-band stories live in one section; the banner only points to it.
+  const oob = oobStories().filter((n) => daysOld(n.published) <= 7 && osOk(n.os));
+  if (oob.length && state.tab !== "updates") alerts.push({ tone: "", html: `${oob.length} zero-day or out-of-band ${oob.length === 1 ? "story" : "stories"} in the last 7 days. ${go("out-of-band", "Read under Out-of-band and zero-day")}` });
   const posts = data("community")?.posts || [];
   const recentChatter = [...(data("news")?.items || []), ...posts].filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 3);
   if (recentChatter.length >= 2) alerts.push({ tone: "", html: `${recentChatter.length} posts in the last 3 days mention a possible bad detection or sensor problem. ${go("chatter", "Review before widening the broad ring")}` });
@@ -521,6 +739,50 @@ function renderAlerts() {
     .join("")}</div>`;
 }
 
+// ---------- global search ----------
+function searchIndex() {
+  const out = [];
+  const add = (kind, title, text, where, url) => out.push({ kind, title, text: `${title} ${text || ""}`, where, url });
+  for (const r of data("patchTuesday")?.endpoint || []) add("CVE", `${r.cve} ${r.title}`, r.severity, "patch-tuesday", r.url);
+  for (const r of data("kev")?.rows || []) add("CVE", `${r.cve} ${r.name}`, r.summary, "exploited", r.url);
+  for (const i of state.curated?.incidents || []) add("CVE", `${i.id} ${i.name}`, i.summary, "exploited", i.url);
+  for (const r of data("knownIssues")?.rows || []) add(/KB\d+/.test(r.status) ? "KB" : "Known issue", `${r.title} (${r.status})`, r.detail, "known-issues", r.url);
+  for (const p of Array.isArray(data("packages")) ? data("packages") : []) if (p.kb) add("KB", `${p.kb} ${p.name}`, p.file, "packages", p.page);
+  if (data("sense")) add("KB", `KB5005292 Sense (MsSense.exe) ${data("sense").latest?.version || ""}`, "", "versions", data("sense").url);
+  const q = data("qualys");
+  for (const [m, v] of Object.entries(q?.months || (q ? { [q.month]: q } : {}))) add("QID", `Qualys QIDs for ${m} Patch Tuesday`, (v.qids || []).join(" "), "qualys", v.url);
+  for (const w of data("intune")?.weeks || []) {
+    if (/service release/i.test(w.week)) add("Feature", `Intune ${w.week}`, "", "intune-weekly", data("intune").url);
+    for (const i of w.items) add("Feature", `Intune: ${i.name}`, i.summary, "intune-weekly", i.url);
+  }
+  for (const i of data("intune")?.inDevelopment || []) add("Feature", `Intune in development: ${i.name}`, i.summary, "intune-dev", i.url);
+  for (const i of data("mde")?.items || []) if (!out.some((o) => o.title === `Defender for Endpoint: ${i.name}`)) add("Feature", `Defender for Endpoint: ${i.name}`, i.text, "features", i.url);
+  for (const i of data("roadmap")?.rows || []) add("Feature", `Roadmap: ${i.title}`, `${i.id} ${i.description}`, "roadmap", i.url);
+  for (const n of data("news")?.items || []) add("News", n.title, n.summary, "news", n.url);
+  for (const p of data("community")?.posts || []) add("News", `${p.community}: ${p.title}`, p.summary, "news", p.url);
+  return out;
+}
+
+function renderSearch() {
+  const box = document.getElementById("search-out");
+  if (!box) return;
+  const q = (state.searchQ || "").trim();
+  if (q.length < 2 || !state.pulse) {
+    box.innerHTML = "";
+    return;
+  }
+  // Every word must match. A number must match a whole token, so "2610" does not match "4.18.26100".
+  const tests = q.split(/\s+/).map((w) => {
+    const e = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(/^\d+$/.test(w) ? `(^|[^a-z0-9])${e}($|[^a-z0-9])` : `(^|[^a-z0-9])${e}`, "i");
+  });
+  const hits = searchIndex().filter((x) => tests.every((t) => t.test(x.text)));
+  box.innerHTML = `<div class="card"><p><strong>${hits.length} ${hits.length === 1 ? "result" : "results"}</strong> for "${esc(q)}" across CVEs, KBs, QIDs, features and news.</p>${hits.length ? `<ul class="list">${hits
+    .slice(0, 30)
+    .map((x) => `<li>${pill(x.kind)} <span class="row-title">${link(x.url, x.title)}</span> <a class="meta" href="#${esc(x.where)}">Go to section</a></li>`)
+    .join("")}</ul>` : ""}</div>`;
+}
+
 // ---------- render + events ----------
 function render() {
   renderAsOf();
@@ -531,6 +793,7 @@ function render() {
   }
   const fn = { status: renderStatus, updates: renderUpdates, intune: renderIntune, intel: renderIntel }[state.tab];
   view.innerHTML = renderAlerts() + fn();
+  renderSearch();
   document.querySelectorAll("#tabs a").forEach((a) => a.setAttribute("aria-current", a.dataset.tab === state.tab ? "page" : "false"));
   document.querySelectorAll("#os-chips button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.os === state.os)));
 }
@@ -545,7 +808,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
+  const owner = { "out-of-band": "updates", "si-trend": "intel", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
@@ -569,12 +832,88 @@ document.addEventListener("click", async (e) => {
     } catch {
       btn.textContent = "Copy failed";
     }
-    setTimeout(() => (btn.textContent = "Copy"), 1500);
+    setTimeout(() => (btn.textContent = btn.dataset.label || "Copy"), 1500);
+    return;
+  }
+  const t = e.target.closest("[data-qmonth],[data-issue-tab],[data-roadmap],[data-feed]");
+  if (t) {
+    const [key, value, id] = t.dataset.qmonth
+      ? ["qualysMonth", t.dataset.qmonth, "qualys"]
+      : t.dataset.issueTab
+        ? ["issueTab", t.dataset.issueTab, "known-issues"]
+        : t.dataset.roadmap
+          ? ["roadmapMode", t.dataset.roadmap, "roadmap"]
+          : ["feedFilter", t.dataset.feed, "news"];
+    pref.set(key, value);
+    render();
+    document.querySelector(`#${id} [aria-selected="true"]`)?.focus();
+    return;
+  }
+  const more = e.target.closest("[data-expand]");
+  if (more) {
+    const p = document.getElementById(more.dataset.expand);
+    const open = p.classList.toggle("clamp") === false;
+    more.textContent = open ? "Show less" : "Read more";
+    more.setAttribute("aria-expanded", String(open));
+    return;
+  }
+  const ex = e.target.closest("[data-export]");
+  if (ex) {
+    const out = exportRows();
+    const json = JSON.stringify(out, null, 1);
+    if (ex.dataset.export === "copy") {
+      try {
+        await navigator.clipboard.writeText(json);
+        ex.textContent = "Copied";
+      } catch {
+        ex.textContent = "Copy failed";
+      }
+      setTimeout(() => (ex.textContent = "Copy JSON"), 1500);
+      return;
+    }
+    const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const body = ex.dataset.export === "json" ? json : ["name,severity,change,url", ...out.rows.map((r) => [r.name, r.severity, r.change, r.url].map(csvCell).join(","))].join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([body], { type: ex.dataset.export === "json" ? "application/json" : "text/csv" }));
+    a.download = `detections-${out.version}.${ex.dataset.export}`;
+    document.body.append(a);
+    a.click();
+    setTimeout(() => (URL.revokeObjectURL(a.href), a.remove()), 1000);
+    return;
+  }
+  if (e.target.closest("#refresh-btn") || e.target.closest('[data-action="retry"]')) {
+    const b = e.target.closest("button");
+    b.disabled = true;
+    b.textContent = "Refreshing…";
+    try {
+      const p = await getJson("data/pulse.json", 15000, 1);
+      state.pulse = p;
+      render();
+    } catch {
+      /* keep what is shown */
+    }
+    const rb = document.getElementById("refresh-btn");
+    rb.disabled = false;
+    rb.textContent = "Refresh data";
   }
 });
 
 document.addEventListener("input", (e) => {
   const t = e.target;
+  if (t.id === "threat-q") {
+    state.threatQ = t.value;
+    const pos = t.selectionStart;
+    document.getElementById("changelog").outerHTML = section("changelog", "Detection changelog", renderChangelog(), "changelog");
+    const n = document.getElementById("threat-q");
+    n.focus();
+    n.setSelectionRange(pos, pos);
+    return;
+  }
+  if (t.id === "search-q") {
+    state.searchQ = t.value;
+    renderSearch();
+    return;
+  }
   if (t.closest("#fleet-form")) {
     const f = new FormData(t.form);
     const v = { platform: String(f.get("platform")).trim(), engine: String(f.get("engine")).trim(), si: String(f.get("si")).trim() };
@@ -587,14 +926,30 @@ document.addEventListener("change", (e) => {
   const t = e.target;
   if (t.id === "issue-scope") pref.set("issueScope", t.value);
   else if (t.id === "win-only") pref.set("winOnly", t.checked);
-  else if (t.id === "si-version") pref.set("siVersion", t.value);
-  else return;
+  else if (t.id === "si-version") {
+    pref.set("siVersion", t.value);
+    state.loadingBuild = true;
+    render();
+    document.getElementById("si-version")?.focus();
+    requestAnimationFrame(() =>
+      setTimeout(() => {
+        state.loadingBuild = false;
+        render();
+        document.getElementById("si-version")?.focus();
+      }, 150),
+    );
+    return;
+  } else return;
   const id = t.id;
   render();
   document.getElementById(id)?.focus();
 });
 
 document.addEventListener("submit", (e) => {
+  if (e.target.id === "search-form") {
+    e.preventDefault();
+    return;
+  }
   if (e.target.id !== "hash-form") return;
   e.preventDefault();
   const h = document.getElementById("hash-q").value.trim().toLowerCase();

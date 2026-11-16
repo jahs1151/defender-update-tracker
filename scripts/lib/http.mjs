@@ -3,6 +3,9 @@
 export const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 
+/** Last-Modified header of every URL fetched this run, for the Source health list. */
+export const lastModifiedSeen = new Map();
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function request(url, { timeoutMs = 20000, retries = 2, accept = "*/*", method = "GET", headers = {}, redirect = "follow" } = {}) {
@@ -16,6 +19,7 @@ export async function request(url, { timeoutMs = 20000, retries = 2, accept = "*
         signal: AbortSignal.timeout(timeoutMs),
       });
       if (res.status >= 500 || res.status === 429) throw new Error(`HTTP ${res.status}`);
+      if (res.ok) lastModifiedSeen.set(url, res.headers.get("last-modified") || "");
       return res;
     } catch (error) {
       lastError = error;

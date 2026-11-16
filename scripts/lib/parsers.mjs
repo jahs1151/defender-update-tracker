@@ -220,6 +220,14 @@ export function parseIntuneWhatsNew(html, base) {
       if (!/windows|defender|endpoint security|bitlocker|firewall|antivirus|compliance|attack surface|device control|epm|endpoint privilege/i.test(blob)) continue;
       items.push({ id: m[1] || slug(name), name, summary, url: `${base}#${m[1] || slug(name)}` });
     }
+    // Learn sometimes splits one week into a service-release heading and a plain one: merge them.
+    const date = heading.replace(/\s*\(.*$/, "").trim();
+    const same = weeks.find((w) => w.week.replace(/\s*\(.*$/, "").trim() === date);
+    if (same) {
+      same.items.push(...items);
+      if (heading.length > same.week.length) same.week = heading;
+      continue;
+    }
     weeks.push({ week: heading, items });
     if (weeks.length >= 8) break;
   }
@@ -236,10 +244,11 @@ export function parseIntuneInDevelopment(html, base) {
     const blob = `${name} ${summary}`;
     if (!name || name.length < 8) continue;
     if (/\b(android|ios|ipados|macos)\b/i.test(blob) && !/windows/i.test(blob)) continue;
-    if (!/windows|defender|endpoint security|bitlocker|firewall|antivirus|compliance/i.test(blob)) continue;
+    if (!/windows|defender|endpoint security|bitlocker|firewall|antivirus|compliance|endpoint privilege|\bepm\b|scope tag|agentic|policy configuration agent|security copilot/i.test(blob)) continue;
+    if (items.some((i) => i.name === name)) continue;
     items.push({ id: slug(name), name, summary, url: base });
   }
-  return items.slice(0, 25);
+  return items.slice(0, 30);
 }
 
 /** Defender for Endpoint what's new: one table per month (Type, Feature, Preview/GA, Description). */
@@ -283,10 +292,11 @@ export function parseSenseCatalog(html) {
     rows.push({
       version,
       date: date ? `${date[3]}-${date[1].padStart(2, "0")}-${date[2].padStart(2, "0")}` : "",
-      title: text.slice(0, 200),
+      title: text.slice(0, 300),
+      channel: /(Current Channel \((?:Broad|Staged|Preview)\)|Beta Channel)/i.exec(text)?.[1] || "",
     });
   }
-  rows.sort((a, b) => b.version.localeCompare(a.version, undefined, { numeric: true }));
+  rows.sort((a, b) => b.version.localeCompare(a.version, undefined, { numeric: true }) || (a.date || "9").localeCompare(b.date || "9"));
   return rows;
 }
 
