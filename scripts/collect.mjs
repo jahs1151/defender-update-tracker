@@ -103,11 +103,14 @@ async function main() {
     pulse.changes = previous && !previous.seed ? diffPulse(previous, pulse) : [];
   }
 
+  // A new or removed source must reach the committed snapshot too, so its stale fallback works.
+  const shapeChanged = Boolean(previous) && Object.keys(previous.sections || {}).sort().join() !== Object.keys(sections).sort().join();
+
   await writeFile(OUT, `${JSON.stringify(pulse, null, 1)}\n`);
   const okCount = Object.values(sections).filter((s) => s.ok).length;
   console.log(`pulse.json written in ${((Date.now() - started) / 1000).toFixed(1)} s · ${okCount}/${Object.keys(sections).length} sources ok · content ${changed ? "changed" : "unchanged"}`);
   for (const [key, s] of Object.entries(sections)) console.log(`  ${s.ok ? "ok  " : s.stale ? "old " : "FAIL"} ${key}: ${s.detail}`);
-  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
+  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `changed=${changed || shapeChanged}\n`);
   if (okCount === 0) process.exitCode = 1;
 }
 
