@@ -330,12 +330,27 @@ const FEEDS = [
   { source: "The Hacker News", url: "https://feeds.feedburner.com/TheHackersNews" },
 ];
 
+/** RSS fetch with plain headers first: BleepingComputer's Cloudflare answers 403 to the full browser header set from cloud runners, and 200 to this. */
+async function feedText(url) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", accept: "application/rss+xml,*/*" }, signal: AbortSignal.timeout(25000) });
+      if (res.ok) return await res.text();
+      if (attempt) throw new Error(`HTTP ${res.status}`);
+    } catch (error) {
+      if (attempt) throw error;
+    }
+    await new Promise((r) => setTimeout(r, 3000));
+  }
+  return getText(url, { timeoutMs: 25000 });
+}
+
 export async function loadNews() {
   const packs = await Promise.all(
     FEEDS.map(async (f) => {
       try {
         // RSS accept header: some feeds behind Cloudflare refuse a browser-style HTML accept from cloud runners.
-        const text = await getText(f.url, { accept: "application/rss+xml,application/xml;q=0.9,*/*;q=0.8", timeoutMs: 25000 });
+        const text = await feedText(f.url);
         const items = P.parseFeed(text, f.source, f.limit || 30);
         if (!items.length) throw new Error("Feed returned no items");
         return { source: f.source, ok: true, items };

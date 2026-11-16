@@ -115,7 +115,7 @@ async function main() {
   }
 
   const pulse = {
-    schema: 1,
+    schema: 2,
     checkedAt,
     contentChangedAt: previous?.contentChangedAt || checkedAt,
     changes: previous?.changes || [],
@@ -131,7 +131,7 @@ async function main() {
   }
 
   // A new or removed source must reach the committed snapshot too, so its stale fallback works.
-  const shapeChanged = Boolean(previous) && Object.keys(previous.sections || {}).sort().join() !== Object.keys(sections).sort().join();
+  const shapeChanged = Boolean(previous) && (previous.schema !== pulse.schema || Object.keys(previous.sections || {}).sort().join() !== Object.keys(sections).sort().join());
 
   await writeFile(OUT, `${JSON.stringify(pulse, null, 1)}\n`);
   const okCount = Object.values(sections).filter((s) => s.ok).length;
