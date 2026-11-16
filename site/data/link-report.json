@@ -1,37 +1,7 @@
 {
- "checkedAt": "2026-11-16T03:56:57.058Z",
- "links": 40,
+ "checkedAt": "2026-11-16T03:58:30.340Z",
+ "links": 41,
  "omaUris": 43,
- "failedUrls": [
-  "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-removablestorage"
- ],
- "failures": [
-  {
-   "kind": "link",
-   "url": "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-removablestorage",
-   "status": 404,
-   "error": "HTTP 404",
-   "usedBy": [
-    "policy usb-deny-all-catalog"
-   ]
-  },
-  {
-   "kind": "oma-uri",
-   "id": "usb-deny-all-catalog",
-   "uri": "./Device/Vendor/MSFT/Policy/Config/ADMX_RemovableStorage/RemovableDisks_DenyRead_Access_2",
-   "error": "Docs page did not load"
-  },
-  {
-   "kind": "oma-uri",
-   "id": "np-hash",
-   "uri": "./Vendor/MSFT/Policy/Config/Defender/EnableFileHashComputation",
-   "error": "\"EnableFileHashComputation\" not found on https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender"
-  },
-  {
-   "kind": "oma-uri",
-   "id": "ss-shell",
-   "uri": "./Vendor/MSFT/Policy/Config/SmartScreen/EnableSmartScreenInShell",
-   "error": "\"EnableSmartScreenInShell\" not found on https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/"
-  }
- ]
+ "failedUrls": [],
+ "failures": []
 }
