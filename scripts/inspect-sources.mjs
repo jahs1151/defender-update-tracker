@@ -24,8 +24,9 @@ async function run(name, fn) {
 
 await run("product updates", async () => {
   const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates");
-  show("product updates text", around(plain(html), /Platform:?\s*4\.18/i, 3, 600));
-  show("product updates html", around(html, /Platform:?\s*(<[^>]+>\s*)*4\.18/i, 2, 900));
+  show("product updates headings", [...html.matchAll(/<h([234])[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 25).map((m) => `h${m[1]} ${plain(m[2])}`).join("\n"));
+  show("product updates text", around(plain(html), /4\.18\.2\d{4}\.\d+/i, 3, 700));
+  show("product updates html", around(html, /4\.18\.2\d{4}\.\d+/i, 2, 1200));
 });
 await run("mde whats new", async () => {
   const html = await getText("https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint");
@@ -37,6 +38,10 @@ await run("msrc", async () => {
   const q = new URLSearchParams({ $filter: "releaseNumber eq '2026-Nov'", $top: "2", $count: "true" });
   const j = await getJson(`https://api.msrc.microsoft.com/sug/v2.0/en-US/vulnerability?${q}`);
   show("msrc vulnerability", JSON.stringify({ count: j["@odata.count"], next: j["@odata.nextLink"], keys: Object.keys(j.value?.[0] || {}), first: j.value?.[0] }, null, 1).slice(0, 2500));
-  const r = await getJson("https://api.msrc.microsoft.com/cvrf/v3.0/updates");
-  show("cvrf updates", JSON.stringify((r.value || []).slice(-2)));
+  const q2 = new URLSearchParams({ $filter: "releaseNumber eq '2026-Nov' and isMariner eq false", $top: "1", $count: "true" });
+  const j2 = await getJson(`https://api.msrc.microsoft.com/sug/v2.0/en-US/vulnerability?${q2}`);
+  show("msrc non-mariner", String(j2["@odata.count"]));
+  const q3 = new URLSearchParams({ $filter: "releaseNumber eq '2026-Nov' and severity eq 'Critical'", $top: "2", $count: "true" });
+  const j3 = await getJson(`https://api.msrc.microsoft.com/sug/v2.0/en-US/affectedProduct?${q3}`);
+  show("msrc affectedProduct critical", JSON.stringify({ count: j3["@odata.count"], first: j3.value?.[0] }, null, 1).slice(0, 1800));
 });
