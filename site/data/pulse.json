@@ -2,26 +2,7 @@
  "schema": 1,
  "checkedAt": "2026-11-16T03:53:28.258Z",
  "contentChangedAt": "2026-11-16T03:53:28.258Z",
- "changes": [
-  {
-   "field": "Monthly platform release",
-   "kind": "added",
-   "from": "",
-   "to": "4.18.26020.6"
-  },
-  {
-   "field": "Monthly engine release",
-   "kind": "added",
-   "from": "",
-   "to": "1.1.26020.3"
-  },
-  {
-   "field": "Patch Tuesday Windows CVEs",
-   "kind": "added",
-   "from": "",
-   "to": "723"
-  }
- ],
+ "changes": [],
  "patch": {
   "last": "2026-11-10",
   "next": "2026-12-08",
