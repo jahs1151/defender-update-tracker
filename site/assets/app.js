@@ -412,7 +412,7 @@ function renderUpdates() {
   </div>`;
 
   const stories = oobStories();
-  const since = p.last ? stamp(p.last).split(",")[0] : "the last Patch Tuesday";
+  const since = p.last ? stamp(p.last).split(",")[0].replace(/\s*\(date only\)/, "") : "the last Patch Tuesday";
   const oobBody = `<div class="card">
     <p>No out-of-band Defender security-intelligence or engine release since ${esc(since)}. Security intelligence ships several times a day and the engine monthly, so neither has an "out-of-band" release in the Windows sense; this line changes if Microsoft or the news feeds report one.</p>
     <h3 style="margin-top:10px">Zero-day and out-of-band stories since ${esc(since)}</h3>
@@ -627,7 +627,7 @@ function renderFeed() {
       .slice(0, 40)
       .map((x) =>
         homeIds.has(x.url)
-          ? `<li><span class="row-title">${esc(x.title)}</span> ${pill("Zero-day", "bad")}<div class="meta">${esc(x.where)} · shown under <a href="#out-of-band">Out-of-band and zero-day</a></div></li>`
+          ? `<li>${pill("Zero-day", "bad")} A zero-day story from ${esc(x.where)} is shown under <a href="#out-of-band">Out-of-band and zero-day</a>.</li>`
           : `<li><span class="row-title">${link(x.url, x.title)}</span> ${x.kind === "reddit" ? pill("Reddit") : ""}<div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div>${x.summary ? `<p>${esc(x.summary)}</p>` : ""}</li>`,
       )
       .join("")}</ul>` : "<p>Nothing matches this filter.</p>"}
