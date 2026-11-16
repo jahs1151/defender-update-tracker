@@ -136,3 +136,20 @@ export function cmpVersion(a, b) {
   }
   return 0;
 }
+
+/** Month code from a Defender version: 4.18.26100.4 -> 2610 (October 2026 build). */
+export function versionMonth(version) {
+  const third = String(version || "").split(".")[2] || "";
+  const code = Number(third.slice(0, 4));
+  if (!code) return null;
+  const yy = Math.floor(code / 100);
+  const mm = code % 100;
+  return mm >= 1 && mm <= 12 ? yy * 12 + (mm - 1) : null;
+}
+
+/** Months between two Defender versions by their month code (a - b), or null. */
+export function monthsBetween(a, b) {
+  const x = versionMonth(a);
+  const y = versionMonth(b);
+  return x == null || y == null ? null : x - y;
+}

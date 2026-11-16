@@ -1,6 +1,7 @@
 // Pure parsers: HTML/JSON/XML in, plain objects out. Tested against fixtures in test/fixtures.
 import { plain, tag, matchAfter, slug, toIso, osTags } from "./text.mjs";
-import { parseUsClock } from "../../site/assets/time.js";
+import { parseUsClock, versionMonth } from "../../site/assets/time.js";
+export { versionMonth };
 
 const V4 = /\d+\.\d+\.\d+\.\d+/;
 const MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December";
@@ -94,7 +95,8 @@ export function parseProductUpdates(html) {
     const engine = m[4];
     if (out.some((r) => r.platform === platform && r.engine === engine)) continue;
     const after = text.slice(m.index, m.index + 900);
-    const released = new RegExp(`Released:\\s*((?:${MONTHS})\\s+\\d{1,2},\\s*\\d{4})`, "i").exec(after)?.[1] ?? "";
+    // "Released: November 10, 2026" or "Release date: March 25, 2026 (Engine) / March 25, 2026 (Platform)"
+    const released = new RegExp(`Releas(?:ed|e date):\\s*((?:${MONTHS})\\s+\\d{1,2},\\s*\\d{4})`, "i").exec(after)?.[1] ?? "";
     const phase = /Support phase:\s*([A-Za-z ]+?(?:Updates|Support))/i.exec(after)?.[1]?.trim() ?? "";
     const si = /Security intelligence update version:\s*(\d+\.\d+\.\d+\.\d+)/i.exec(after)?.[1] ?? "";
     out.push({
@@ -239,7 +241,7 @@ export function parseIntuneInDevelopment(html, base) {
   return items.slice(0, 25);
 }
 
-/** Defender for Endpoint what's new: month h2 sections with bullet items. */
+/** Defender for Endpoint what's new: one table per month (Type, Feature, Preview/GA, Description). */
 export function parseMdeWhatsNew(html, base) {
   const items = [];
   let months = 0;
@@ -247,18 +249,21 @@ export function parseMdeWhatsNew(html, base) {
     const when = plain(section.split(/<\/h2>/i)[0] ?? "");
     if (!new RegExp(`(${MONTHS})\\s+20\\d\\d`, "i").test(when)) continue;
     if (++months > 4) break;
-    const body = section.split(/<\/h2>/i)[1] ?? "";
-    for (const li of body.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)) {
-      const text = plain(li[1]);
-      if (text.length < 30) continue;
-      if (/\b(android|ios|macos|linux)\b/i.test(text) && !/windows/i.test(text)) continue;
-      const href = /href="([^"]+)"/i.exec(li[1])?.[1] ?? "";
-      const stage = /\(preview\)|in preview|public preview/i.test(text) ? "Preview" : /generally available|\(ga\)|now available/i.test(text) ? "GA" : "Update";
+    for (const row of section.split(/<tr[\s>]/i).slice(1)) {
+      const raw = [...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((m) => m[1]);
+      if (raw.length < 4) continue;
+      const [type, feature, stage, description] = raw.map(plain);
+      const blob = `${type} ${feature} ${description}`;
+      // Keep Windows items; drop rows only about macOS, Linux, Android or iOS.
+      if (/\b(macos|linux|android|ios)\b/i.test(`${type} ${feature}`) && !/windows/i.test(blob)) continue;
+      const href = /href="([^"]+)"/i.exec(raw[1])?.[1] || /href="([^"]+)"/i.exec(raw[3])?.[1] || "";
       items.push({
-        id: `${slug(when)}-${slug(text.slice(0, 60))}`,
+        id: `${slug(when)}-${slug(feature)}`,
         when,
-        text: text.slice(0, 500),
-        stage,
+        type,
+        name: feature,
+        stage: /ga/i.test(stage) && !/preview/i.test(stage) ? "GA" : /preview/i.test(stage) ? "Preview" : stage || "Update",
+        text: description.slice(0, 500),
         url: href ? new URL(href, base).toString() : base,
       });
     }
@@ -308,23 +313,47 @@ export function filterKev(json, months = 12, now = new Date()) {
     .sort((a, b) => b.dateAdded.localeCompare(a.dateAdded));
 }
 
-/** MSRC Security Update Guide rows for a release month to a compact summary. */
-export function summarizeMsrc(rows, month) {
-  const byCve = new Map();
-  for (const r of rows) if (r.cveNumber && !byCve.has(r.cveNumber)) byCve.set(r.cveNumber, r);
-  const list = [...byCve.values()];
-  const critical = list.filter((r) => /critical/i.test(r.severity || "")).length;
-  const endpoint = list
-    .filter((r) => /defender|intune|malware protection|endpoint manager/i.test(r.cveTitle || ""))
-    .filter((r) => !/android|\blinux\b|macos|\bios\b|for identity|cloud apps|office 365/i.test(r.cveTitle || ""))
-    .map((r) => ({
+/**
+ * MSRC Security Update Guide summary.
+ * osRows: { [osId]: affectedProduct rows for that OS in the month }
+ * endpointRows: vulnerability rows whose title mentions Defender or Intune
+ * endpointSeverity: { [cve]: severity } from affectedProduct
+ */
+export function summarizeMsrc({ month, osRows, endpointRows, endpointSeverity = {} }) {
+  const perOs = {};
+  const all = new Set();
+  const critical = new Set();
+  for (const [os, rows] of Object.entries(osRows)) {
+    const cves = new Set();
+    const crit = new Set();
+    for (const r of rows) {
+      if (!r.cveNumber) continue;
+      cves.add(r.cveNumber);
+      all.add(r.cveNumber);
+      if (/critical/i.test(r.severity || "")) {
+        crit.add(r.cveNumber);
+        critical.add(r.cveNumber);
+      }
+    }
+    perOs[os] = { total: cves.size, critical: crit.size };
+  }
+  const seen = new Set();
+  const endpoint = [];
+  for (const r of endpointRows) {
+    if (!r.cveNumber || seen.has(r.cveNumber)) continue;
+    if (r.isMariner) continue;
+    const title = r.cveTitle || "";
+    if (!/defender|intune|malware protection|endpoint manager/i.test(title)) continue;
+    if (/android|\blinux\b|macos|\bios\b|for identity|cloud apps|office 365/i.test(title)) continue;
+    seen.add(r.cveNumber);
+    endpoint.push({
       cve: r.cveNumber,
-      title: r.cveTitle || "",
-      severity: r.severity || "",
-      impact: r.impact || "",
+      title,
+      severity: endpointSeverity[r.cveNumber] || r.severity || "",
       score: r.baseScore || "",
       released: toIso(r.releaseDate || r.initialReleaseDate),
       url: `https://msrc.microsoft.com/update-guide/vulnerability/${r.cveNumber}`,
-    }));
-  return { month, total: list.length, critical, endpoint };
+    });
+  }
+  return { month, windowsTotal: all.size, critical: critical.size, perOs, endpoint };
 }

@@ -16,7 +16,7 @@ const pick = (pulse) => {
     "Monthly engine release": latestProduct.engine || "",
     "Sense build": d("sense").latest?.version || "",
     "Patch Tuesday month": d("patchTuesday").month || "",
-    "Patch Tuesday CVEs": String(d("patchTuesday").total ?? ""),
+    "Patch Tuesday Windows CVEs": String(d("patchTuesday").windowsTotal ?? ""),
     "Defender or Intune CVEs": (d("patchTuesday").endpoint || []).map((r) => r.cve).join(", "),
     "Newest KEV entry": d("kev").rows?.[0]?.cve || "",
     "Open known issues": (d("knownIssues").rows || []).filter((r) => !/resolved/i.test(r.status)).map((r) => r.title),

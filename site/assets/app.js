@@ -1,4 +1,4 @@
-import { stamp, ago, cmpVersion } from "./time.js";
+import { stamp, ago, cmpVersion, monthsBetween } from "./time.js";
 
 const OS = { win11: "Win 11", srv2019: "Server 2019", srv2022: "Server 2022", srv2025: "Server 2025" };
 const ALL_OS = Object.keys(OS);
@@ -181,16 +181,26 @@ function renderStatus() {
        <p class="meta" style="margin-top:8px">mpam-fe.exe updates security intelligence and the engine, not the platform. updateplatform.exe updates only the platform. The offline image kit trails the daily signatures between Patch Tuesdays.</p></div>`
     : sectionError("packages", "The download packages");
 
+  const currentPlatform = intel?.platform || plat?.version || "";
+  const support = (platform) => {
+    const gap = monthsBetween(currentPlatform, platform);
+    if (gap == null) return "";
+    if (gap <= 0) return pill("Current (N)", "ok");
+    if (gap <= 2) return pill(`Supported (about N-${gap})`, "ok");
+    return pill("Older than N-2", "bad");
+  };
+  const latestListed = releases[0];
+  const lag = latestListed ? monthsBetween(currentPlatform, latestListed.platform) : null;
   const relRows = releases
-    .map((r, i) => {
-      const tag = i === 0 ? pill("N", "ok") : i <= 2 ? pill(`N-${i}`, "ok") : pill("Out of N-2", "warn");
-      return `<tr><td>${tag} ${esc(r.label)}</td><td class="mono">${esc(r.platform)}</td><td class="mono">${esc(r.engine)}</td><td>${r.released ? esc(stamp(r.released)) : na("Not published")}</td><td>${esc(r.supportPhase || "")}</td></tr>`;
-    })
+    .map((r) => `<tr><td>${esc(r.label)}</td><td class="mono">${esc(r.platform)}</td><td class="mono">${esc(r.engine)}</td><td>${r.released ? esc(stamp(r.released)) : na("Not published")}</td><td>${support(r.platform)}</td></tr>`)
     .join("");
-  const releaseTable = releases.length
-    ? `<div class="card table-wrap"><table><thead><tr><th>Release</th><th>Platform</th><th>Engine</th><th>Released</th><th>Support phase</th></tr></thead><tbody>${relRows}</tbody></table>
-       <p class="meta" style="margin-top:8px">Microsoft supports the current platform and engine plus the two before them (N-2). Older clients stop receiving security intelligence updates. ${link("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates", "Microsoft Defender Antivirus security intelligence and product updates")}</p></div>`
-    : sectionError("productUpdates", "The monthly platform and engine list");
+  const releaseTable = `<div class="card">
+      <p>Microsoft supports the current platform and engine plus the two monthly releases before them (N-2). Older clients stop receiving security intelligence. Defender versions carry their build month (4.18.<strong>2610</strong>0.x is an October 2026 build), so this site estimates N-2 from that month code against the current platform ${currentPlatform ? `<code>${esc(currentPlatform)}</code>` : ""}.</p>
+      ${lag != null && lag > 2 ? `<div class="notice">Microsoft's release-notes page currently lists releases only up to ${esc(latestListed.label)}, ${lag} months behind the current platform. Use the month-code estimate and Fleet compare for recent builds.</div>` : ""}
+      ${releases.length ? `<div class="table-wrap"><table><thead><tr><th>Release notes entry</th><th>Platform</th><th>Engine</th><th>Released</th><th>Support today</th></tr></thead><tbody>${relRows}</tbody></table></div>` : sectionError("productUpdates", "The monthly release notes")}
+      ${source("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates", "Microsoft Defender Antivirus security intelligence and product updates")}
+      ${source(data("productUpdates")?.url, "Monthly platform and engine release notes")}
+    </div>`;
 
   const sources = Object.entries(state.pulse.sections)
     .map(([, s]) => `<li><span class="row-title">${esc(s.label)}</span> ${s.ok ? pill("OK", "ok") : s.stale ? pill("Stale", "warn") : pill("Failed", "bad")}<div class="meta">${esc(s.detail)}</div></li>`)
@@ -221,23 +231,22 @@ function renderFleet(releases, intel) {
 
 function fleetVerdict(v, releases, intel) {
   const out = [];
-  const rank = (field, value) => {
+  const rank = (value, current) => {
     if (!value) return "";
-    const list = [...new Set(releases.map((r) => r[field]))];
-    if (!list.length) return pill("No release list yet", "warn");
-    const idx = list.findIndex((x) => cmpVersion(value, x) >= 0);
-    if (idx === 0) return pill("Current (N)", "ok");
-    if (idx === 1 || idx === 2) return pill(`Supported (N-${idx})`, "ok");
-    return pill("Older than N-2: update it", "bad");
+    if (!current) return pill("Current version not known yet", "warn");
+    if (cmpVersion(value, current) >= 0) return pill("Current (N)", "ok");
+    const gap = monthsBetween(current, value);
+    if (gap == null) return pill("Unrecognised version format", "warn");
+    if (gap <= 2) return pill(`Supported (about N-${Math.max(gap, 1)})`, "ok");
+    return pill(`About ${gap} months old: older than N-2, update it`, "bad");
   };
-  if (v.platform) out.push(`<li>Platform <code>${esc(v.platform)}</code> ${rank("platform", v.platform)}</li>`);
-  if (v.engine) out.push(`<li>Engine <code>${esc(v.engine)}</code> ${rank("engine", v.engine)}</li>`);
+  if (v.platform) out.push(`<li>Platform <code>${esc(v.platform)}</code> ${rank(v.platform, intel?.platform)}</li>`);
+  if (v.engine) out.push(`<li>Engine <code>${esc(v.engine)}</code> ${rank(v.engine, intel?.engine)}</li>`);
   if (v.si && intel?.securityIntelligence) {
     const d = cmpVersion(intel.securityIntelligence, v.si);
-    const behind = d <= 0 ? pill("Current", "ok") : pill(`Behind the current ${intel.securityIntelligence}`, "warn");
-    out.push(`<li>Security intelligence <code>${esc(v.si)}</code> ${behind}</li>`);
+    out.push(`<li>Security intelligence <code>${esc(v.si)}</code> ${d <= 0 ? pill("Current", "ok") : pill(`Behind the current ${intel.securityIntelligence}`, "warn")}</li>`);
   }
-  return out.length ? `<ul class="list">${out.join("")}</ul>` : `<p class="meta">Enter a version to compare.</p>`;
+  return out.length ? `<ul class="list">${out.join("")}</ul><p class="meta">Platform and engine support is estimated from the build month in the version number.</p>` : `<p class="meta">Enter a version to compare.</p>`;
 }
 
 // ---------- Updates tab ----------
@@ -247,9 +256,13 @@ function renderUpdates() {
   const ptBody = pt
     ? `<div class="grid">
         <div class="card"><div class="kpi-label">Release</div><div class="kpi">${esc(pt.month)}</div><div class="when">Last Patch Tuesday ${esc(stamp(p.last))}. Next ${esc(stamp(p.next))}.</div>${source(pt.url, "Security Update Guide")}</div>
-        <div class="card"><div class="kpi-label">CVEs this release</div><div class="kpi">${esc(pt.total)}</div><div class="when">${esc(pt.critical)} rated Critical</div></div>
+        <div class="card"><div class="kpi-label">Windows CVEs (in-scope versions)</div><div class="kpi">${esc(pt.windowsTotal)}</div><div class="when">${esc(pt.critical)} rated Critical</div></div>
         <div class="card"><div class="kpi-label">Defender or Intune CVEs</div><div class="kpi">${esc(pt.endpoint.length)}</div><div class="when">${pt.endpoint.length ? "Listed below" : "None this month"}</div></div>
       </div>
+      <div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>Operating system</th><th>CVEs</th><th>Critical</th></tr></thead><tbody>${Object.entries(pt.perOs || {})
+        .filter(([os]) => state.os === "all" || os === state.os)
+        .map(([os, c]) => `<tr><td>${esc(OS[os] || os)}</td><td>${esc(c.total)}</td><td>${esc(c.critical)}</td></tr>`)
+        .join("")}</tbody></table><p class="meta" style="margin-top:6px">Windows 11 counts 24H2 and 25H2 together. Counts include CVEs Microsoft added to the release after Patch Tuesday.</p></div>
       ${pt.endpoint.length ? `<div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>CVE</th><th>Title</th><th>Severity</th><th>CVSS</th><th>Released</th></tr></thead><tbody>${pt.endpoint
         .map((r) => `<tr><td>${link(r.url, r.cve)}</td><td>${esc(r.title)}</td><td>${esc(r.severity)}</td><td>${esc(r.score)}</td><td>${r.released ? esc(stamp(r.released)) : na("Time not published")}</td></tr>`)
         .join("")}</tbody></table></div>` : ""}`
@@ -422,7 +435,7 @@ function renderIntel() {
   const features = mde
     ? `<div class="card"><ul class="list">${mde.items
         .slice(0, 20)
-        .map((i) => `<li>${pill(i.stage, i.stage === "GA" ? "ok" : "")} <span class="meta">${esc(i.when)}</span><p>${link(i.url, i.text)}</p></li>`)
+        .map((i) => `<li><span class="row-title">${link(i.url, i.name)}</span> ${pill(i.stage, i.stage === "GA" ? "ok" : "")} <span class="meta">${esc(i.when)} · ${esc(i.type)}</span><p>${esc(i.text)}</p></li>`)
         .join("")}</ul>${source(mde.url, "What's new in Defender for Endpoint")}</div>`
     : sectionError("mde", "Defender for Endpoint what's new");
   const reported = (state.catalog?.features || []).filter((f) => f.status === "Reported");

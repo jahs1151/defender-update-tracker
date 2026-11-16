@@ -48,14 +48,27 @@ test("monthly platform and engine releases", () => {
   const rows = P.parseProductUpdates(fx("product-updates.html"));
   assert.equal(rows.length, 2);
   assert.deepEqual(rows[0], {
-    label: "November 2026",
-    platform: "4.18.26100.4",
-    engine: "1.1.26100.4",
-    securityIntelligence: "1.463.10.0",
-    released: "2026-11-10",
+    label: "February 2026",
+    platform: "4.18.26020.6",
+    engine: "1.1.26020.3",
+    securityIntelligence: "1.447.2.0",
+    released: "2026-03-25",
     supportPhase: "Security and Critical Updates",
   });
-  assert.equal(rows[1].supportPhase, "Technical upgrade support");
+  assert.equal(rows[1].released, "2026-02-10");
+});
+
+test("Defender for Endpoint what's new table keeps Windows rows", () => {
+  const items = P.parseMdeWhatsNew(fx("mde-whats-new.html"), "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint");
+  assert.deepEqual(items.map((i) => i.name), ["Local AI agent discovery on Windows and macOS"]);
+  assert.equal(items[0].stage, "GA");
+  assert.equal(items[0].url, "https://learn.microsoft.com/en-us/defender-endpoint/local-agent-discovery-overview");
+});
+
+test("version month code", () => {
+  assert.equal(P.versionMonth("4.18.26100.4") - P.versionMonth("4.18.26080.3"), 2);
+  assert.equal(P.versionMonth("1.1.26010.1") - P.versionMonth("1.1.25110.1"), 2);
+  assert.equal(P.versionMonth("garbage"), null);
 });
 
 test("release health known issues", () => {
@@ -109,18 +122,28 @@ test("KEV filter keeps recent Microsoft Windows and endpoint entries", () => {
 });
 
 test("MSRC month summary", () => {
-  const s = P.summarizeMsrc(
-    [
-      { cveNumber: "CVE-1", cveTitle: "Microsoft Defender Elevation of Privilege", severity: "Important", baseScore: "7.8", releaseDate: "2026-11-10T08:00:00Z" },
-      { cveNumber: "CVE-1", cveTitle: "dup", severity: "Important" },
-      { cveNumber: "CVE-2", cveTitle: "Windows Kerberos RCE", severity: "Critical" },
-      { cveNumber: "CVE-3", cveTitle: "Microsoft Defender for Endpoint for Android Spoofing", severity: "Important" },
+  const s = P.summarizeMsrc({
+    month: "2026-Nov",
+    osRows: {
+      win11: [
+        { cveNumber: "CVE-1", severity: "Important" },
+        { cveNumber: "CVE-2", severity: "Critical" },
+        { cveNumber: "CVE-2", severity: "Critical" },
+      ],
+      srv2025: [{ cveNumber: "CVE-2", severity: "Critical" }, { cveNumber: "CVE-3", severity: "Important" }],
+    },
+    endpointRows: [
+      { cveNumber: "CVE-9", cveTitle: "Microsoft Defender Elevation of Privilege Vulnerability", baseScore: "7.8", releaseDate: "2026-11-10T08:00:00-08:00" },
+      { cveNumber: "CVE-9", cveTitle: "dup" },
+      { cveNumber: "CVE-8", cveTitle: "Microsoft Defender for Endpoint for Android Spoofing" },
+      { cveNumber: "CVE-7", cveTitle: "Firefox bug", isMariner: true },
     ],
-    "2026-Nov",
-  );
-  assert.equal(s.total, 3);
+    endpointSeverity: { "CVE-9": "Important" },
+  });
+  assert.equal(s.windowsTotal, 3);
   assert.equal(s.critical, 1);
-  assert.deepEqual(s.endpoint.map((r) => r.cve), ["CVE-1"]);
+  assert.deepEqual(s.perOs.win11, { total: 2, critical: 1 });
+  assert.deepEqual(s.endpoint.map((r) => [r.cve, r.severity, r.released]), [["CVE-9", "Important", "2026-11-10T16:00:00.000Z"]]);
 });
 
 test("diff reports version changes and ignores timestamps", () => {

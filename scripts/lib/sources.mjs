@@ -2,11 +2,13 @@
 import { getText, getJson, resolveDownload, errorText } from "./http.mjs";
 import * as P from "./parsers.mjs";
 import { toIso, osTags } from "./text.mjs";
+import { secondTuesday } from "../../site/assets/time.js";
 
 export const URLS = {
   definitions: "https://www.microsoft.com/en-us/wdsi/definitions",
   changelog: "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
   productUpdates: "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
+  monthlyReleases: "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support",
   wimPage:
     "https://support.microsoft.com/en-us/servicing/management-tools/microsoft-defender/update/microsoft-defender-update-for-windows-operating-system-installation-images",
   mdeWhatsNew: "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
@@ -74,9 +76,9 @@ export async function loadIntelligence(packages) {
 
 export async function loadProductUpdates() {
   try {
-    const rows = P.parseProductUpdates(await getText(URLS.productUpdates));
+    const rows = P.parseProductUpdates(await getText(URLS.monthlyReleases));
     if (!rows.length) throw new Error("No platform/engine releases found");
-    return ok(`${rows.length} monthly platform and engine releases`, { rows, url: URLS.productUpdates });
+    return ok(`${rows.length} monthly releases listed, latest ${rows[0].label}`, { rows, url: URLS.monthlyReleases });
   } catch (error) {
     return fail(error);
   }
@@ -96,13 +98,12 @@ export async function loadChangelog() {
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const releaseNumber = (d) => `${d.getUTCFullYear()}-${MONTHS[d.getUTCMonth()]}`;
 
-async function msrcMonth(month) {
+const SUG = "https://api.msrc.microsoft.com/sug/v2.0/en-US";
+
+async function sugAll(entity, filter, maxPages = 6) {
   const rows = [];
-  let url = `https://api.msrc.microsoft.com/sug/v2.0/en-US/vulnerability?${new URLSearchParams({
-    $filter: `releaseNumber eq '${month}'`,
-    $top: "500",
-  })}`;
-  for (let page = 0; page < 6 && url; page += 1) {
+  let url = `${SUG}/${entity}?${new URLSearchParams({ $filter: filter, $top: "500" })}`;
+  for (let page = 0; page < maxPages && url; page += 1) {
     const json = await getJson(url, { timeoutMs: 30000 });
     rows.push(...(json.value || []));
     url = json["@odata.nextLink"] || "";
@@ -110,18 +111,40 @@ async function msrcMonth(month) {
   return rows;
 }
 
+const OS_PRODUCTS = {
+  win11: ["Windows 11 Version 25H2 for x64-based Systems", "Windows 11 Version 24H2 for x64-based Systems"],
+  srv2025: ["Windows Server 2025"],
+  srv2022: ["Windows Server 2022"],
+  srv2019: ["Windows Server 2019"],
+};
+
 export async function loadPatchTuesday(now = new Date()) {
   try {
-    const current = releaseNumber(now);
-    let month = current;
-    let rows = await msrcMonth(current);
-    if (!rows.length) {
-      month = releaseNumber(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1)));
-      rows = await msrcMonth(month);
-    }
-    if (!rows.length) throw new Error("No CVEs returned");
-    const summary = P.summarizeMsrc(rows, month);
-    return ok(`${month}: ${summary.total} CVEs, ${summary.endpoint.length} Defender or Intune`, { ...summary, url: "https://msrc.microsoft.com/update-guide" });
+    // Before this month's Patch Tuesday, the latest Windows release is last month's.
+    const thisPt = secondTuesday(now.getUTCFullYear(), now.getUTCMonth());
+    const ref = now.getTime() >= thisPt.getTime() + 17 * 3600000 ? now : new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
+    const month = releaseNumber(ref);
+    const osRows = {};
+    await Promise.all(
+      Object.entries(OS_PRODUCTS).map(async ([os, names]) => {
+        const filter = `releaseNumber eq '${month}' and (${names.map((n) => `product eq '${n}'`).join(" or ")})`;
+        osRows[os] = await sugAll("affectedProduct", filter);
+      }),
+    );
+    const endpointRows = await sugAll("vulnerability", `releaseNumber eq '${month}' and (contains(cveTitle,'Defender') or contains(cveTitle,'Intune') or contains(cveTitle,'Malware Protection'))`, 2);
+    const endpointSeverity = {};
+    await Promise.all(
+      endpointRows.slice(0, 15).map(async (r) => {
+        const prod = await sugAll("affectedProduct", `cveNumber eq '${r.cveNumber}'`, 1).catch(() => []);
+        endpointSeverity[r.cveNumber] = prod.find((p) => p.severity)?.severity || "";
+      }),
+    );
+    const summary = P.summarizeMsrc({ month, osRows, endpointRows, endpointSeverity });
+    if (!summary.windowsTotal) throw new Error(`No Windows CVEs returned for ${month}`);
+    return ok(`${month}: ${summary.windowsTotal} Windows CVEs, ${summary.critical} Critical, ${summary.endpoint.length} Defender or Intune`, {
+      ...summary,
+      url: "https://msrc.microsoft.com/update-guide",
+    });
   } catch (error) {
     return fail(error);
   }
