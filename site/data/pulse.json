@@ -1,19 +1,19 @@
 {
  "schema": 3,
- "checkedAt": "2026-11-17T19:23:00.129Z",
- "contentChangedAt": "2026-11-17T19:23:00.129Z",
+ "checkedAt": "2026-11-17T21:08:56.510Z",
+ "contentChangedAt": "2026-11-17T21:08:56.510Z",
  "changes": [
   {
    "field": "Security intelligence",
    "kind": "changed",
-   "from": "1.463.344.0",
-   "to": "1.463.346.0"
+   "from": "1.463.346.0",
+   "to": "1.463.347.0"
   },
   {
    "field": "mpam-fe.exe",
    "kind": "changed",
-   "from": "1.463.344.0",
-   "to": "1.463.346.0"
+   "from": "1.463.346.0",
+   "to": "1.463.347.0"
   }
  ],
  "patch": {
@@ -26,8 +26,8 @@
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
    "lastModified": "",
    "detail": "3 of 3 packages resolved · file lists for 2 · offline kit platform 4.18.26100.4",
@@ -39,12 +39,12 @@
      "kb": "KB2267602",
      "latestUrl": "https://go.microsoft.com/fwlink/?LinkID=121721&arch=x64",
      "page": "https://www.microsoft.com/en-us/wdsi/definitions",
-     "version": "1.463.346.0",
+     "version": "1.463.347.0",
      "engine": "1.1.26100.4",
      "platform": "",
-     "lastModified": "2026-11-17T14:53:04.000Z",
-     "bytes": 220604872,
-     "downloadUrl": "https://definitionupdates.microsoft.com/packages/content/mpam-fe.exe?packageType=Signatures&packageVersion=1.463.346.0&arch=amd64&engineVersion=1.1.26100.4",
+     "lastModified": "2026-11-17T17:32:59.000Z",
+     "bytes": 220617128,
+     "downloadUrl": "https://definitionupdates.microsoft.com/packages/content/mpam-fe.exe?packageType=Signatures&packageVersion=1.463.347.0&arch=amd64&engineVersion=1.1.26100.4",
      "contents": [
       "mpengine.dll",
       "mpasbase.vdm",
@@ -101,17 +101,17 @@
    "label": "Security intelligence page",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions",
    "lastModified": "",
-   "detail": "1.463.346.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
+   "detail": "1.463.347.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
    "data": {
-    "securityIntelligence": "1.463.346.0",
+    "securityIntelligence": "1.463.347.0",
     "engine": "1.1.26100.4",
     "platform": "4.18.26100.4",
-    "releasedAt": "2026-11-17T17:33:13.000Z",
-    "releasedRaw": "11/17/2026 5:33:13 PM",
+    "releasedAt": "2026-11-17T20:56:12.000Z",
+    "releasedRaw": "11/17/2026 8:56:12 PM",
     "clockZone": "UTC",
     "clockBasis": "Verified this run: read as Pacific time the release would be in the future, so the page clock is UTC.",
     "url": "https://www.microsoft.com/en-us/wdsi/definitions"
@@ -121,8 +121,8 @@
    "label": "Platform and engine release list (Learn)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support",
    "lastModified": "2026-10-29T17:36:51.000Z",
    "detail": "8 monthly releases listed, latest February 2026",
@@ -200,68 +200,122 @@
    "label": "Detection changelog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
    "lastModified": "",
-   "detail": "1.463.346.0 · 111 detections · 10 versions kept",
+   "detail": "1.463.347.0 · 103 detections · 10 versions kept",
    "data": {
-    "version": "1.463.346.0",
-    "releasedRaw": "11/17/2026 5:26:59 PM",
+    "version": "1.463.347.0",
+    "releasedRaw": "11/17/2026 8:51:51 PM",
     "rows": [
      {
-      "name": "Behavior:MacOS/SuspClickFixExec.A",
+      "name": "Exploit:Python/CVE-2025-3248.JO!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Behavior:MacOS/SuspClickFixExec.A&ThreatID=2147982267"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Exploit:Python/CVE-2025-3248.JO!MTB&ThreatID=2147982276"
      },
      {
-      "name": "Trojan:MSIL/Remcos.AV!MTB",
+      "name": "Exploit:Python/CVE-2026-123039.KO!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/Remcos.AV!MTB&ThreatID=2147982270"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Exploit:Python/CVE-2026-123039.KO!MTB&ThreatID=2147982275"
      },
      {
-      "name": "Trojan:VBS/GuLoader.EP!MTB",
+      "name": "Ransom:Win32/Tibbar.AT!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/GuLoader.EP!MTB&ThreatID=2147982265"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Tibbar.AT!MTB&ThreatID=2147982293"
      },
      {
-      "name": "Trojan:VBS/RemcosRAT.EQ!MTB",
+      "name": "Trojan:JS/Obfuse.PABM!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/RemcosRAT.EQ!MTB&ThreatID=2147982266"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/Obfuse.PABM!MTB&ThreatID=2147982274"
      },
      {
-      "name": "Trojan:Win32/Mikey.SE!MTB",
+      "name": "Trojan:Win32/Copak.PC!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Mikey.SE!MTB&ThreatID=2147982273"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Copak.PC!MTB&ThreatID=2147982290"
      },
      {
-      "name": "Trojan:Win32/Rootkit.LR!MTB",
+      "name": "Trojan:Win32/WinLNK.VT!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Rootkit.LR!MTB&ThreatID=2147982269"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/WinLNK.VT!MTB&ThreatID=2147982277"
      },
      {
-      "name": "Trojan:Win32/ValleyRat.JX!MTB",
+      "name": "Trojan:Win32/Yogi.AB!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/ValleyRat.JX!MTB&ThreatID=2147982271"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Yogi.AB!MTB&ThreatID=2147982291"
      },
      {
-      "name": "Trojan:Win64/Tedy.BS!MTB",
+      "name": "Trojan:Win64/FileCoder.C!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Tedy.BS!MTB&ThreatID=2147982272"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/FileCoder.C!MTB&ThreatID=2147982292"
      },
      {
-      "name": "Trojan:Win64/TinyNuke.LR!MTB",
+      "name": "Trojan:Win64/Vidar.KVT!MTB",
       "severity": "severe",
       "change": "added",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/TinyNuke.LR!MTB&ThreatID=2147982268"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Vidar.KVT!MTB&ThreatID=2147982289"
+     },
+     {
+      "name": "VulnerableDriver:Win32/aswsnx.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/aswsnx.sys&ThreatID=2147982287"
+     },
+     {
+      "name": "VulnerableDriver:Win32/avalueio.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/avalueio.sys&ThreatID=2147982284"
+     },
+     {
+      "name": "VulnerableDriver:Win32/cp2x72c.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/cp2x72c.sys&ThreatID=2147982278"
+     },
+     {
+      "name": "VulnerableDriver:Win32/ksapi.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/ksapi.sys&ThreatID=2147982279"
+     },
+     {
+      "name": "VulnerableDriver:Win32/monitor.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/monitor.sys&ThreatID=2147982288"
+     },
+     {
+      "name": "VulnerableDriver:Win32/nvoclock.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/nvoclock.sys&ThreatID=2147982286"
+     },
+     {
+      "name": "VulnerableDriver:Win32/pcdsrvc.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/pcdsrvc.sys&ThreatID=2147982280"
+     },
+     {
+      "name": "VulnerableDriver:Win32/rtsper.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/rtsper.sys&ThreatID=2147982281"
+     },
+     {
+      "name": "VulnerableDriver:Win32/sysdiag.sys",
+      "severity": "severe",
+      "change": "added",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/sysdiag.sys&ThreatID=2147982285"
      },
      {
       "name": "Adware:AndroidOS/Ewind!rfn",
@@ -276,82 +330,46 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Linux/Multiverze!rfn&ThreatID=2147936292"
      },
      {
-      "name": "Backdoor:MSIL/BlankPage.F!dha",
+      "name": "Backdoor:Win32/Remcos!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:MSIL/BlankPage.F!dha&ThreatID=2147961010"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/Remcos!rfn&ThreatID=2147735605"
      },
      {
-      "name": "Backdoor:Win32/Berbew!rfn",
+      "name": "Backdoor:Win64/PortStarter!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/Berbew!rfn&ThreatID=2147692330"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win64/PortStarter!rfn&ThreatID=2147938828"
      },
      {
-      "name": "Backdoor:Win32/Coroxy!rfn",
+      "name": "Backdoor:Win64/Supper!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win32/Coroxy!rfn&ThreatID=2147816362"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Backdoor:Win64/Supper!rfn&ThreatID=2147930237"
      },
      {
-      "name": "Behavior:Linux/CVE-2026-42945.A",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Behavior:Linux/CVE-2026-42945.A&ThreatID=2147969348"
-     },
-     {
-      "name": "Behavior:Linux/CVE-2026-42945.B",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Behavior:Linux/CVE-2026-42945.B&ThreatID=2147969349"
-     },
-     {
-      "name": "Behavior:Linux/CVE-2026-42945.D",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Behavior:Linux/CVE-2026-42945.D&ThreatID=2147969351"
-     },
-     {
-      "name": "Behavior:Linux/CVE-2026-42945.F",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Behavior:Linux/CVE-2026-42945.F&ThreatID=2147969353"
-     },
-     {
-      "name": "Behavior:Linux/CVE-2026-42945.G",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Behavior:Linux/CVE-2026-42945.G&ThreatID=2147969354"
-     },
-     {
-      "name": "Exploit:O97M/CVE-2017-11882!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Exploit:O97M/CVE-2017-11882!rfn&ThreatID=2147724772"
-     },
-     {
-      "name": "HackTool:AndroidOS/Mesploit!rfn",
+      "name": "HackTool:Linux/Multiverze!rfn",
       "severity": "high",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:AndroidOS/Mesploit!rfn&ThreatID=2147752932"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Linux/Multiverze!rfn&ThreatID=2147935533"
      },
      {
-      "name": "HackTool:Win32/Agent",
+      "name": "HackTool:MacOS/Crack!rfn",
       "severity": "high",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Agent&ThreatID=2147583762"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:MacOS/Crack!rfn&ThreatID=2147976443"
      },
      {
-      "name": "HackTool:Win32/Crack!MTB",
+      "name": "HackTool:PowerShell/DumpDBCreds!rfn",
       "severity": "high",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win32/Crack!MTB&ThreatID=2147745913"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:PowerShell/DumpDBCreds!rfn&ThreatID=2147949266"
      },
      {
-      "name": "Joke:Win32/ScreenMate",
-      "severity": "moderate",
+      "name": "HackTool:Win64/Mimikatz!rfn",
+      "severity": "high",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Joke:Win32/ScreenMate&ThreatID=2147762940"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=HackTool:Win64/Mimikatz!rfn&ThreatID=2147783679"
      },
      {
       "name": "Program:MacOS/Multiverze!rfn",
@@ -360,52 +378,34 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Program:MacOS/Multiverze!rfn&ThreatID=449882"
      },
      {
-      "name": "PWS:MSIL/Dcstl!rfn",
-      "severity": "severe",
+      "name": "Program:Script/Multiverze!rfn",
+      "severity": "high",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=PWS:MSIL/Dcstl!rfn&ThreatID=2147760723"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Program:Script/Multiverze!rfn&ThreatID=467873"
      },
      {
-      "name": "PWS:Win32/Fareit!rfn",
+      "name": "Ransom:Win32/Royal!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=PWS:Win32/Fareit!rfn&ThreatID=2147806621"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Royal!rfn&ThreatID=2147930589"
      },
      {
-      "name": "Ransom:BAT/BitLocker!rfn",
+      "name": "Ransom:Win64/LockBit!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:BAT/BitLocker!rfn&ThreatID=2147956759"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win64/LockBit!rfn&ThreatID=2147930606"
      },
      {
-      "name": "Ransom:Win32/BlackCat!rfn",
+      "name": "Ransom:Win64/Trigona!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/BlackCat!rfn&ThreatID=2147843525"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win64/Trigona!rfn&ThreatID=2147931963"
      },
      {
-      "name": "Ransom:Win32/ContiCrypt!rfn",
+      "name": "Trojan:ALisp/Duxfas.D",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/ContiCrypt!rfn&ThreatID=2147930371"
-     },
-     {
-      "name": "Ransom:Win32/Rapidstop!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Rapidstop!rfn&ThreatID=2147933303"
-     },
-     {
-      "name": "Ransom:Win64/Magniber!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win64/Magniber!rfn&ThreatID=2147819685"
-     },
-     {
-      "name": "Tool:AndroidOS/Multiverze!rfn",
-      "severity": "moderate",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Tool:AndroidOS/Multiverze!rfn&ThreatID=450201"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:ALisp/Duxfas.D&ThreatID=2147730848"
      },
      {
       "name": "Trojan:AndroidOS/Autopay!rfn",
@@ -420,10 +420,10 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:AndroidOS/AVerseFalc!rfn&ThreatID=2147932745"
      },
      {
-      "name": "Trojan:AndroidOS/Spynote!rfn",
+      "name": "Trojan:AndroidOS/BTMOBRat!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:AndroidOS/Spynote!rfn&ThreatID=2147752915"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:AndroidOS/BTMOBRat!rfn&ThreatID=2147976287"
      },
      {
       "name": "Trojan:BAT/Salatloader.PS!MTB",
@@ -432,22 +432,40 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:BAT/Salatloader.PS!MTB&ThreatID=2147981894"
      },
      {
-      "name": "Trojan:JS/ModiLoader!rfn",
+      "name": "Trojan:JS/Casdet!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/ModiLoader!rfn&ThreatID=2147979515"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/Casdet!rfn&ThreatID=2147925267"
      },
      {
-      "name": "Trojan:JS/QakbotLNK!rfn",
+      "name": "Trojan:JS/ClickFix!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/QakbotLNK!rfn&ThreatID=2147930378"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/ClickFix!rfn&ThreatID=2147981745"
      },
      {
-      "name": "Trojan:Linux/Multiverze!rfn",
+      "name": "Trojan:JS/GuLoader.PA!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Linux/Multiverze!rfn&ThreatID=2147933078"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/GuLoader.PA!MTB&ThreatID=2147958269"
+     },
+     {
+      "name": "Trojan:JS/GuLoader.PB!MTB",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/GuLoader.PB!MTB&ThreatID=2147958641"
+     },
+     {
+      "name": "Trojan:JS/IcedID!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/IcedID!rfn&ThreatID=2147933910"
+     },
+     {
+      "name": "Trojan:JS/Qakbot!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:JS/Qakbot!rfn&ThreatID=2147943101"
      },
      {
       "name": "Trojan:MacOS/Multiverze!rfn",
@@ -456,16 +474,16 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MacOS/Multiverze!rfn&ThreatID=2147933097"
      },
      {
-      "name": "Trojan:MSIL/AmsiBypass!rfn",
+      "name": "Trojan:MSIL/ClipBanker!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/AmsiBypass!rfn&ThreatID=2147923852"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/ClipBanker!rfn&ThreatID=2147751271"
      },
      {
-      "name": "Trojan:NPM/Multiverze!rfn",
+      "name": "Trojan:MSIL/Remcos.AV!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:NPM/Multiverze!rfn&ThreatID=2147980043"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:MSIL/Remcos.AV!MTB&ThreatID=2147982270"
      },
      {
       "name": "Trojan:O97M/DDownloader!rfn",
@@ -474,22 +492,22 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:O97M/DDownloader!rfn&ThreatID=2147752927"
      },
      {
-      "name": "Trojan:PDF/Phish!rfn",
+      "name": "Trojan:PowerShell/GuLoader.PS!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:PDF/Phish!rfn&ThreatID=2147722521"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:PowerShell/GuLoader.PS!MTB&ThreatID=2147961216"
      },
      {
-      "name": "Trojan:PowerShell/LummaStealer!rfn",
+      "name": "Trojan:PowerShell/GuLoader.PT!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:PowerShell/LummaStealer!rfn&ThreatID=2147933980"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:PowerShell/GuLoader.PT!MTB&ThreatID=2147961768"
      },
      {
-      "name": "Trojan:Python/Multiverze!rfn",
+      "name": "Trojan:PowerShell/Obfuse.PE!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Python/Multiverze!rfn&ThreatID=2147933408"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:PowerShell/Obfuse.PE!MTB&ThreatID=2147960526"
      },
      {
       "name": "Trojan:Script/Multiverze!rfn",
@@ -504,28 +522,16 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Emotet!rfn&ThreatID=2147930488"
      },
      {
-      "name": "Trojan:VBS/GuLoader.PE!MTB",
+      "name": "Trojan:VBS/Obfuse!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/GuLoader.PE!MTB&ThreatID=2147982217"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Obfuse!rfn&ThreatID=2147761141"
      },
      {
-      "name": "Trojan:VBS/GuLoader.PF!MTB",
+      "name": "Trojan:VBS/Turla!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/GuLoader.PF!MTB&ThreatID=2147982219"
-     },
-     {
-      "name": "Trojan:VBS/Pterodo!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Pterodo!rfn&ThreatID=2147933423"
-     },
-     {
-      "name": "Trojan:Win32/BypassUAC!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/BypassUAC!rfn&ThreatID=2147942936"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:VBS/Turla!rfn&ThreatID=2147981310"
      },
      {
       "name": "Trojan:Win32/Casdet!rfn",
@@ -534,10 +540,16 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Casdet!rfn&ThreatID=2147727512"
      },
      {
-      "name": "Trojan:Win32/CoinMiner!rfn",
+      "name": "Trojan:Win32/CleanUpLoaderLNK!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/CoinMiner!rfn&ThreatID=2147693577"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/CleanUpLoaderLNK!rfn&ThreatID=2147951699"
+     },
+     {
+      "name": "Trojan:Win32/Copak.PC!MTB",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Copak.PC!MTB&ThreatID=2147982290"
      },
      {
       "name": "Trojan:Win32/Coroxy!rfn",
@@ -546,16 +558,10 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Coroxy!rfn&ThreatID=2147774048"
      },
      {
-      "name": "Trojan:Win32/CryptInject!rfn",
+      "name": "Trojan:Win32/DarkGate!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/CryptInject!rfn&ThreatID=2147727951"
-     },
-     {
-      "name": "Trojan:Win32/DllInject!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/DllInject!rfn&ThreatID=2147819010"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/DarkGate!rfn&ThreatID=2147922448"
      },
      {
       "name": "Trojan:Win32/Dorv!rfn",
@@ -570,24 +576,6 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Egairtigado!rfn&ThreatID=2147925178"
      },
      {
-      "name": "Trojan:Win32/Etset!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Etset!rfn&ThreatID=2147927548"
-     },
-     {
-      "name": "Trojan:Win32/Farfli.LR!MTB",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Farfli.LR!MTB&ThreatID=2147981437"
-     },
-     {
-      "name": "Trojan:Win32/FormBook!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/FormBook!rfn&ThreatID=2147749134"
-     },
-     {
       "name": "Trojan:Win32/Glupteba!rfn",
       "severity": "severe",
       "change": "updated",
@@ -600,28 +588,10 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Graftor!rfn&ThreatID=2147748850"
      },
      {
-      "name": "Trojan:Win32/Grandoreiro!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Grandoreiro!rfn&ThreatID=2147762695"
-     },
-     {
-      "name": "Trojan:Win32/Kazadm!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Kazadm!rfn&ThreatID=2147933096"
-     },
-     {
       "name": "Trojan:Win32/Kepavll!rfn",
       "severity": "severe",
       "change": "updated",
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Kepavll!rfn&ThreatID=2147939874"
-     },
-     {
-      "name": "Trojan:Win32/Krap!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Krap!rfn&ThreatID=2147949989"
      },
      {
       "name": "Trojan:Win32/Leonem!rfn",
@@ -636,10 +606,10 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Malgent&ThreatID=2147794830"
      },
      {
-      "name": "Trojan:Win32/MereTam!rfn",
+      "name": "Trojan:Win32/Malgent!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/MereTam!rfn&ThreatID=2147728185"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Malgent!rfn&ThreatID=2147744130"
      },
      {
       "name": "Trojan:Win32/PlugX!rfn",
@@ -654,12 +624,6 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Pomal!rfn&ThreatID=2147925201"
      },
      {
-      "name": "Trojan:Win32/Qakbot!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Qakbot!rfn&ThreatID=2147741188"
-     },
-     {
       "name": "Trojan:Win32/Qwexlafiba!rfn",
       "severity": "severe",
       "change": "updated",
@@ -672,22 +636,16 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Ravartar!rfn&ThreatID=2147965211"
      },
      {
+      "name": "Trojan:Win32/SalatStealer!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/SalatStealer!rfn&ThreatID=2147946594"
+     },
+     {
       "name": "Trojan:Win32/Seheq!rfn",
       "severity": "severe",
       "change": "updated",
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Seheq!rfn&ThreatID=2147754938"
-     },
-     {
-      "name": "Trojan:Win32/Skeeyah.A!MTB",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Skeeyah.A!MTB&ThreatID=2147729042"
-     },
-     {
-      "name": "Trojan:Win32/SmokeLoader.FT!MTB",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/SmokeLoader.FT!MTB&ThreatID=2147835070"
      },
      {
       "name": "Trojan:Win32/Suschil!rfn",
@@ -696,28 +654,34 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Suschil!rfn&ThreatID=2147927547"
      },
      {
-      "name": "Trojan:Win32/Swisyn!rfn",
+      "name": "Trojan:Win32/Urelas!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Swisyn!rfn&ThreatID=2147709636"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Urelas!rfn&ThreatID=2147692542"
      },
      {
-      "name": "Trojan:Win32/Tedy!MTB",
+      "name": "Trojan:Win32/ValleyRAT!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Tedy!MTB&ThreatID=2147831076"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/ValleyRAT!rfn&ThreatID=2147930616"
      },
      {
-      "name": "Trojan:Win32/Tiggre!rfn",
+      "name": "Trojan:Win32/ValleyRAT.GG!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Tiggre!rfn&ThreatID=2147723625"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/ValleyRAT.GG!MTB&ThreatID=2147981731"
      },
      {
-      "name": "Trojan:Win32/WinLNK!rfn",
+      "name": "Trojan:Win32/XWorm!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/WinLNK!rfn&ThreatID=2147728186"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/XWorm!rfn&ThreatID=2147941925"
+     },
+     {
+      "name": "Trojan:Win32/Ymacco!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Ymacco!rfn&ThreatID=2147757256"
      },
      {
       "name": "Trojan:Win32/Yomal!rfn",
@@ -738,82 +702,70 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win32/Zusy!rfn&ThreatID=2147922450"
      },
      {
-      "name": "Trojan:Win64/AcrStealer!rfn",
+      "name": "Trojan:Win64/BazaarLoader!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/AcrStealer!rfn&ThreatID=2147948238"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/BazaarLoader!rfn&ThreatID=2147934207"
      },
      {
-      "name": "Trojan:Win64/BumbleBee!rfn",
+      "name": "Trojan:Win64/Coins!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/BumbleBee!rfn&ThreatID=2147930481"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Coins!rfn&ThreatID=2147978954"
      },
      {
-      "name": "Trojan:Win64/Convagent!MTB",
+      "name": "Trojan:Win64/Convagent.B!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Convagent!MTB&ThreatID=2147834592"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Convagent.B!MTB&ThreatID=2147976969"
      },
      {
-      "name": "Trojan:Win64/Convagent!rfn",
+      "name": "Trojan:Win64/CryptInject!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Convagent!rfn&ThreatID=2147932927"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/CryptInject!rfn&ThreatID=2147746835"
      },
      {
-      "name": "Trojan:Win64/Dacic!MTB",
+      "name": "Trojan:Win64/IcedID!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Dacic!MTB&ThreatID=2147853387"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/IcedID!rfn&ThreatID=2147779528"
      },
      {
-      "name": "Trojan:Win64/DisguisedXMRigMiner!rfn",
+      "name": "Trojan:Win64/Mikey!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/DisguisedXMRigMiner!rfn&ThreatID=2147923778"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Mikey!rfn&ThreatID=2147930308"
      },
      {
-      "name": "Trojan:Win64/Dllinject.DL!MTB",
+      "name": "Trojan:Win64/OysterLoader!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Dllinject.DL!MTB&ThreatID=2147981986"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/OysterLoader!rfn&ThreatID=2147943429"
      },
      {
-      "name": "Trojan:Win64/Emotet!rfn",
+      "name": "Trojan:Win64/RustyStealer!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Emotet!rfn&ThreatID=2147728455"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/RustyStealer!rfn&ThreatID=2147933021"
      },
      {
-      "name": "Trojan:Win64/Filecoder!MTB",
+      "name": "Trojan:Win64/StealC.RH!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Filecoder!MTB&ThreatID=2147831131"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/StealC.RH!MTB&ThreatID=2147955847"
      },
      {
-      "name": "Trojan:Win64/OverlordRAT!rfn",
+      "name": "Trojan:Win64/Tedy.PD!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/OverlordRAT!rfn&ThreatID=2147978197"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Tedy.PD!MTB&ThreatID=2147982057"
      },
      {
-      "name": "Trojan:Win64/SalatStealer.NMX!MTB",
+      "name": "Trojan:Win64/ValleyRAT.GH!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/SalatStealer.NMX!MTB&ThreatID=2147970421"
-     },
-     {
-      "name": "Trojan:Win64/Stealer!MTB",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Stealer!MTB&ThreatID=2147851191"
-     },
-     {
-      "name": "Trojan:Win64/Tedy!MTB",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Tedy!MTB&ThreatID=2147834301"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/ValleyRAT.GH!MTB&ThreatID=2147982260"
      },
      {
       "name": "Trojan:Win64/Vidar!AMTB",
@@ -828,22 +780,10 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Vidar!MTB&ThreatID=2147834800"
      },
      {
-      "name": "Trojan:Win64/Yogi.SX!MTB",
+      "name": "TrojanDownloader:BAT/QakBotLoader!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Yogi.SX!MTB&ThreatID=2147982104"
-     },
-     {
-      "name": "Trojan:Win64/ZLoaderE!rfn",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/ZLoaderE!rfn&ThreatID=2147938869"
-     },
-     {
-      "name": "Trojan:Win64/Zusy!MTB",
-      "severity": "severe",
-      "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Trojan:Win64/Zusy!MTB&ThreatID=2147832344"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDownloader:BAT/QakBotLoader!rfn&ThreatID=2147930410"
      },
      {
       "name": "TrojanDownloader:JS/Qakbot!rfn",
@@ -852,31 +792,44 @@
       "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDownloader:JS/Qakbot!rfn&ThreatID=2147709459"
      },
      {
-      "name": "VirTool:INF/Autorun!rfn",
+      "name": "TrojanDropper:Win32/Henbang!rfn",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:INF/Autorun!rfn&ThreatID=2147692059"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:Win32/Henbang!rfn&ThreatID=2147692770"
      },
      {
-      "name": "VirTool:Win32/Autorun!rfn",
+      "name": "TrojanDropper:Win64/SalatStealer.ERK!MTB",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VirTool:Win32/Autorun!rfn&ThreatID=2147727087"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:Win64/SalatStealer.ERK!MTB&ThreatID=2147978054"
      },
      {
-      "name": "Worm:Win32/Picsys!rfn",
+      "name": "VulnerableDriver:Win32/computerz.sys",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Worm:Win32/Picsys!rfn&ThreatID=2147693346"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/computerz.sys&ThreatID=2147982283"
      },
      {
-      "name": "Worm:Win32/Soltern!rfn",
+      "name": "VulnerableDriver:Win32/monitor.sys",
       "severity": "severe",
       "change": "updated",
-      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Worm:Win32/Soltern!rfn&ThreatID=2147692667"
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/monitor.sys&ThreatID=2147982288"
+     },
+     {
+      "name": "VulnerableDriver:Win32/truesight.sys",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=VulnerableDriver:Win32/truesight.sys&ThreatID=2147982282"
+     },
+     {
+      "name": "Worm:Win32/Wenper!rfn",
+      "severity": "severe",
+      "change": "updated",
+      "url": "https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Worm:Win32/Wenper!rfn&ThreatID=2147694205"
      }
     ],
     "versions": [
+     "1.463.347.0",
      "1.463.346.0",
      "1.463.344.0",
      "1.463.342.0",
@@ -1075,10 +1028,17 @@
      "1.461.158.0",
      "1.461.156.0",
      "1.461.155.0",
-     "1.461.145.0",
-     "1.461.144.0"
+     "1.461.145.0"
     ],
     "history": [
+     {
+      "version": "1.463.347.0",
+      "releasedRaw": "11/17/2026 8:51:51 PM",
+      "releasedAt": "2026-11-17T20:51:51.000Z",
+      "added": 18,
+      "updated": 85,
+      "file": "data/changelog/1.463.347.0.json"
+     },
      {
       "version": "1.463.346.0",
       "releasedRaw": "11/17/2026 5:26:59 PM",
@@ -1150,26 +1110,18 @@
       "added": 6,
       "updated": 5,
       "file": "data/changelog/1.463.330.0.json"
-     },
-     {
-      "version": "1.463.329.0",
-      "releasedRaw": "11/16/2026 1:37:15 PM",
-      "releasedAt": "2026-11-16T13:37:15.000Z",
-      "added": 3,
-      "updated": 87,
-      "file": "data/changelog/1.463.329.0.json"
      }
     ],
     "url": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
-    "releasedAt": "2026-11-17T17:26:59.000Z"
+    "releasedAt": "2026-11-17T20:51:51.000Z"
    }
   },
   "sense": {
    "label": "Sense (EDR sensor) build, Update Catalog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292",
    "lastModified": "",
    "detail": "Latest 10.8839.26080.2008 · Current Channel (Broad)",
@@ -1199,8 +1151,8 @@
    "label": "Security Update Guide (MSRC API)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://msrc.microsoft.com/update-guide",
    "lastModified": "",
    "detail": "2026-Nov: 723 Windows CVEs, 35 Critical, 2 Defender or Intune · 2 months kept",
@@ -1217,13 +1169,13 @@
       "total": 690,
       "critical": 33
      },
-     "win11": {
-      "total": 661,
-      "critical": 33
-     },
      "srv2022": {
       "total": 651,
       "critical": 30
+     },
+     "win11": {
+      "total": 661,
+      "critical": 33
      }
     },
     "endpoint": [
@@ -1258,13 +1210,13 @@
         "total": 690,
         "critical": 33
        },
-       "win11": {
-        "total": 661,
-        "critical": 33
-       },
        "srv2022": {
         "total": 651,
         "critical": 30
+       },
+       "win11": {
+        "total": 661,
+        "critical": 33
        }
       },
       "endpoint": [
@@ -1343,8 +1295,8 @@
    "label": "CISA Known Exploited Vulnerabilities",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
    "lastModified": "2026-11-17T17:53:15.000Z",
    "detail": "19 Microsoft Windows or endpoint entries in 12 months",
@@ -2073,8 +2025,8 @@
    "label": "Windows release health",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://learn.microsoft.com/en-us/windows/release-health/",
    "lastModified": "2026-11-13T18:07:39.000Z",
    "detail": "1 open across 5 pages",
@@ -2201,8 +2153,8 @@
    "label": "Intune what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://learn.microsoft.com/en-us/intune/whats-new/",
    "lastModified": "2026-11-17T18:35:20.000Z",
    "detail": "7 weeks with 24 Windows or security items · 14 in-development items",
@@ -2487,8 +2439,8 @@
    "label": "Defender for Endpoint what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
    "lastModified": "2026-11-13T23:35:06.000Z",
    "detail": "4 Windows items",
@@ -2547,8 +2499,8 @@
    "label": "News feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.microsoft.com/en-us/security/blog/",
    "lastModified": "",
    "detail": "13 relevant headlines from 5 feeds",
@@ -2770,13 +2722,21 @@
    "label": "Reddit (via Arctic Shift)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.reddit.com/r/DefenderATP/",
    "lastModified": "",
-   "detail": "28 posts",
+   "detail": "29 posts",
    "data": {
     "posts": [
+     {
+      "id": "/r/sysadmin/comments/1xyus9e/anyone_else_see_their_attack_surface_reduction/",
+      "community": "r/sysadmin",
+      "title": "Anyone else see their Attack Surface Reduction rule detections in Defender flatline after 11/12?",
+      "url": "https://www.reddit.com/r/sysadmin/comments/1xyus9e/anyone_else_see_their_attack_surface_reduction/",
+      "published": "2026-11-17T20:08:23.000Z",
+      "summary": "Did my morning check yesterday and today and my detections went from a few hundred a day down to single digits. Noisy rules like \"Block credential stealing from the Windows local security authority subsystem (lsass.exe)\" catching run of the mill stuff like svchost and lenovo cont"
+     },
      {
       "id": "/r/DefenderATP/comments/1xy3qic/asr_audit_rule_svchost_and/",
       "community": "r/DefenderATP",
@@ -3022,8 +2982,8 @@
    "label": "Qualys Patch Tuesday QIDs",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://threatprotect.qualys.com/",
    "lastModified": "",
    "detail": "19 QIDs for 2026-Nov, 28 QIDs for 2026-Oct",
@@ -3119,24 +3079,136 @@
    "label": "Public hashes (TweetFeed + AlienVault OTX)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://tweetfeed.live/",
    "lastModified": "",
-   "detail": "20 Windows hashes kept, 4 analysed, 0 where another scanner names it and Defender does not",
+   "detail": "20 Windows hashes kept, 7 analysed, 0 where another scanner names it and Defender does not",
    "data": {
     "rows": [
+     {
+      "hash": "6f1827539a5a2471eb2c57a07e271c08a525f0b24e8f0dfc29a6b145607119fe",
+      "reportedAt": "2026-11-17T20:40:43.000Z",
+      "reporter": "rifteyy",
+      "tags": "",
+      "tweet": "https://x.com/rifteyy/status/2122755909361234061",
+      "analysed": true,
+      "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:57.966Z",
+      "vt": "https://www.virustotal.com/gui/file/6f1827539a5a2471eb2c57a07e271c08a525f0b24e8f0dfc29a6b145607119fe",
+      "otx": "https://otx.alienvault.com/indicator/file/6f1827539a5a2471eb2c57a07e271c08a525f0b24e8f0dfc29a6b145607119fe"
+     },
+     {
+      "hash": "031f6de77e27b282f11f74564acff3c64145315bfbac25820e822bdbeb97e03e",
+      "reportedAt": "2026-11-17T20:30:30.000Z",
+      "reporter": "Malwarehunterr",
+      "tags": "#malware",
+      "tweet": "https://x.com/Malwarehunterr/status/2122789499545735566",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.045Z",
+      "vt": "https://www.virustotal.com/gui/file/031f6de77e27b282f11f74564acff3c64145315bfbac25820e822bdbeb97e03e",
+      "otx": "https://otx.alienvault.com/indicator/file/031f6de77e27b282f11f74564acff3c64145315bfbac25820e822bdbeb97e03e"
+     },
+     {
+      "hash": "ca2aded1a7dac224c3043680e42b1b506dbc306cf539b3737c5acf03db3edf53",
+      "reportedAt": "2026-11-17T20:30:30.000Z",
+      "reporter": "Malwarehunterr",
+      "tags": "#malware",
+      "tweet": "https://x.com/Malwarehunterr/status/2122789499545735566",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.238Z",
+      "vt": "https://www.virustotal.com/gui/file/ca2aded1a7dac224c3043680e42b1b506dbc306cf539b3737c5acf03db3edf53",
+      "otx": "https://otx.alienvault.com/indicator/file/ca2aded1a7dac224c3043680e42b1b506dbc306cf539b3737c5acf03db3edf53"
+     },
+     {
+      "hash": "5e9ac74be9c6d5d0a75d5f3004e16c6ba19ec452660f7f24c9344e6e2438ec85",
+      "reportedAt": "2026-11-17T20:29:29.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2122789241302483175",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.315Z",
+      "vt": "https://www.virustotal.com/gui/file/5e9ac74be9c6d5d0a75d5f3004e16c6ba19ec452660f7f24c9344e6e2438ec85",
+      "otx": "https://otx.alienvault.com/indicator/file/5e9ac74be9c6d5d0a75d5f3004e16c6ba19ec452660f7f24c9344e6e2438ec85"
+     },
+     {
+      "hash": "b5c57c808fe4258a8de52fdc315633c8f8cfb2d25be5d0252ceb942426dbe7fe",
+      "reportedAt": "2026-11-17T19:56:19.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2122780894142300560",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.398Z",
+      "vt": "https://www.virustotal.com/gui/file/b5c57c808fe4258a8de52fdc315633c8f8cfb2d25be5d0252ceb942426dbe7fe",
+      "otx": "https://otx.alienvault.com/indicator/file/b5c57c808fe4258a8de52fdc315633c8f8cfb2d25be5d0252ceb942426dbe7fe"
+     },
+     {
+      "hash": "f3813e13ed683b1ed1f0cf9496d43f7fb4ad43349d9d211c0e6f79b6e228ed48",
+      "reportedAt": "2026-11-17T19:51:50.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2122779766868656446",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.498Z",
+      "vt": "https://www.virustotal.com/gui/file/f3813e13ed683b1ed1f0cf9496d43f7fb4ad43349d9d211c0e6f79b6e228ed48",
+      "otx": "https://otx.alienvault.com/indicator/file/f3813e13ed683b1ed1f0cf9496d43f7fb4ad43349d9d211c0e6f79b6e228ed48"
+     },
+     {
+      "hash": "b8e80639feec674c19ae1616e7f3d7514fe337a8b1a7205564320634be8ffb8c",
+      "reportedAt": "2026-11-17T19:32:33.000Z",
+      "reporter": "skocherhan",
+      "tags": "#malware #phishing",
+      "tweet": "https://x.com/skocherhan/status/2122774914990297267",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.583Z",
+      "vt": "https://www.virustotal.com/gui/file/b8e80639feec674c19ae1616e7f3d7514fe337a8b1a7205564320634be8ffb8c",
+      "otx": "https://otx.alienvault.com/indicator/file/b8e80639feec674c19ae1616e7f3d7514fe337a8b1a7205564320634be8ffb8c"
+     },
+     {
+      "hash": "7123e1514b939b165985560057fe3c761440a9fff9783a3b84e861fd2888d4ab",
+      "reportedAt": "2026-11-17T19:32:33.000Z",
+      "reporter": "skocherhan",
+      "tags": "#malware #phishing",
+      "tweet": "https://x.com/skocherhan/status/2122774914990297267",
+      "analysed": true,
+      "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-17T21:08:58.839Z",
+      "vt": "https://www.virustotal.com/gui/file/7123e1514b939b165985560057fe3c761440a9fff9783a3b84e861fd2888d4ab",
+      "otx": "https://otx.alienvault.com/indicator/file/7123e1514b939b165985560057fe3c761440a9fff9783a3b84e861fd2888d4ab"
+     },
      {
       "hash": "e261cf633411192a9c17c540e9fa36fd24e4512fe504721082cda85b109df2f8",
       "reportedAt": "2026-11-17T18:55:24.000Z",
       "reporter": "smica83",
       "tags": "",
       "tweet": "https://x.com/smica83/status/2122765566951952756",
-      "analysed": false,
-      "fileType": "",
+      "analysed": true,
+      "fileType": "ELF · ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=a00112105832c1d0c80d8ce53328c53c3f29c72d, stripped",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:27.761Z",
+      "checkedAt": "2026-11-17T21:08:59.264Z",
       "vt": "https://www.virustotal.com/gui/file/e261cf633411192a9c17c540e9fa36fd24e4512fe504721082cda85b109df2f8",
       "otx": "https://otx.alienvault.com/indicator/file/e261cf633411192a9c17c540e9fa36fd24e4512fe504721082cda85b109df2f8"
      },
@@ -3150,7 +3222,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:27.902Z",
+      "checkedAt": "2026-11-17T21:09:06.975Z",
       "vt": "https://www.virustotal.com/gui/file/19e1b44520669be6269a485a3f361de95e800e68cb6d880285f5d5f4b34bf10f",
       "otx": "https://otx.alienvault.com/indicator/file/19e1b44520669be6269a485a3f361de95e800e68cb6d880285f5d5f4b34bf10f"
      },
@@ -3160,11 +3232,11 @@
       "reporter": "skocherhan",
       "tags": "",
       "tweet": "https://x.com/skocherhan/status/2122714622482337898",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
+      "analysed": true,
+      "fileType": "LNK · MS Windows shortcut, Has command line arguments, Icon number=222, Archive, ctime=Mon Jan  1 00:00:00 1601, mtime=Mon Jan  1 00:00:00 1601, atime=Mon Jan  1 00:00:00 1601, length=0, window=hidenormalshowminimized",
+      "defender": "ALF:AGGR:LinkifierA:60!ml",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:42.904Z",
+      "checkedAt": "2026-11-17T21:09:11.103Z",
       "vt": "https://www.virustotal.com/gui/file/a9ea7915eb5412e6ea2e2e3d263bd7f323dc5a9981addb79d61a05dc0487b104",
       "otx": "https://otx.alienvault.com/indicator/file/a9ea7915eb5412e6ea2e2e3d263bd7f323dc5a9981addb79d61a05dc0487b104"
      },
@@ -3174,11 +3246,11 @@
       "reporter": "smica83",
       "tags": "",
       "tweet": "https://x.com/smica83/status/2122711093378200005",
-      "analysed": false,
-      "fileType": "",
+      "analysed": true,
+      "fileType": "PEXE · PE32+ executable (DLL) (GUI) x86-64, for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:57.905Z",
+      "checkedAt": "2026-11-17T21:09:11.300Z",
       "vt": "https://www.virustotal.com/gui/file/1b68b8ce790746785011e1b7a176aa437fb9490a7f392d02dae4dcb88ce1d0db",
       "otx": "https://otx.alienvault.com/indicator/file/1b68b8ce790746785011e1b7a176aa437fb9490a7f392d02dae4dcb88ce1d0db"
      },
@@ -3192,7 +3264,7 @@
       "fileType": "WSF · Microsoft Disk Image eXtended, by Microsoft Windows 10.0.19045.0, sequence 0xea, NO Log Signature; region, 2 entries, id BAT, at 0x300000, Required 1, id Metadata, at 0x200000, Required 1",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:58.785Z",
+      "checkedAt": "2026-11-17T21:09:11.913Z",
       "vt": "https://www.virustotal.com/gui/file/0165e0fc13a6f9f2cbd181c1ec676ec7b0a1900980db214c4f5650aaf6e3a559",
       "otx": "https://otx.alienvault.com/indicator/file/0165e0fc13a6f9f2cbd181c1ec676ec7b0a1900980db214c4f5650aaf6e3a559"
      },
@@ -3206,7 +3278,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:58.846Z",
+      "checkedAt": "2026-11-17T21:09:11.999Z",
       "vt": "https://www.virustotal.com/gui/file/5b6822bd4709ee24927e9e053033db85b93576e9f9871e82fe6a592c565007df",
       "otx": "https://otx.alienvault.com/indicator/file/5b6822bd4709ee24927e9e053033db85b93576e9f9871e82fe6a592c565007df"
      },
@@ -3220,7 +3292,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:58.905Z",
+      "checkedAt": "2026-11-17T21:09:12.077Z",
       "vt": "https://www.virustotal.com/gui/file/01de5da755630361e626308c370340ca48eb502cad7af6273723808602709f6c",
       "otx": "https://otx.alienvault.com/indicator/file/01de5da755630361e626308c370340ca48eb502cad7af6273723808602709f6c"
      },
@@ -3234,7 +3306,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:58.965Z",
+      "checkedAt": "2026-11-17T21:09:12.159Z",
       "vt": "https://www.virustotal.com/gui/file/062fe3f6d6a52d8b35f64ea5d9f75d987eb65b4ea8467372e506a03a1064315d",
       "otx": "https://otx.alienvault.com/indicator/file/062fe3f6d6a52d8b35f64ea5d9f75d987eb65b4ea8467372e506a03a1064315d"
      },
@@ -3248,7 +3320,7 @@
       "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:59.208Z",
+      "checkedAt": "2026-11-17T21:09:12.686Z",
       "vt": "https://www.virustotal.com/gui/file/1b6dbe690f9b0e15dc4b97cf8141ca14ceb9ce0a1578e680bb6b85c2c4400c87",
       "otx": "https://otx.alienvault.com/indicator/file/1b6dbe690f9b0e15dc4b97cf8141ca14ceb9ce0a1578e680bb6b85c2c4400c87"
      },
@@ -3262,7 +3334,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:59.267Z",
+      "checkedAt": "2026-11-17T21:09:12.773Z",
       "vt": "https://www.virustotal.com/gui/file/dda67a294e6a086022e1ba51f2ff9a63addf16dc865d9205741caa9a35df0d33",
       "otx": "https://otx.alienvault.com/indicator/file/dda67a294e6a086022e1ba51f2ff9a63addf16dc865d9205741caa9a35df0d33"
      },
@@ -3276,7 +3348,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:23:59.328Z",
+      "checkedAt": "2026-11-17T21:09:12.847Z",
       "vt": "https://www.virustotal.com/gui/file/55ab5373c2daa69b1728e6551b59f9dc661d1d78786face798d5251ccbe4685a",
       "otx": "https://otx.alienvault.com/indicator/file/55ab5373c2daa69b1728e6551b59f9dc661d1d78786face798d5251ccbe4685a"
      },
@@ -3290,121 +3362,9 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-17T19:24:13.525Z",
+      "checkedAt": "2026-11-17T21:09:12.923Z",
       "vt": "https://www.virustotal.com/gui/file/b2222fe38856e65420f15051a4cc419a92868803dec69a218f007948972ea367",
       "otx": "https://otx.alienvault.com/indicator/file/b2222fe38856e65420f15051a4cc419a92868803dec69a218f007948972ea367"
-     },
-     {
-      "hash": "094f01388638523fb29aac0a0d4f70adf6949fede0847a45cef2c3f930692c73",
-      "reportedAt": "2026-11-17T12:33:35.000Z",
-      "reporter": "zachxbt",
-      "tags": "",
-      "tweet": "https://x.com/zachxbt/status/2122669479700099192",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:13.675Z",
-      "vt": "https://www.virustotal.com/gui/file/094f01388638523fb29aac0a0d4f70adf6949fede0847a45cef2c3f930692c73",
-      "otx": "https://otx.alienvault.com/indicator/file/094f01388638523fb29aac0a0d4f70adf6949fede0847a45cef2c3f930692c73"
-     },
-     {
-      "hash": "fe9829f1c102a79b4ca33c8c8bda8ef2236dc94c6d1de88249c89e82681adc8c",
-      "reportedAt": "2026-11-17T12:08:04.000Z",
-      "reporter": "SquiblydooBlog",
-      "tags": "",
-      "tweet": "https://x.com/SquiblydooBlog/status/2122663057147019285",
-      "analysed": true,
-      "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:21.153Z",
-      "vt": "https://www.virustotal.com/gui/file/fe9829f1c102a79b4ca33c8c8bda8ef2236dc94c6d1de88249c89e82681adc8c",
-      "otx": "https://otx.alienvault.com/indicator/file/fe9829f1c102a79b4ca33c8c8bda8ef2236dc94c6d1de88249c89e82681adc8c"
-     },
-     {
-      "hash": "a0a3439384e84d83e99a3e555ae783ba71ec796afc2bc17e9183c3ed62fbfbb1",
-      "reportedAt": "2026-11-17T10:49:51.000Z",
-      "reporter": "skocherhan",
-      "tags": "#malware",
-      "tweet": "https://x.com/skocherhan/status/2122643373110497296",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:21.614Z",
-      "vt": "https://www.virustotal.com/gui/file/a0a3439384e84d83e99a3e555ae783ba71ec796afc2bc17e9183c3ed62fbfbb1",
-      "otx": "https://otx.alienvault.com/indicator/file/a0a3439384e84d83e99a3e555ae783ba71ec796afc2bc17e9183c3ed62fbfbb1"
-     },
-     {
-      "hash": "4b9af2f178f29f880c22c4e20b4278a01c2b7aeef912796c791f547bcbcf8dfa",
-      "reportedAt": "2026-11-17T09:25:46.000Z",
-      "reporter": "skocherhan",
-      "tags": "",
-      "tweet": "https://x.com/skocherhan/status/2122622212310216738",
-      "analysed": true,
-      "fileType": "CDF · Composite Document File V2 Document, Little Endian, Os: Windows, Version 6.2, Code page: 1252, Name of Creating Application: Microsoft Excel, Create Time/Date: Sat Sep 16 00:00:00 2006, Last Saved Time/Date: Mon Nov 16 11:37:49 2026, Security: 1",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:21.858Z",
-      "vt": "https://www.virustotal.com/gui/file/4b9af2f178f29f880c22c4e20b4278a01c2b7aeef912796c791f547bcbcf8dfa",
-      "otx": "https://otx.alienvault.com/indicator/file/4b9af2f178f29f880c22c4e20b4278a01c2b7aeef912796c791f547bcbcf8dfa"
-     },
-     {
-      "hash": "cd20f43f985f7df7ba3ad9b08e5bdbecc20aaa4d8f60dc09e8468bdd1b249fe6",
-      "reportedAt": "2026-11-17T07:04:49.000Z",
-      "reporter": "pol_md5sum",
-      "tags": "#Kimsuky",
-      "tweet": "https://x.com/pol_md5sum/status/2122586740569628820",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:21.918Z",
-      "vt": "https://www.virustotal.com/gui/file/cd20f43f985f7df7ba3ad9b08e5bdbecc20aaa4d8f60dc09e8468bdd1b249fe6",
-      "otx": "https://otx.alienvault.com/indicator/file/cd20f43f985f7df7ba3ad9b08e5bdbecc20aaa4d8f60dc09e8468bdd1b249fe6"
-     },
-     {
-      "hash": "38a26975a38f52d4f6ef7dd9f3985e0a64d146af57a324dee07f39abd1aafb2e",
-      "reportedAt": "2026-11-16T18:27:34.000Z",
-      "reporter": "Malwarehunterr",
-      "tags": "#ClickFix #cryptoscam #infostealer",
-      "tweet": "https://x.com/Malwarehunterr/status/2122396171239137539",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:39.957Z",
-      "vt": "https://www.virustotal.com/gui/file/38a26975a38f52d4f6ef7dd9f3985e0a64d146af57a324dee07f39abd1aafb2e",
-      "otx": "https://otx.alienvault.com/indicator/file/38a26975a38f52d4f6ef7dd9f3985e0a64d146af57a324dee07f39abd1aafb2e"
-     },
-     {
-      "hash": "ef70746f8028666e50f3f87fa4dcc72dccf131591d8ea0354a2c069b4a9a4c55",
-      "reportedAt": "2026-11-16T17:13:56.000Z",
-      "reporter": "James_inthe_box",
-      "tags": "",
-      "tweet": "https://x.com/James_inthe_box/status/2122377640766296119",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:55.195Z",
-      "vt": "https://www.virustotal.com/gui/file/ef70746f8028666e50f3f87fa4dcc72dccf131591d8ea0354a2c069b4a9a4c55",
-      "otx": "https://otx.alienvault.com/indicator/file/ef70746f8028666e50f3f87fa4dcc72dccf131591d8ea0354a2c069b4a9a4c55"
-     },
-     {
-      "hash": "53ab617b15a861b020f544f10891da54e1fb6643d60ce2de8a0a7eb3c14afe12",
-      "reportedAt": "2026-11-16T17:13:56.000Z",
-      "reporter": "James_inthe_box",
-      "tags": "",
-      "tweet": "https://x.com/James_inthe_box/status/2122377640766296119",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-17T19:24:55.297Z",
-      "vt": "https://www.virustotal.com/gui/file/53ab617b15a861b020f544f10891da54e1fb6643d60ce2de8a0a7eb3c14afe12",
-      "otx": "https://otx.alienvault.com/indicator/file/53ab617b15a861b020f544f10891da54e1fb6643d60ce2de8a0a7eb3c14afe12"
      }
     ]
    }
@@ -3413,8 +3373,8 @@
    "label": "Microsoft 365 roadmap",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-17T19:23:00.129Z",
-   "lastOkAt": "2026-11-17T19:23:00.129Z",
+   "checkedAt": "2026-11-17T21:08:56.510Z",
+   "lastOkAt": "2026-11-17T21:08:56.510Z",
    "page": "https://www.microsoft.com/microsoft-365/roadmap",
    "lastModified": "",
    "detail": "23 items stored, 21 for Defender for Endpoint or Intune",
