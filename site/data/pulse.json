@@ -1,13 +1,19 @@
 {
  "schema": 3,
- "checkedAt": "2026-11-18T11:17:25.382Z",
- "contentChangedAt": "2026-11-18T11:17:25.382Z",
+ "checkedAt": "2026-11-18T13:33:31.307Z",
+ "contentChangedAt": "2026-11-18T13:33:31.307Z",
  "changes": [
   {
-   "field": "mpam-fe.exe",
+   "field": "Security intelligence",
    "kind": "changed",
    "from": "1.463.355.0",
    "to": "1.463.357.0"
+  },
+  {
+   "field": "Latest headline",
+   "kind": "changed",
+   "from": "CVE-2026-119914 Windows Setup and Deployment Elevation of Privilege Vulnerability",
+   "to": "New Attack Bypasses TPM Lockout to Crack Windows Hello and BitLocker PINs in Days, Not Years"
   }
  ],
  "patch": {
@@ -20,8 +26,8 @@
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
    "lastModified": "",
    "detail": "3 of 3 packages resolved · file lists for 2 · offline kit platform 4.18.26100.4",
@@ -95,17 +101,17 @@
    "label": "Security intelligence page",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions",
    "lastModified": "",
-   "detail": "1.463.355.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
+   "detail": "1.463.357.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
    "data": {
-    "securityIntelligence": "1.463.355.0",
+    "securityIntelligence": "1.463.357.0",
     "engine": "1.1.26100.4",
     "platform": "4.18.26100.4",
-    "releasedAt": "2026-11-18T08:41:12.000Z",
-    "releasedRaw": "11/18/2026 8:41:12 AM",
+    "releasedAt": "2026-11-18T11:15:50.000Z",
+    "releasedRaw": "11/18/2026 11:15:50 AM",
     "clockZone": "UTC",
     "clockBasis": "Verified this run: read as Pacific time the release would be in the future, so the page clock is UTC.",
     "url": "https://www.microsoft.com/en-us/wdsi/definitions"
@@ -115,8 +121,8 @@
    "label": "Platform and engine release list (Learn)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support",
    "lastModified": "2026-11-17T23:39:38.000Z",
    "detail": "8 monthly releases listed, latest February 2026",
@@ -194,8 +200,8 @@
    "label": "Detection changelog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
    "lastModified": "",
    "detail": "1.463.357.0 · 100 detections · 10 versions kept",
@@ -1096,8 +1102,8 @@
    "label": "Sense (EDR sensor) build, Update Catalog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292",
    "lastModified": "",
    "detail": "Latest 10.8839.26080.2008 · Current Channel (Broad)",
@@ -1127,8 +1133,8 @@
    "label": "Security Update Guide (MSRC API)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://msrc.microsoft.com/update-guide",
    "lastModified": "",
    "detail": "2026-Nov: 723 Windows CVEs, 35 Critical, 2 Defender or Intune · 2 months kept",
@@ -1137,20 +1143,20 @@
     "windowsTotal": 723,
     "critical": 35,
     "perOs": {
-     "srv2022": {
-      "total": 651,
-      "critical": 30
-     },
      "srv2019": {
       "total": 618,
       "critical": 28
      },
-     "win11": {
-      "total": 661,
-      "critical": 33
+     "srv2022": {
+      "total": 651,
+      "critical": 30
      },
      "srv2025": {
       "total": 690,
+      "critical": 33
+     },
+     "win11": {
+      "total": 661,
       "critical": 33
      }
     },
@@ -1178,20 +1184,20 @@
       "windowsTotal": 723,
       "critical": 35,
       "perOs": {
-       "srv2022": {
-        "total": 651,
-        "critical": 30
-       },
        "srv2019": {
         "total": 618,
         "critical": 28
        },
-       "win11": {
-        "total": 661,
-        "critical": 33
+       "srv2022": {
+        "total": 651,
+        "critical": 30
        },
        "srv2025": {
         "total": 690,
+        "critical": 33
+       },
+       "win11": {
+        "total": 661,
         "critical": 33
        }
       },
@@ -1271,8 +1277,8 @@
    "label": "CISA Known Exploited Vulnerabilities",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
    "lastModified": "2026-11-17T17:53:15.000Z",
    "detail": "19 Microsoft Windows or endpoint entries in 12 months",
@@ -2001,8 +2007,8 @@
    "label": "Windows release health",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://learn.microsoft.com/en-us/windows/release-health/",
    "lastModified": "2026-11-17T22:17:08.000Z",
    "detail": "1 open across 5 pages",
@@ -2127,8 +2133,8 @@
    "label": "Intune what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://learn.microsoft.com/en-us/intune/whats-new/",
    "lastModified": "2026-11-17T18:35:20.000Z",
    "detail": "7 weeks with 24 Windows or security items · 14 in-development items",
@@ -2413,8 +2419,8 @@
    "label": "Defender for Endpoint what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
    "lastModified": "2026-11-17T23:39:38.000Z",
    "detail": "6 Windows items",
@@ -2493,13 +2499,27 @@
    "label": "News feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.microsoft.com/en-us/security/blog/",
    "lastModified": "",
-   "detail": "13 relevant headlines from 5 feeds",
+   "detail": "14 relevant headlines from 5 feeds",
    "data": {
     "items": [
+     {
+      "title": "New Attack Bypasses TPM Lockout to Crack Windows Hello and BitLocker PINs in Days, Not Years",
+      "url": "https://thehackernews.com/2026/11/flash-chip-attack-bypasses-tpm-lockout.html",
+      "source": "The Hacker News",
+      "published": "2026-11-18T12:28:30.000Z",
+      "summary": "On AMD-based PCs and some Intel PCs, the TPM lockout for Windows Hello and BitLocker PINs can be reset by someone who opens the PC's case, researchers at Technische Universität Berlin say. That leaves short PINs open to guessing. In lab tests, the researchers found a four-digit Hello PIN on an AMD l",
+      "id": "https://thehackernews.com/2026/11/flash-chip-attack-bypasses-tpm-lockout.html",
+      "os": [
+       "win11",
+       "srv2019",
+       "srv2022",
+       "srv2025"
+      ]
+     },
      {
       "title": "CVE-2026-119914 Windows Setup and Deployment Elevation of Privilege Vulnerability",
       "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-119914",
@@ -2716,8 +2736,8 @@
    "label": "Reddit (via Arctic Shift)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.reddit.com/r/DefenderATP/",
    "lastModified": "",
    "detail": "30 posts",
@@ -2984,8 +3004,8 @@
    "label": "Qualys Patch Tuesday QIDs",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://threatprotect.qualys.com/",
    "lastModified": "",
    "detail": "19 QIDs for 2026-Nov, 28 QIDs for 2026-Oct",
@@ -3081,13 +3101,27 @@
    "label": "Public hashes (TweetFeed + AlienVault OTX)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://tweetfeed.live/",
    "lastModified": "",
-   "detail": "20 Windows hashes kept, 8 analysed, 0 where another scanner names it and Defender does not",
+   "detail": "20 Windows hashes kept, 7 analysed, 0 where another scanner names it and Defender does not",
    "data": {
     "rows": [
+     {
+      "hash": "e30781cbb729a4082fc3b922455e1d01db2350d626eb3d6d7415c95a8e586242",
+      "reportedAt": "2026-11-18T13:15:49.000Z",
+      "reporter": "byrne_emmy12099",
+      "tags": "#APT",
+      "tweet": "https://x.com/byrne_emmy12099/status/2123042494254624892",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-18T13:33:32.273Z",
+      "vt": "https://www.virustotal.com/gui/file/e30781cbb729a4082fc3b922455e1d01db2350d626eb3d6d7415c95a8e586242",
+      "otx": "https://otx.alienvault.com/indicator/file/e30781cbb729a4082fc3b922455e1d01db2350d626eb3d6d7415c95a8e586242"
+     },
      {
       "hash": "4c07a7d3e428e208a79e9796bedc3a867803b9d9d08c0d142f2a38d06bf867b4",
       "reportedAt": "2026-11-18T10:18:38.000Z",
@@ -3098,7 +3132,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:27.468Z",
+      "checkedAt": "2026-11-18T13:33:32.423Z",
       "vt": "https://www.virustotal.com/gui/file/4c07a7d3e428e208a79e9796bedc3a867803b9d9d08c0d142f2a38d06bf867b4",
       "otx": "https://otx.alienvault.com/indicator/file/4c07a7d3e428e208a79e9796bedc3a867803b9d9d08c0d142f2a38d06bf867b4"
      },
@@ -3112,7 +3146,7 @@
       "fileType": "PEXE · PE32+ executable (GUI) x86-64 (stripped to external PDB), for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.075Z",
+      "checkedAt": "2026-11-18T13:33:33.250Z",
       "vt": "https://www.virustotal.com/gui/file/8acb7624ab4becc227ebbca7d921d1a3dfe78c3403cba10f6ab3d1363e090166",
       "otx": "https://otx.alienvault.com/indicator/file/8acb7624ab4becc227ebbca7d921d1a3dfe78c3403cba10f6ab3d1363e090166"
      },
@@ -3126,7 +3160,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.179Z",
+      "checkedAt": "2026-11-18T13:33:33.289Z",
       "vt": "https://www.virustotal.com/gui/file/1ef2e535c82e77f516b931bf2eb9ebd9cf81b17236d89d2c57d078ee19a7ddb5",
       "otx": "https://otx.alienvault.com/indicator/file/1ef2e535c82e77f516b931bf2eb9ebd9cf81b17236d89d2c57d078ee19a7ddb5"
      },
@@ -3140,7 +3174,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.236Z",
+      "checkedAt": "2026-11-18T13:33:33.328Z",
       "vt": "https://www.virustotal.com/gui/file/fd17b84f0abdbcb6c734727a3fb9346d8dd2a2b5c87b088bef5b7e7e163adc98",
       "otx": "https://otx.alienvault.com/indicator/file/fd17b84f0abdbcb6c734727a3fb9346d8dd2a2b5c87b088bef5b7e7e163adc98"
      },
@@ -3154,7 +3188,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.296Z",
+      "checkedAt": "2026-11-18T13:33:33.368Z",
       "vt": "https://www.virustotal.com/gui/file/91e5263f8146a978a86dcee7e6a9e818cf2156d4383b91d02c30f55d12b193f4",
       "otx": "https://otx.alienvault.com/indicator/file/91e5263f8146a978a86dcee7e6a9e818cf2156d4383b91d02c30f55d12b193f4"
      },
@@ -3168,7 +3202,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.353Z",
+      "checkedAt": "2026-11-18T13:33:33.406Z",
       "vt": "https://www.virustotal.com/gui/file/e2d751d3167ac94b0b34d5a8e8d061e8785973981cab44e0b64df458d0320b9c",
       "otx": "https://otx.alienvault.com/indicator/file/e2d751d3167ac94b0b34d5a8e8d061e8785973981cab44e0b64df458d0320b9c"
      },
@@ -3182,7 +3216,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.412Z",
+      "checkedAt": "2026-11-18T13:33:33.446Z",
       "vt": "https://www.virustotal.com/gui/file/a4d47f8035dcf7cc0c70c52559ec00a5070b85c9a84921aa8c35a80d11cdaae0",
       "otx": "https://otx.alienvault.com/indicator/file/a4d47f8035dcf7cc0c70c52559ec00a5070b85c9a84921aa8c35a80d11cdaae0"
      },
@@ -3196,7 +3230,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.471Z",
+      "checkedAt": "2026-11-18T13:33:34.077Z",
       "vt": "https://www.virustotal.com/gui/file/55ab5373c2daa69b1728e6551b59f9dc661d1d78786face798d5251ccbe4685a",
       "otx": "https://otx.alienvault.com/indicator/file/55ab5373c2daa69b1728e6551b59f9dc661d1d78786face798d5251ccbe4685a"
      },
@@ -3210,7 +3244,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.527Z",
+      "checkedAt": "2026-11-18T13:33:34.119Z",
       "vt": "https://www.virustotal.com/gui/file/b2222fe38856e65420f15051a4cc419a92868803dec69a218f007948972ea367",
       "otx": "https://otx.alienvault.com/indicator/file/b2222fe38856e65420f15051a4cc419a92868803dec69a218f007948972ea367"
      },
@@ -3224,7 +3258,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:28.584Z",
+      "checkedAt": "2026-11-18T13:33:34.156Z",
       "vt": "https://www.virustotal.com/gui/file/094f01388638523fb29aac0a0d4f70adf6949fede0847a45cef2c3f930692c73",
       "otx": "https://otx.alienvault.com/indicator/file/094f01388638523fb29aac0a0d4f70adf6949fede0847a45cef2c3f930692c73"
      },
@@ -3238,7 +3272,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:29.355Z",
+      "checkedAt": "2026-11-18T13:33:35.282Z",
       "vt": "https://www.virustotal.com/gui/file/956293f1b3c755e23bf63c55ab8c611a2936f0ad7ca6acdc29af5128c7ff0858",
       "otx": "https://otx.alienvault.com/indicator/file/956293f1b3c755e23bf63c55ab8c611a2936f0ad7ca6acdc29af5128c7ff0858"
      },
@@ -3252,7 +3286,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:29.414Z",
+      "checkedAt": "2026-11-18T13:33:35.375Z",
       "vt": "https://www.virustotal.com/gui/file/960d22e38c18ae79012e403316c58a7559f4bb4fac3296c8f3fb2ed5a178dd33",
       "otx": "https://otx.alienvault.com/indicator/file/960d22e38c18ae79012e403316c58a7559f4bb4fac3296c8f3fb2ed5a178dd33"
      },
@@ -3266,7 +3300,7 @@
       "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:29.615Z",
+      "checkedAt": "2026-11-18T13:33:35.614Z",
       "vt": "https://www.virustotal.com/gui/file/6f1827539a5a2471eb2c57a07e271c08a525f0b24e8f0dfc29a6b145607119fe",
       "otx": "https://otx.alienvault.com/indicator/file/6f1827539a5a2471eb2c57a07e271c08a525f0b24e8f0dfc29a6b145607119fe"
      },
@@ -3280,7 +3314,7 @@
       "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
       "defender": "ALF:Hacktool:Win64/AmsiDisable!MTB",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:29.893Z",
+      "checkedAt": "2026-11-18T13:33:36.699Z",
       "vt": "https://www.virustotal.com/gui/file/031f6de77e27b282f11f74564acff3c64145315bfbac25820e822bdbeb97e03e",
       "otx": "https://otx.alienvault.com/indicator/file/031f6de77e27b282f11f74564acff3c64145315bfbac25820e822bdbeb97e03e"
      },
@@ -3294,7 +3328,7 @@
       "fileType": "PY · Python script, ASCII text executable, with very long lines",
       "defender": "ALF:Hacktool:Win64/AmsiDisable!MTB",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:30.880Z",
+      "checkedAt": "2026-11-18T13:33:37.720Z",
       "vt": "https://www.virustotal.com/gui/file/ca2aded1a7dac224c3043680e42b1b506dbc306cf539b3737c5acf03db3edf53",
       "otx": "https://otx.alienvault.com/indicator/file/ca2aded1a7dac224c3043680e42b1b506dbc306cf539b3737c5acf03db3edf53"
      },
@@ -3308,7 +3342,7 @@
       "fileType": "PEXE · PE32 executable (GUI) Intel 80386, for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:31.951Z",
+      "checkedAt": "2026-11-18T13:33:38.471Z",
       "vt": "https://www.virustotal.com/gui/file/b5c57c808fe4258a8de52fdc315633c8f8cfb2d25be5d0252ceb942426dbe7fe",
       "otx": "https://otx.alienvault.com/indicator/file/b5c57c808fe4258a8de52fdc315633c8f8cfb2d25be5d0252ceb942426dbe7fe"
      },
@@ -3322,7 +3356,7 @@
       "fileType": "PEXE · PE32 executable (GUI) Intel 80386, for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:32.344Z",
+      "checkedAt": "2026-11-18T13:33:39.074Z",
       "vt": "https://www.virustotal.com/gui/file/f3813e13ed683b1ed1f0cf9496d43f7fb4ad43349d9d211c0e6f79b6e228ed48",
       "otx": "https://otx.alienvault.com/indicator/file/f3813e13ed683b1ed1f0cf9496d43f7fb4ad43349d9d211c0e6f79b6e228ed48"
      },
@@ -3336,7 +3370,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:32.404Z",
+      "checkedAt": "2026-11-18T13:33:39.111Z",
       "vt": "https://www.virustotal.com/gui/file/b8e80639feec674c19ae1616e7f3d7514fe337a8b1a7205564320634be8ffb8c",
       "otx": "https://otx.alienvault.com/indicator/file/b8e80639feec674c19ae1616e7f3d7514fe337a8b1a7205564320634be8ffb8c"
      },
@@ -3350,23 +3384,9 @@
       "fileType": "PEXE · PE32+ executable (GUI) x86-64, for MS Windows",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-18T11:17:32.571Z",
+      "checkedAt": "2026-11-18T13:33:39.263Z",
       "vt": "https://www.virustotal.com/gui/file/7123e1514b939b165985560057fe3c761440a9fff9783a3b84e861fd2888d4ab",
       "otx": "https://otx.alienvault.com/indicator/file/7123e1514b939b165985560057fe3c761440a9fff9783a3b84e861fd2888d4ab"
-     },
-     {
-      "hash": "e261cf633411192a9c17c540e9fa36fd24e4512fe504721082cda85b109df2f8",
-      "reportedAt": "2026-11-17T18:55:24.000Z",
-      "reporter": "smica83",
-      "tags": "",
-      "tweet": "https://x.com/smica83/status/2122765566951952756",
-      "analysed": true,
-      "fileType": "ELF · ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=a00112105832c1d0c80d8ce53328c53c3f29c72d, stripped",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-18T11:17:32.830Z",
-      "vt": "https://www.virustotal.com/gui/file/e261cf633411192a9c17c540e9fa36fd24e4512fe504721082cda85b109df2f8",
-      "otx": "https://otx.alienvault.com/indicator/file/e261cf633411192a9c17c540e9fa36fd24e4512fe504721082cda85b109df2f8"
      }
     ]
    }
@@ -3375,8 +3395,8 @@
    "label": "Microsoft 365 roadmap",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-18T11:17:25.382Z",
-   "lastOkAt": "2026-11-18T11:17:25.382Z",
+   "checkedAt": "2026-11-18T13:33:31.307Z",
+   "lastOkAt": "2026-11-18T13:33:31.307Z",
    "page": "https://www.microsoft.com/microsoft-365/roadmap",
    "lastModified": "",
    "detail": "23 items stored, 21 for Defender for Endpoint or Intune",
