@@ -755,21 +755,40 @@ function renderFeed() {
 }
 
 function renderHashes() {
-  const hashes = data("hashes")?.rows || [];
+  const d = data("hashes");
+  const hashes = d?.rows || [];
   const short = (h) => `${h.slice(0, 12)}…${h.slice(-6)}`;
+  const vtSet = d && d.vtStatus && d.vtStatus !== "no-key";
+  const vtCell = (h) => {
+    const v = h.vtResult;
+    if (!vtSet) return `<span class="na">${d?.vtStatus === "no-key" ? "VirusTotal key not set" : "Not checked yet"}</span>`;
+    if (!v) return `<span class="na">Queued for the next refresh</span>`;
+    if (v.error) return `${pill("Lookup failed, retrying", "warn")}<div class="meta">${esc(v.error)}</div>`;
+    if (!v.found) return `<span class="meta">Not in VirusTotal</span>`;
+    const ms = `Microsoft: ${esc(v.microsoft || v.microsoftState)}`;
+    return `${v.gap ? pill("Gap", "bad") : v.microsoft ? pill("Microsoft detects", "ok") : pill("No engine detects", "")} <div class="meta">${v.malicious}/${v.total} engines · ${ms}</div>`;
+  };
+  const gaps = hashes.filter((h) => h.vtResult?.gap).length;
+  const analysed = hashes.filter((h) => h.vtResult && h.vtResult.found !== undefined).length;
+  const status = !d
+    ? ""
+    : d.vtStatus === "no-key"
+      ? `<div class="notice">VirusTotal key not set. Add the repository secret <code>VIRUSTOTAL_API_KEY</code> to check these hashes. The OTX column works without it.</div>`
+      : !vtSet
+        ? `<p class="meta">VirusTotal has not been asked yet; the next refresh does it.</p>`
+        : `<p><strong>${analysed} of ${hashes.length}</strong> analysed on VirusTotal · <strong>${gaps}</strong> that other engines detect and Microsoft does not.${d.vtStatus === "rejected" ? ` ${pill("VirusTotal rejected the key", "bad")}` : d.vtStatus === "limited" ? ` ${pill("Rate limit reached, continuing next refresh", "warn")}` : ""}</p>`;
   return `<div class="card">
-    <p>SHA-256 hashes posted publicly (TweetFeed), checked against AlienVault OTX's analysis, which includes a Microsoft Defender scan. A row marked <strong>Gap</strong> is one where another scanner names the file and Defender does not: a candidate to submit to Microsoft.</p>
-    <h3>Latest public hashes checked</h3>
-    ${data("hashes") ? (hashes.length ? `<div class="table-wrap"><table><thead><tr><th>Hash</th><th>Reported</th><th>Checked</th><th>File type</th><th>Defender (OTX)</th><th>Other scanner</th><th>Links</th></tr></thead><tbody>${hashes
-      .map((h) => `<tr><td class="mono" title="${esc(h.hash)}">${esc(short(h.hash))} <button type="button" class="btn small" data-copy="${esc(h.hash)}" aria-label="Copy hash">Copy</button></td>
+    <p>SHA-256 hashes posted publicly (TweetFeed), checked on VirusTotal and AlienVault OTX. A row marked <strong>Gap</strong> is one where other engines detect the file and Microsoft does not: a candidate to submit to Microsoft.</p>
+    ${status}
+    ${d ? (hashes.length ? `<div class="table-wrap"><table><thead><tr><th>Hash</th><th>Reported</th><th>VirusTotal</th><th>Defender (OTX)</th><th>Last checked</th><th>Links</th></tr></thead><tbody>${hashes
+      .map((h) => `<tr><td class="mono" title="${esc(h.hash)}">${esc(short(h.hash))} <button type="button" class="btn small" data-copy="${esc(h.hash)}" aria-label="Copy hash">Copy</button>${h.vtResult?.fileType || h.fileType ? `<div class="meta">${esc(h.vtResult?.fileType || h.fileType)}</div>` : ""}</td>
         <td>${h.reportedAt ? esc(stamp(h.reportedAt)) : ""}${h.reporter ? `<div class="meta">${esc(h.reporter)}</div>` : ""}</td>
-        <td>${h.checkedAt ? esc(stamp(h.checkedAt)) : esc(stamp(sec("hashes").lastOkAt || sec("hashes").checkedAt))}</td>
-        <td>${h.analysed ? esc(h.fileType || "unknown") : pill("Reported only")}</td>
-        <td>${h.defender ? esc(h.defender) : h.analysed ? pill(h.other ? "Gap" : "Not detected", h.other ? "bad" : "") : ""}</td>
-        <td>${esc(h.other || "")}</td>
+        <td>${vtCell(h)}</td>
+        <td>${h.defender ? esc(h.defender) : h.analysed ? pill(h.other ? "Gap" : "Not detected", h.other ? "bad" : "") : `<span class="meta">No OTX analysis</span>`}${h.other ? `<div class="meta">Other: ${esc(h.other)}</div>` : ""}</td>
+        <td class="meta">${esc(stamp(h.vtResult?.checkedAt || h.checkedAt || sec("hashes").lastOkAt || sec("hashes").checkedAt))}</td>
         <td>${link(h.vt, "VirusTotal")} · ${link(h.otx, "OTX")}</td></tr>`)
       .join("")}</tbody></table></div>` : "<p>No Windows hashes in the feed yet.</p>") : sectionError("hashes", "The public hash feed")}
-    <p class="meta" style="margin-top:8px">Third-party, unvetted data. "Reported only" means OTX has no analysis yet; those hashes are checked again on later refreshes. The latest 20 are kept.</p>
+    <p class="meta" style="margin-top:8px">Third-party, unvetted data. VirusTotal is asked at most 4 times a minute and 500 times a day, and each answer is kept for 24 hours. The latest 20 hashes are kept.</p>
     <form id="hash-form" class="controls" style="margin-top:10px">
       <label class="field" style="flex:1 1 260px">Look up a hash <input type="text" id="hash-q" placeholder="MD5, SHA-1 or SHA-256" autocomplete="off" spellcheck="false"></label>
       <button type="submit" class="btn" style="align-self:end">Check Microsoft detection</button>
@@ -895,31 +914,58 @@ function renderDetectionAlerts() {
   if (!t) return sectionError("threats", "The detection alerts");
   const alerts = t.alerts || [];
   return `<div class="card"><p>A new security intelligence build added a Defender detection whose family name is exactly a threat named in a news story or vendor research post from the last 14 days. Generic families such as Wacatac or Agent never count. Alerts stay listed for 14 days.</p>
-    ${alerts.length ? `<div class="table-wrap"><table><thead><tr><th>Detection added</th><th>Build</th><th>In the news</th></tr></thead><tbody>${alerts
+    ${alerts.length ? `<div class="table-wrap"><table><thead><tr><th>Detection added</th><th>Build</th><th>In the news</th><th>Last checked</th></tr></thead><tbody>${alerts
       .map((a) => `<tr><td>${link(a.detectionUrl, a.detection)}${a.severity ? `<div class="meta">${esc(a.severity)}</div>` : ""}</td>
         <td class="mono">${esc(a.version)}<div class="meta">${a.releasedAt ? esc(stamp(a.releasedAt)) : "time not published"}</div></td>
-        <td>${link(a.story.url, a.story.title)}<div class="meta">${esc(a.story.source)}${a.story.published ? ` · ${esc(stamp(a.story.published))}` : ""} · names ${esc(a.threat)}</div></td></tr>`)
+        <td>${link(a.story.url, a.story.title)}<div class="meta">${esc(a.story.source)}${a.story.published ? ` · ${esc(stamp(a.story.published))}` : ""} · names ${esc(a.threat)}</div></td>
+        <td class="meta">${esc(stamp(a.checkedAt || sec("threats")?.checkedAt))}</td></tr>`)
       .join("")}</tbody></table></div>` : `<p class="meta">No build in the last 14 days added a detection for a threat in the news.</p>`}
   </div>`;
 }
 
+const COVER_TONE = { Yes: "ok", Unclear: "warn", "Lookup failed, retrying": "bad", No: "bad" };
+
 function renderVendorCoverage() {
   const t = data("threats");
-  if (!t) return sectionError("threats", "The vendor threat coverage");
+  if (!t) return sectionError("threats", "The threat coverage");
   const rows = t.coverage || [];
-  const feeds = data("vendors")?.feeds || [];
-  const tone = { Yes: "ok", No: "bad", Unclear: "warn" };
-  const counts = ["Yes", "No", "Unclear"].map((c) => `${pill(c, tone[c])} ${rows.filter((r) => r.coverage === c).length}`).join(" ");
+  const feeds = [...(data("vendors")?.feeds || []), ...(data("news")?.feeds || []).filter((f) => !/^M(icrosoft|SRC)/.test(f.source))];
+  const kinds = ["Yes", "Unclear", "Lookup failed, retrying"];
+  const counts = kinds.map((c) => `${pill(c, COVER_TONE[c])} ${rows.filter((r) => r.coverage === c).length}`).join(" ");
   return `<div class="card">
-    <p>Threats named in the last 30 days of research from CrowdStrike, SentinelOne, Sophos, Bitdefender, ESET, Trend Micro and Unit 42, checked against Defender. <strong>Yes</strong>: a Defender detection with exactly the same family name is in the changelog (last 90 days) or Microsoft's malware encyclopedia. <strong>No</strong>: the encyclopedia search answered for this name with no entry, and the changelog has none; Defender may still detect it under another name. <strong>Unclear</strong>: no detection with this exact name was found. Microsoft's encyclopedia search does not currently answer automated lookups reliably, so most threats not in the changelog show as Unclear rather than No; use the search link to check by hand. Posts that name no specific threat are left out.</p>
+    <p>Malware and campaign names from the last 30 days of vendor research (CrowdStrike, SentinelOne, Sophos, Bitdefender, ESET, Trend Micro, Unit 42, eSentire, AhnLab ASEC, watchTowr, Check Point Research, Symantec) and the last 14 days of headlines (The Hacker News, BleepingComputer, SecurityWeek), checked against Defender.</p>
+    <ul class="list compact">
+      <li><strong>Yes</strong>: a Defender detection for this family is in the last 30 days of the detection changelog (every version, not only the latest builds) or in Microsoft's malware encyclopedia. Matching ignores case and accepts a name that begins the other ("Remus" and "RemusStealer").</li>
+      <li><strong>Unclear</strong>: the encyclopedia answered and has no entry for the family, and the changelog has none. Defender may still detect it under another name.</li>
+      <li><strong>Lookup failed, retrying</strong>: the encyclopedia did not answer. Each refresh tries again; answers are kept for 24 hours.</li>
+    </ul>
     <p>${counts}</p>
-    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Threat</th><th>Reported by</th><th>Defender</th><th>Why</th></tr></thead><tbody>${rows
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Threat</th><th>Reported by</th><th>Defender</th><th>Why</th><th>Last checked</th></tr></thead><tbody>${rows
       .map((r) => `<tr><td><strong>${esc(r.threat)}</strong></td>
-        <td>${link(r.url, r.title)}<div class="meta">${esc(r.vendor)}${r.published ? ` · ${esc(stamp(r.published))}` : ""}</div></td>
-        <td>${pill(r.coverage, tone[r.coverage])}${r.detections?.length ? `<div class="meta mono">${r.detections.map(esc).join("<br>")}</div>` : ""}</td>
-        <td class="meta">${esc(r.basis)}${r.coverage !== "Yes" ? ` ${link(`https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=${encodeURIComponent(r.threat)}`, "Search the encyclopedia ↗")}` : ""}</td></tr>`)
-      .join("")}</tbody></table></div>` : `<p class="meta">No vendor post in the last 30 days names a specific threat.</p>`}
-    ${feeds.length ? `<p class="meta">Feeds: ${feeds.map((f) => `${esc(f.source)} ${f.ok ? pill("Live", "ok") : pill("Failed", "bad")}`).join(" · ")}</p>` : ""}
+        <td>${link(r.url, r.title)}<div class="meta">${esc(r.vendor)}${r.kind === "news" ? " (news)" : ""}${r.published ? ` · ${esc(stamp(r.published))}` : ""}</div></td>
+        <td>${pill(r.coverage, COVER_TONE[r.coverage])}${r.detections?.length ? `<div class="meta mono">${r.detections.map(esc).join("<br>")}</div>` : ""}</td>
+        <td class="meta">${esc(r.basis)}${r.coverage !== "Yes" ? ` ${link(`https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=${encodeURIComponent(`Trojan:Win32/${r.threat}`)}`, "Search the encyclopedia ↗")}` : ""}</td>
+        <td class="meta">${esc(stamp(r.checkedAt || sec("threats")?.checkedAt))}</td></tr>`)
+      .join("")}</tbody></table></div>` : `<p class="meta">No research post or headline in the window names a specific threat.</p>`}
+    <p class="meta">${t.indexedVersions ? `${t.indexedVersions} changelog versions (${t.indexedNames} detection names) from the last 30 days are indexed. ` : ""}${feeds.length ? `Feeds: ${feeds.map((f) => `${esc(f.source)} ${f.ok ? pill("Live", "ok") : pill("Failed", "bad")}`).join(" · ")}` : ""}</p>
+  </div>`;
+}
+
+function renderKevCoverage() {
+  const t = data("threats");
+  if (!t) return sectionError("threats", "The CISA KEV check");
+  const rows = t.kev || [];
+  return `<div class="card">
+    <p>Every CVE that CISA added to its Known Exploited Vulnerabilities catalog in the last 14 days, any vendor, with CISA's due date. <strong>Detection found</strong> means a Defender detection name in the last 30 days of the changelog, or in the encyclopedia, contains the CVE number. Otherwise it says <strong>No public MDE detection found</strong>; Defender may still block the exploit under a name without the CVE.</p>
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>CVE</th><th>Product</th><th>Added</th><th>Due</th><th>Defender</th><th>Last checked</th></tr></thead><tbody>${rows
+      .map((r) => `<tr><td>${link(r.url, r.cve)}${/known/i.test(r.ransomware) ? `<div>${pill("Used in ransomware", "bad")}</div>` : ""}</td>
+        <td>${esc(`${r.vendor} ${r.product}`.trim())}<div class="meta">${esc(r.name)}</div></td>
+        <td>${esc(r.dateAdded)}</td>
+        <td>${esc(r.dueDate)}</td>
+        <td>${pill(r.coverage, r.detections.length ? "ok" : "warn")}${r.detections.length ? `<div class="meta mono">${r.detections.map(esc).join("<br>")}</div>` : ""}</td>
+        <td class="meta">${esc(stamp(r.checkedAt || sec("threats")?.checkedAt))}</td></tr>`)
+      .join("")}</tbody></table></div>` : `<p class="meta">CISA added no CVEs in the last 14 days.</p>`}
+    ${source("https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "CISA Known Exploited Vulnerabilities")}
   </div>`;
 }
 
@@ -968,7 +1014,6 @@ function renderIntel() {
     section("features", "New Defender for Endpoint features", intuneBlock + renderFeatures() + reportedBlock, "mde"),
     section("chatter", "Bad-detection chatter", chatterBody),
     section("news", "News and Reddit", renderFeed(), "news"),
-    section("hashes", "Public hashes and Defender coverage", renderHashes(), "hashes"),
   ].join("");
 }
 
@@ -978,7 +1023,9 @@ function renderThreats() {
     section("changelog", "Detections in security intelligence", renderChangelog(), "changelog"),
     section("si-trend", "Recent security intelligence builds", renderTrend(), "changelog"),
     section("detection-alerts", "Detection alerts: new detections for threats in the news", renderDetectionAlerts(), "threats"),
-    section("vendor-coverage", "Vendor threat coverage", renderVendorCoverage(), "vendors"),
+    section("vendor-coverage", "Threat coverage: vendor research and news", renderVendorCoverage(), "threats"),
+    section("kev-coverage", "CISA KEV: newly exploited CVEs", renderKevCoverage(), "kev"),
+    section("hashes", "Public hashes and Defender coverage", renderHashes(), "hashes"),
   ].join("");
 }
 
@@ -988,7 +1035,7 @@ function renderJump() {
   const nav = document.getElementById("jump");
   if (!nav) return;
   const heads = [...document.querySelectorAll("#view > .section[id] > .section-head > h2")];
-  const SHORT = { changelog: "Detections", "si-trend": "Recent builds", "vendor-coverage": "Vendor coverage", hashes: "Public hashes", features: "New MDE features" };
+  const SHORT = { changelog: "Detections", "si-trend": "Recent builds", "vendor-coverage": "Threat coverage", "kev-coverage": "CISA KEV", hashes: "Public hashes", features: "New MDE features" };
   nav.innerHTML = heads.map((h) => {
     const id = h.closest(".section").id;
     return `<a href="#${esc(id)}">${esc(SHORT[id] || h.textContent.split(":")[0])}</a>`;
@@ -1051,6 +1098,7 @@ function searchIndex() {
   for (const i of data("sense")?.issues || []) add("Known issue", `Sense: ${i.title} (${i.stage || "tracked"})`, i.symptom, "sense-issues", i.links?.[0]?.url);
   for (const a of data("threats")?.alerts || []) add("Detection", `${a.detection} (${a.threat})`, a.story.title, "detection-alerts", a.detectionUrl);
   for (const r of data("threats")?.coverage || []) add("Threat", `${r.threat}: Defender ${r.coverage}`, r.title, "vendor-coverage", r.url);
+  for (const r of data("threats")?.kev || []) add("CVE", `${r.cve} ${r.vendor} ${r.product}: ${r.coverage}`, r.name, "kev-coverage", r.url);
   const q = data("qualys");
   for (const [m, v] of Object.entries(q?.months || (q ? { [q.month]: q } : {}))) add("QID", `Qualys QIDs for ${m} Patch Tuesday`, (v.qids || []).join(" "), "qualys", v.url);
   for (const w of data("intune")?.weeks || []) {
@@ -1111,7 +1159,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { "out-of-band": "updates", "si-trend": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", news: "intel", reddit: "intel" }[hash];
+  const owner = { "out-of-band": "updates", "si-trend": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "threats", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", "kev-coverage": "threats", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();

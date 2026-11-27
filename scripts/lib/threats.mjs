@@ -211,56 +211,136 @@ export function firstSeenByBuild(builds = [], index = {}, limit = 6) {
   return out;
 }
 
-/** Encyclopedia search result page -> detection names that belong to the searched family. */
-export function parseEncyclopediaSearch(html = "", name = "") {
-  const text = String(html).replace(/<[^>]+>/g, " ");
-  const names = [...new Set(text.match(/\b[A-Z][A-Za-z]+:[A-Za-z0-9]+\/[A-Za-z0-9_.!-]{3,80}/g) || [])].filter((n) => sameFamily(familyOf(n), name));
-  // Live page, Nov 2026: a ?query= URL answers "No results found for: *** 0 entries found" even for
-  // ValleyRAT, which Defender detects. A result count counts only when the page echoes the name searched.
-  const echoed = name.length >= 4 && new RegExp(`(?:results|found) for:?\\s*["“]?${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i").test(text);
-  const count = /(\d[\d,]*)\s+(?:entries|results)\s+found/i.exec(text);
-  const empty = echoed && /no (?:results|entries) (?:were )?found|\b0\s+(?:entries|results)\s+found/i.test(text);
-  return { names: names.slice(0, 4), answered: (echoed && Boolean(count)) || empty || names.length > 0, empty: empty && names.length === 0 };
+// ---------- 30-day detection index, partial family matching, KEV rows ----------
+
+/**
+ * Rolling index of every detection name in each changelog version:
+ * { [version]: { releasedAt, names: [...] } }. Versions released more than keepDays ago are dropped.
+ */
+export function updateDetectionIndex(index = {}, builds = [], keepDays = 30, now = new Date()) {
+  const next = { ...index };
+  for (const b of builds) {
+    if (!b?.version || !Array.isArray(b.rows)) continue;
+    next[b.version] = { releasedAt: b.releasedAt || next[b.version]?.releasedAt || "", names: [...new Set(b.rows.map((r) => r.name).filter(Boolean))] };
+  }
+  const cutoff = new Date(now.getTime() - keepDays * 86400000).toISOString();
+  for (const [v, e] of Object.entries(next)) if (e.releasedAt && e.releasedAt < cutoff) delete next[v];
+  return next;
 }
 
 /**
- * Vendor threat coverage. One row per threat name in a vendor research post.
- *  Yes:     a Defender detection with the same family is in the changelog index or the encyclopedia.
- *  No:      the encyclopedia search answered with no entries and the index has none.
- *  Unclear: no proper threat name, the lookup failed or was not run, or the post names only a CVE or actor.
- * lookups: { familyKey: { names, answered, empty, checkedAt } } from the encyclopedia.
+ * A threat name and a Defender family refer to the same threat: the same family (see sameFamily), or,
+ * case-insensitively, one is the other plus a malware-type word and the shorter is at least 5 letters
+ * ("Remus" and "RemusStealer"). "Worm" never matches "XWorm": a match starts at the beginning of both.
  */
-export function vendorCoverage(posts = [], index = {}, lookups = {}) {
+const TYPE_SUFFIX = /^(?:Info)?(?:Stealer|Loader|RAT|Bot|Botnet|Shell|Door|Backdoor|Locker|Crypt|Crypter|Miner|Spy|Spyware|Worm|Ware|Kit|Dropper|Downloader|Ransom|Ransomware|Wiper|Grabber|Logger|Keylogger|Banker|Implant|Agent)\d*$/i;
+
+export function relatedFamily(threat, family) {
+  if (sameFamily(threat, family)) return true;
+  if (!usableFamily(threat) || !usableFamily(family)) return false;
+  // The longer name must continue with a new word ("Remus|Stealer"), not the same word ("Valley|x").
+  const x = String(threat).replace(/[^A-Za-z0-9]/g, "");
+  const y = String(family).replace(/[^A-Za-z0-9]/g, "");
+  const [short, long] = x.length <= y.length ? [x, y] : [y, x];
+  // and that word must be a malware type: "AntiNOD" is not a kind of "Antino".
+  const rest = long.slice(short.length);
+  return short.length >= 5 && long.toLowerCase().startsWith(short.toLowerCase()) && TYPE_SUFFIX.test(rest);
+}
+
+/** Detections in the 30-day index whose family matches a threat name, newest build first. */
+export function detectionsFor(index = {}, threat = "") {
+  if (!usableFamily(threat) && !/^cve/i.test(threat)) return [];
+  const isCve = /^CVE-\d{4}-\d{4,}$/i.test(threat);
+  const out = [];
+  const seen = new Set();
+  for (const [version, e] of Object.entries(index).sort(([, a], [, b]) => (b.releasedAt || "").localeCompare(a.releasedAt || ""))) {
+    for (const name of e.names || []) {
+      if (seen.has(name)) continue;
+      const hit = isCve ? compact(name).includes(compact(threat)) : usableFamily(familyOf(name)) && relatedFamily(threat, familyOf(name));
+      if (!hit) continue;
+      seen.add(name);
+      out.push({ name, version, releasedAt: e.releasedAt || "" });
+    }
+  }
+  return out;
+}
+
+/**
+ * The encyclopedia result page for a "Type:Platform/Family" query. Microsoft's search answers bare
+ * names with "No results found for: ***", so it is queried with a full detection prefix, and the
+ * count is the "N entries found" line. Returns { answered, count, names } (names filtered by relatedFamily).
+ */
+export function parseEncyclopediaResults(html = "", threat = "") {
+  const text = String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  const m = /(\d[\d,]*)\s+entries found/i.exec(text);
+  const all = [...new Set(text.match(/\b[A-Z][A-Za-z]+:[A-Za-z0-9]+\/[A-Za-z0-9_.!-]{3,80}/g) || [])];
+  const names = all.filter((n) => (/^CVE-/i.test(threat) ? compact(n).includes(compact(threat)) : relatedFamily(threat, familyOf(n))));
+  return { answered: Boolean(m), count: m ? Number(m[1].replace(/,/g, "")) : 0, names: names.slice(0, 6) };
+}
+
+/**
+ * One coverage row per threat name, from vendor research and news headlines.
+ *  Yes:      a matching detection is in the 30-day changelog index or the encyclopedia.
+ *  Unclear:  the encyclopedia answered and has no matching entry, and the index has none.
+ *  Lookup failed, retrying: the encyclopedia did not answer; the next run tries again.
+ * lookups: { key: { answered, names, checkedAt, failed } }, keyed by compact(name).
+ */
+export function coverageRows(items = [], detIndex = {}, lookups = {}, now = new Date()) {
   const rows = [];
   const seen = new Set();
-  for (const p of posts) {
-    const names = p.names || threatNamesIn(p.title, p.summary);
-    if (!names.length) continue;
-    for (const name of names) {
+  for (const p of items) {
+    for (const name of p.names || threatNamesIn(p.title, p.summary)) {
       const key = `${compact(name)}|${p.url}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      const fam = findFamily(index, name);
+      const hits = detectionsFor(detIndex, name);
       const look = lookups[compact(name)];
-      let coverage = "Unclear";
+      let coverage;
+      let basis;
       let detections = [];
-      let basis = "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer.";
-      if (fam) {
+      if (hits.length) {
         coverage = "Yes";
-        detections = fam.names;
-        basis = `Defender detection family ${fam.family} first seen in security intelligence ${fam.first} (in this tracker's changelog history).`;
+        detections = hits.slice(0, 4).map((h) => h.name);
+        basis = `In Defender's detection changelog: ${hits[0].name} in security intelligence ${hits[0].version}${hits.length > 1 ? ` and ${hits.length - 1} more in the last 30 days` : ""}.`;
       } else if (look?.names?.length) {
         coverage = "Yes";
-        detections = look.names;
+        detections = look.names.slice(0, 4);
         basis = "Named in Microsoft's malware encyclopedia.";
-      } else if (look?.answered && look.empty) {
-        coverage = "No";
-        basis = "Microsoft's malware encyclopedia has no entry with this family name, and the recent changelog has none. Defender may still detect it under another name.";
       } else if (look?.answered) {
-        basis = "The encyclopedia answered, but no entry carries exactly this family name.";
+        coverage = "Unclear";
+        basis = `Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.`;
+      } else {
+        coverage = "Lookup failed, retrying";
+        basis = look?.error ? `The encyclopedia lookup failed (${look.error}). The next refresh tries again.` : "The encyclopedia has not been asked yet. The next refresh tries again.";
       }
-      rows.push({ threat: name, vendor: p.source, title: p.title, url: p.url, published: p.published || "", coverage, detections, basis });
+      rows.push({ threat: name, vendor: p.source, kind: p.kind || "vendor", title: p.title, url: p.url, published: p.published || "", coverage, detections, basis, checkedAt: look?.checkedAt || now.toISOString() });
     }
   }
   return rows;
+}
+
+/** One row per CVE added to CISA KEV in the last `days` days, with any Defender detection that names it. */
+export function kevRows(recent = [], detIndex = {}, lookups = {}, { days = 14, now = new Date() } = {}) {
+  const since = new Date(now.getTime() - days * 86400000).toISOString().slice(0, 10);
+  return recent
+    .filter((v) => (v.dateAdded || "") >= since)
+    .map((v) => {
+      const hits = detectionsFor(detIndex, v.cve).map((h) => h.name);
+      const enc = lookups[compact(v.cve)]?.names || [];
+      const detections = [...new Set([...hits, ...enc])].slice(0, 4);
+      return {
+        cve: v.cve,
+        vendor: v.vendor || "",
+        product: v.product || "",
+        name: v.name || "",
+        dateAdded: v.dateAdded || "",
+        dueDate: v.dueDate || "",
+        ransomware: v.ransomware || "",
+        url: `https://nvd.nist.gov/vuln/detail/${v.cve}`,
+        detections,
+        coverage: detections.length ? "Detection found" : "No public MDE detection found",
+        checkedAt: lookups[compact(v.cve)]?.checkedAt || now.toISOString(),
+      };
+    })
+    .sort((a, b) => b.dateAdded.localeCompare(a.dateAdded) || a.cve.localeCompare(b.cve));
 }

@@ -29,12 +29,13 @@ const pick = (pulse) => {
     "KB5005292 known issues": sense.kb?.ok ? sense.kb.knownIssues || "None listed" : undefined,
     ...issues,
     "Detection alerts": threats?.alerts ? threats.alerts.map((a) => `${a.detection} in ${a.version} (named in ${a.story.source}: ${a.threat})`) : undefined,
-    "Vendor threats with no Defender entry": threats?.coverage ? [...new Set(threats.coverage.filter((r) => r.coverage === "No").map((r) => `${r.threat} (${r.vendor})`))] : undefined,
+    // The encyclopedia answered with no entry and the 30-day changelog has none.
+    "Threats with no Defender detection found": threats?.coverage && threats?.kev ? [...new Set([...threats.coverage.filter((r) => r.coverage === "Unclear").map((r) => `${r.threat} (${r.vendor})`), ...threats.kev.filter((r) => !r.detections.length).map((r) => `${r.cve} (CISA KEV, due ${r.dueDate})`)])] : undefined,
   };
 };
 
 /** Lists where only new entries are news: an alert or vendor post ageing out is not a change worth sending. */
-const ADD_ONLY = new Set(["Sense releases", "Detection alerts", "Vendor threats with no Defender entry"]);
+const ADD_ONLY = new Set(["Sense releases", "Detection alerts", "Threats with no Defender detection found"]);
 
 export function contentKey(pulse) {
   return JSON.stringify(pick(pulse));
