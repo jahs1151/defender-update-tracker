@@ -31,7 +31,8 @@ export function catalogOs(title = "") {
 export function parseSenseKb(html) {
   const text = plain(html);
   const version =
-    /updates the (?:EDR )?sensor to version\s+(10\.\d+\.\d+\.\d+)/i.exec(text)?.[1] ||
+    // Live page, Nov 2026: "updates the EDR sensor to version 10.8838 or later" (a minimum, not a build).
+    /updates the (?:EDR )?sensor to version\s+(10\.\d+(?:\.\d+){0,2}(?:\s+or later)?)/i.exec(text)?.[1] ||
     /(?:EDR )?sensor version\s+(10\.\d+\.\d+\.\d+)/i.exec(text)?.[1] ||
     "";
   const section = (heading, stops) => {
@@ -67,7 +68,8 @@ export function mergeSenseReleases(previous = [], catalogRows = [], kb = null, t
     else rel.catalog.push(entry);
     byVersion.set(row.version, rel);
   }
-  const kbVersion = kb?.version || "";
+  // Only a full build number is a release; "10.8838 or later" is a minimum and names no single build.
+  const kbVersion = /^10\.\d+\.\d+\.\d+$/.test(kb?.version || "") ? kb.version : "";
   if (kbVersion && !byVersion.has(kbVersion)) {
     byVersion.set(kbVersion, { version: kbVersion, firstSeen: today, catalog: [], restart: "", source: "KB5005292 page" });
   }

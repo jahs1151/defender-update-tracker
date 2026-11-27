@@ -439,8 +439,8 @@ export async function loadSense() {
 export const VENDOR_FEEDS = [
   { source: "CrowdStrike", urls: ["https://www.crowdstrike.com/en-us/blog/feed/", "https://www.crowdstrike.com/blog/feed/"] },
   { source: "SentinelOne", urls: ["https://www.sentinelone.com/labs/feed/", "https://www.sentinelone.com/blog/feed/"] },
-  { source: "Sophos", urls: ["https://news.sophos.com/en-us/category/threat-research/feed/", "https://news.sophos.com/en-us/feed/"] },
-  { source: "Bitdefender", urls: ["https://www.bitdefender.com/nuxt/api/en-us/rss/labs/", "https://www.bitdefender.com/blog/labs/feed/"] },
+  { source: "Sophos", urls: ["https://news.sophos.com/en-us/category/threat-research/feed/"] },
+  { source: "Bitdefender", urls: ["https://www.bitdefender.com/nuxt/api/en-us/rss/labs/"] },
   { source: "ESET", urls: ["https://www.welivesecurity.com/en/rss/feed/"] },
   { source: "Trend Micro", urls: ["https://feeds.feedburner.com/TrendMicroResearch"] },
   { source: "Unit 42", urls: ["https://unit42.paloaltonetworks.com/feed/"] },
@@ -484,12 +484,13 @@ export async function loadVendorResearch(now = new Date()) {
 export async function lookupEncyclopedia(names, cached = {}, { max = 10, now = new Date() } = {}) {
   const out = {};
   const fresh = new Date(now.getTime() - 3 * 86400000).toISOString();
-  for (const [k, v] of Object.entries(cached || {})) if ((v.checkedAt || "") >= fresh) out[k] = v;
+  // v2: answers from before the "results for: ***" fix are dropped (they read every search as 0 entries).
+  for (const [k, v] of Object.entries(cached || {})) if (v.v === 2 && (v.checkedAt || "") >= fresh) out[k] = v;
   const todo = [...new Set(names)].filter((n) => !out[compact(n)]).slice(0, max);
   for (const name of todo) {
     try {
       const html = await getText(`${URLS.encyclopedia}?query=${encodeURIComponent(name)}`, { timeoutMs: 15000, retries: 1 });
-      out[compact(name)] = { ...parseEncyclopediaSearch(html, name), checkedAt: now.toISOString() };
+      out[compact(name)] = { ...parseEncyclopediaSearch(html, name), checkedAt: now.toISOString(), v: 2 };
     } catch {
       /* not answered: the row stays Unclear and is tried again next run */
     }
