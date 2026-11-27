@@ -100,13 +100,16 @@ test("vendor coverage: Yes from the index, No only on an explicit empty lookup, 
 });
 
 test("encyclopedia search parsing keeps only the searched family", () => {
-  const html = `<div>3 entries found</div><a>Trojan:Win32/ValleyRAT.A!MTB</a><a>Trojan:Win32/Valleyx.B</a><a>Backdoor:Win32/ValleyRAT.PAHY!MTB</a>`;
+  const html = `<div>Results for: ValleyRAT</div><div>3 entries found</div><a>Trojan:Win32/ValleyRAT.A!MTB</a><a>Trojan:Win32/Valleyx.B</a><a>Backdoor:Win32/ValleyRAT.PAHY!MTB</a>`;
   const r = parseEncyclopediaSearch(html, "ValleyRAT");
   assert.deepEqual(r.names, ["Trojan:Win32/ValleyRAT.A!MTB", "Backdoor:Win32/ValleyRAT.PAHY!MTB"]);
   assert.equal(r.answered, true);
   assert.equal(r.empty, false);
-  const none = parseEncyclopediaSearch("<p>0 entries found</p>", "GlassWorm2");
+  const none = parseEncyclopediaSearch("<p>No results found for: GlassWorm2</p><p>0 entries found</p>", "GlassWorm2");
   assert.deepEqual([none.answered, none.empty], [true, true]);
   const broken = parseEncyclopediaSearch("<p>Loading…</p>", "GlassWorm2");
   assert.equal(broken.answered, false, "a page that did not render results is not a No");
+  // Live page, Nov 2026: the ?query= URL masks the term and reports 0 even for a family Defender detects.
+  const masked = parseEncyclopediaSearch("<p>No results found for: *** 0 entries found.</p>", "ValleyRAT");
+  assert.deepEqual([masked.answered, masked.empty], [false, false]);
 });

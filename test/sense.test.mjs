@@ -17,6 +17,17 @@ test("KB5005292 page: version, known issues and restart text", () => {
   assert.ok(kb.versions.includes("10.8835.26070.1004"));
 });
 
+test("KB page as live in Nov 2026: a minimum version, no known issues, no restart", () => {
+  const html = `<p>Version information This package updates the EDR sensor to version 10.8838 or later. For information about what's new</p><h2>Known issues in this update</h2><p>No known issues.</p><h2>Update information</h2><p>This package includes updates and fixes.</p><h2>Restart requirement</h2><p>You don't need to restart the system after you install this update.</p><h2>How to roll back this update</h2><p>Restart the device for the rollback to take effect.</p>`;
+  const kb = parseSenseKb(html);
+  assert.equal(kb.version, "10.8838 or later");
+  assert.equal(kb.knownIssues, "No known issues.");
+  assert.equal(kb.restart, "You don't need to restart the system after you install this update.");
+  const rel = mergeSenseReleases([], [{ version: "10.8839.26080.2008", date: "2026-11-08", title: "Windows 10/11", channel: "Current Channel (Broad)" }], kb, "2026-11-27");
+  assert.deepEqual(rel.map((r) => r.version), ["10.8839.26080.2008"], "a minimum version is not added as a release");
+  assert.equal(rel[0].restart, kb.restart);
+});
+
 test("KB page with no sections gives empty text, never 'no known issues'", () => {
   const kb = parseSenseKb("<p>Page moved</p>");
   assert.deepEqual([kb.version, kb.knownIssues, kb.restart], ["", "", ""]);

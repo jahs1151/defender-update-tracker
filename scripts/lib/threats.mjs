@@ -193,9 +193,12 @@ export function detectionAlerts(builds = [], stories = [], { days = 14, now = ne
 export function parseEncyclopediaSearch(html = "", name = "") {
   const text = String(html).replace(/<[^>]+>/g, " ");
   const names = [...new Set(text.match(/\b[A-Z][A-Za-z]+:[A-Za-z0-9]+\/[A-Za-z0-9_.!-]{3,80}/g) || [])].filter((n) => sameFamily(familyOf(n), name));
+  // Live page, Nov 2026: a ?query= URL answers "No results found for: *** 0 entries found" even for
+  // ValleyRAT, which Defender detects. A result count counts only when the page echoes the name searched.
+  const echoed = name.length >= 4 && new RegExp(`(?:results|found) for:?\\s*["“]?${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i").test(text);
   const count = /(\d[\d,]*)\s+(?:entries|results)\s+found/i.exec(text);
-  const empty = /no (?:results|entries) (?:were )?found|0\s+(?:entries|results)\s+found/i.test(text);
-  return { names: names.slice(0, 4), answered: Boolean(count) || empty || names.length > 0, empty: empty && names.length === 0 };
+  const empty = echoed && /no (?:results|entries) (?:were )?found|\b0\s+(?:entries|results)\s+found/i.test(text);
+  return { names: names.slice(0, 4), answered: (echoed && Boolean(count)) || empty || names.length > 0, empty: empty && names.length === 0 };
 }
 
 /**
