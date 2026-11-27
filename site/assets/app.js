@@ -2,7 +2,7 @@ import { stamp, ago, cmpVersion, monthsBetween, versionMonthLabel } from "./time
 
 const OS = { win11: "Win 11", srv2019: "Server 2019", srv2022: "Server 2022", srv2025: "Server 2025" };
 const ALL_OS = Object.keys(OS);
-const TABS = ["status", "updates", "sense", "intune", "intel"];
+const TABS = ["status", "updates", "sense", "threats", "intune", "intel"];
 
 const state = { pulse: null, catalog: null, curated: null, os: "all", tab: "status", errors: {} };
 
@@ -528,7 +528,7 @@ function renderRoadmap() {
     .join("")}</ul>` : "<p>No Defender or Intune items in the feed right now.</p>"}${source(r.url, "Microsoft 365 roadmap")}</div>`;
 }
 
-// ---------- Intel tab ----------
+// ---------- Detections tab: changelog ----------
 const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(n);
 
 function changelogHistory() {
@@ -568,7 +568,7 @@ function rerenderChangelog() {
   const el = document.getElementById("changelog");
   if (!el) return;
   const focusId = document.activeElement?.id;
-  el.outerHTML = section("changelog", "Detection changelog", renderChangelog(), "changelog");
+  el.outerHTML = section("changelog", "Detections in security intelligence", renderChangelog(), "changelog");
   if (focusId) document.getElementById(focusId)?.focus();
 }
 
@@ -580,6 +580,8 @@ function selectedBuild() {
   const idx = Math.max(0, history.findIndex((h) => h.version === wanted));
   return { history, idx, h: history[idx], prev: history[idx + 1] };
 }
+
+const SEV_TONE = { severe: "bad", high: "warn", medium: "", low: "" };
 
 function renderChangelog() {
   const clData = data("changelog");
@@ -625,8 +627,8 @@ function renderChangelog() {
   else if (cur.status === "error")
     table = `<div class="notice">${cur.error === "timeout" ? `Build ${esc(h.version)} did not load within ${BUILD_TIMEOUT_MS / 1000} seconds.` : `Build ${esc(h.version)} did not load (${esc(cur.error)}).`} <button type="button" class="btn small" data-action="retry-build" data-version="${esc(h.version)}">Retry</button></div>`;
   else if (rows.length)
-    table = `<div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th><th>Change</th></tr></thead><tbody>${rows
-      .map((r) => `<tr><td>${link(r.url, r.name)}</td><td>${esc(r.severity)}</td><td>${esc(r.change)}</td></tr>`)
+    table = `<div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th></tr></thead><tbody>${rows
+      .map((r) => `<tr><td><span class="mono">${link(r.url, r.name)}</span><div class="meta">${esc(r.change)} · released ${h.releasedAt ? esc(stamp(h.releasedAt)) : "time not published"}</div></td><td>${r.severity ? pill(r.severity, SEV_TONE[String(r.severity).toLowerCase()] || "") : ""}</td></tr>`)
       .join("")}</tbody></table></div><p class="meta">All ${rows.length} rows shown.</p>`;
   else table = `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(h.version)} matches "${esc(state.threatQ)}".` : cur.rows.length ? "Every detection in this build is for Android, macOS or Linux. Clear the checkbox to see them." : "Microsoft lists no detections for this build."}</p>`;
   return `<div class="card">
@@ -635,7 +637,7 @@ function renderChangelog() {
     <div class="controls">
       ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((x, i) => `<option value="${esc(x.version)}" ${i === idx ? "selected" : ""}>${esc(x.version)}${i === 0 ? " (latest)" : ""}${x.releasedAt ? ` · ${esc(stamp(x.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
       <label class="field" style="flex:1 1 220px">Threat name <input type="search" id="threat-q" value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
-      <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Hide Android, macOS and Linux detections</label>
+      <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Windows families only${cur.status === "ok" ? ` · ${cur.rows.filter((r) => isWin(r.name)).length}` : ""}</label>
     </div>
     ${delta}
     <div class="controls" style="margin:6px 0">
@@ -963,15 +965,43 @@ function renderIntel() {
     : "";
 
   return [
-    section("changelog", "Detection changelog", renderChangelog(), "changelog"),
-    section("si-trend", "Recent security intelligence builds", renderTrend(), "changelog"),
     section("features", "New Defender for Endpoint features", intuneBlock + renderFeatures() + reportedBlock, "mde"),
     section("chatter", "Bad-detection chatter", chatterBody),
-    section("detection-alerts", "Detection alerts: new detections for threats in the news", renderDetectionAlerts(), "threats"),
-    section("vendor-coverage", "Vendor threat coverage", renderVendorCoverage(), "vendors"),
     section("news", "News and Reddit", renderFeed(), "news"),
     section("hashes", "Public hashes and Defender coverage", renderHashes(), "hashes"),
   ].join("");
+}
+
+// ---------- Detections tab (#threats) ----------
+function renderThreats() {
+  return [
+    section("changelog", "Detections in security intelligence", renderChangelog(), "changelog"),
+    section("si-trend", "Recent security intelligence builds", renderTrend(), "changelog"),
+    section("detection-alerts", "Detection alerts: new detections for threats in the news", renderDetectionAlerts(), "threats"),
+    section("vendor-coverage", "Vendor threat coverage", renderVendorCoverage(), "vendors"),
+  ].join("");
+}
+
+// ---------- section jump row ----------
+/** One chip per section on the current tab; a chip scrolls to its section. */
+function renderJump() {
+  const nav = document.getElementById("jump");
+  if (!nav) return;
+  const heads = [...document.querySelectorAll("#view > .section[id] > .section-head > h2")];
+  const SHORT = { changelog: "Detections", "si-trend": "Recent builds", "vendor-coverage": "Vendor coverage", hashes: "Public hashes", features: "New MDE features" };
+  nav.innerHTML = heads.map((h) => {
+    const id = h.closest(".section").id;
+    return `<a href="#${esc(id)}">${esc(SHORT[id] || h.textContent.split(":")[0])}</a>`;
+  }).join("");
+  nav.hidden = heads.length < 2;
+}
+
+/** Scroll a section just below the sticky header, whatever height the header has on this screen. */
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const head = document.querySelector("header.top")?.offsetHeight || 0;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - head - 8 });
 }
 
 // ---------- alert banner ----------
@@ -1063,9 +1093,10 @@ function render() {
     view.innerHTML = `<div class="notice bad">The data file did not load (${esc(state.errors.pulse || "unknown error")}). Check your connection and reload.</div>`;
     return;
   }
-  const fn = { status: renderStatus, updates: renderUpdates, sense: renderSense, intune: renderIntune, intel: renderIntel }[state.tab];
+  const fn = { status: renderStatus, updates: renderUpdates, sense: renderSense, threats: renderThreats, intune: renderIntune, intel: renderIntel }[state.tab];
   view.innerHTML = renderAlerts() + fn();
   renderSearch();
+  renderJump();
   document.querySelectorAll("#tabs a").forEach((a) => a.setAttribute("aria-current", a.dataset.tab === state.tab ? "page" : "false"));
   document.querySelectorAll("#os-chips button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.os === state.os)));
 }
@@ -1080,11 +1111,11 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { "out-of-band": "updates", "si-trend": "intel", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "intel", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "intel", "vendor-coverage": "intel", news: "intel", reddit: "intel" }[hash];
+  const owner = { "out-of-band": "updates", "si-trend": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
-    document.getElementById(hash)?.scrollIntoView();
+    scrollToSection(hash);
   } else render();
 }
 
