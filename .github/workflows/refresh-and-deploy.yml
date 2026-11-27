@@ -63,12 +63,21 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site/data/pulse.json site/data/changelog
+          git add -A site/data/pulse.json site/data/changelog site/data/families.json site/data/changes.json site/feed.xml
           git commit -m "Data refresh $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do
             git pull --rebase -X theirs origin main && git push origin HEAD:main && break
             sleep $((i * 5))
           done
+
+      # Posts this run's "What changed" lines to Teams, Slack or any JSON webhook.
+      # Set the repository secret ALERT_WEBHOOK_URL to turn it on; without it this step does nothing.
+      - name: Send change alert
+        if: steps.collect.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+        run: node scripts/notify.mjs
 
       - name: Upload site
         if: steps.gate.outputs.skip != 'true'

@@ -4,6 +4,8 @@ import * as P from "./parsers.mjs";
 import { toIso, osTags } from "./text.mjs";
 import { secondTuesday } from "../../site/assets/time.js";
 import { exeContents, wimPlatform } from "./packages.mjs";
+import { KB_URL, catalogOs, parseSenseKb } from "./sense.mjs";
+import { threatNamesIn, compact, parseEncyclopediaSearch } from "./threats.mjs";
 
 export const URLS = {
   definitions: "https://www.microsoft.com/en-us/wdsi/definitions",
@@ -17,6 +19,8 @@ export const URLS = {
   intuneInDev: "https://learn.microsoft.com/en-us/intune/whats-new/in-development",
   kev: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
   senseCatalog: "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292",
+  senseKb: KB_URL,
+  encyclopedia: "https://www.microsoft.com/en-us/wdsi/threats/threat-search",
 };
 
 const ok = (detail, data) => ({ ok: true, detail, data });
@@ -386,25 +390,111 @@ export async function loadNews() {
     items.push({ ...item, id: key, os: osTags(`${item.title} ${item.summary}`) });
   }
   items.sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+  // Every headline that names a threat, endpoint-related or not, for the detection alerts.
+  const threatStories = [];
+  const seenThreat = new Set();
+  for (const item of packs.flatMap((p) => p.items)) {
+    const names = threatNamesIn(item.title, item.summary);
+    const key = item.url.replace(/[?#].*$/, "").replace(/\/$/, "");
+    if (!names.length || seenThreat.has(key) || item.source === "MSRC Security Update Guide") continue;
+    seenThreat.add(key);
+    threatStories.push({ title: item.title, url: item.url, source: item.source, published: item.published, names });
+  }
+  threatStories.sort((a, b) => (b.published || "").localeCompare(a.published || ""));
   const failed = packs.filter((p) => !p.ok).map((p) => p.source);
   return ok(`${items.length} relevant headlines from ${packs.length - failed.length} feeds${failed.length ? ` (failed: ${packs.filter((p) => !p.ok).map((p) => `${p.source}: ${p.error}`).join(", ")})` : ""}`, {
     items: items.slice(0, 40),
+    threatStories: threatStories.slice(0, 40),
     feeds: packs.map(({ source, ok: feedOk, error }) => ({ source, ok: feedOk, error: error || "" })),
   });
 }
 
 export async function loadSense() {
   try {
-    const rows = P.parseSenseCatalog(await getText(URLS.senseCatalog, { timeoutMs: 30000 }));
+    const [catalogHtml, kbHtml] = await Promise.all([
+      getText(URLS.senseCatalog, { timeoutMs: 30000 }),
+      getText(URLS.senseKb, { timeoutMs: 25000 }).catch((error) => ({ error: errorText(error) })),
+    ]);
+    const rows = P.parseSenseCatalog(catalogHtml);
     if (!rows.length) throw new Error("No Sense build found in the Update Catalog");
     // The catalog lists one row per OS family, each with its own "last updated" date (no time).
     const builds = rows
       .filter((r) => r.version === rows[0].version)
-      .map((r) => ({ date: r.date, channel: r.channel, os: /Windows Server 2019\+/i.test(r.title) ? "Windows Server 2019 and later" : /Windows 10\/11/i.test(r.title) ? "Windows 10 and 11" : /Windows 7/i.test(r.title) ? "Windows 7 / Server 2008 R2" : "Other" }));
-    return ok(`Latest ${rows[0].version} · ${rows[0].channel || "channel not stated"}`, { latest: { ...rows[0], title: rows[0].title.replace(/^[^>]*>\s*/, "") }, builds, url: URLS.senseCatalog });
+      .map((r) => ({ date: r.date, channel: r.channel, os: catalogOs(r.title) }));
+    const kbParsed = typeof kbHtml === "string" ? parseSenseKb(kbHtml) : null;
+    const kb = kbParsed
+      ? { ok: true, url: URLS.senseKb, version: kbParsed.version, knownIssues: kbParsed.knownIssues, restart: kbParsed.restart }
+      : { ok: false, url: URLS.senseKb, error: kbHtml.error };
+    const versions = [...new Set(rows.map((r) => r.version))];
+    return ok(
+      `Latest ${rows[0].version} · ${rows[0].channel || "channel not stated"} · ${versions.length} version${versions.length === 1 ? "" : "s"} in the catalog · KB5005292 page ${kb.ok ? (kb.version ? `names ${kb.version}` : "read, no version found") : `failed (${kb.error})`}`,
+      { latest: { ...rows[0], title: rows[0].title.replace(/^[^>]*>\s*/, "") }, builds, url: URLS.senseCatalog, catalogRows: rows.map(({ version, date, title, channel }) => ({ version, date, title: title.slice(0, 160), channel })), kb },
+    );
   } catch (error) {
     return fail(error);
   }
+}
+
+// Vendor research feeds for threat coverage. Each is optional: a failed feed is listed, not fatal.
+export const VENDOR_FEEDS = [
+  { source: "CrowdStrike", urls: ["https://www.crowdstrike.com/en-us/blog/feed/", "https://www.crowdstrike.com/blog/feed/"] },
+  { source: "SentinelOne", urls: ["https://www.sentinelone.com/labs/feed/", "https://www.sentinelone.com/blog/feed/"] },
+  { source: "Sophos", urls: ["https://news.sophos.com/en-us/category/threat-research/feed/", "https://news.sophos.com/en-us/feed/"] },
+  { source: "Bitdefender", urls: ["https://www.bitdefender.com/nuxt/api/en-us/rss/labs/", "https://www.bitdefender.com/blog/labs/feed/"] },
+  { source: "ESET", urls: ["https://www.welivesecurity.com/en/rss/feed/"] },
+  { source: "Trend Micro", urls: ["https://feeds.feedburner.com/TrendMicroResearch"] },
+  { source: "Unit 42", urls: ["https://unit42.paloaltonetworks.com/feed/"] },
+];
+
+/** Research posts from each vendor feed, last 30 days, with the threat names found in each. */
+export async function loadVendorResearch(now = new Date()) {
+  const since = new Date(now.getTime() - 30 * 86400000).toISOString();
+  const packs = await Promise.all(
+    VENDOR_FEEDS.map(async (v) => {
+      let error = "";
+      for (const url of v.urls) {
+        try {
+          const items = P.parseFeed(await feedText(url), v.source, 25);
+          if (items.length) return { source: v.source, ok: true, url, items };
+          error = "Feed returned no items";
+        } catch (e) {
+          error = errorText(e);
+        }
+      }
+      return { source: v.source, ok: false, url: v.urls[0], items: [], error };
+    }),
+  );
+  if (!packs.some((p) => p.ok)) return { ok: false, detail: packs.map((p) => `${p.source}: ${p.error}`).join("; "), data: null };
+  const posts = packs
+    .flatMap((p) => p.items)
+    .filter((i) => !i.published || i.published >= since)
+    .map((i) => ({ title: i.title, url: i.url, source: i.source, published: i.published, summary: i.summary.slice(0, 240), names: threatNamesIn(i.title, i.summary) }))
+    .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+  const failed = packs.filter((p) => !p.ok);
+  return ok(`${posts.length} posts in 30 days from ${packs.length - failed.length} of ${packs.length} vendors${failed.length ? ` (failed: ${failed.map((p) => `${p.source}: ${p.error}`).join(", ")})` : ""}`, {
+    posts: posts.slice(0, 80),
+    feeds: packs.map(({ source, ok: feedOk, url, error }) => ({ source, ok: feedOk, url, error: error || "" })),
+  });
+}
+
+/**
+ * Look threat names up in Microsoft's malware encyclopedia, a few per run.
+ * cached: earlier answers, kept for 3 days so each name is looked up at most once every 3 days.
+ */
+export async function lookupEncyclopedia(names, cached = {}, { max = 10, now = new Date() } = {}) {
+  const out = {};
+  const fresh = new Date(now.getTime() - 3 * 86400000).toISOString();
+  for (const [k, v] of Object.entries(cached || {})) if ((v.checkedAt || "") >= fresh) out[k] = v;
+  const todo = [...new Set(names)].filter((n) => !out[compact(n)]).slice(0, max);
+  for (const name of todo) {
+    try {
+      const html = await getText(`${URLS.encyclopedia}?query=${encodeURIComponent(name)}`, { timeoutMs: 15000, retries: 1 });
+      out[compact(name)] = { ...parseEncyclopediaSearch(html, name), checkedAt: now.toISOString() };
+    } catch {
+      /* not answered: the row stays Unclear and is tried again next run */
+    }
+  }
+  return out;
 }
 
 /** Qualys QIDs for this month and the month before, merged with months already stored. */

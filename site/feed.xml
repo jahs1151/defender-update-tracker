@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Defender Update Tracker: what changed</title>
+  <link>https://jahs1151.github.io/defender-update-tracker/</link>
+  <atom:link href="https://jahs1151.github.io/defender-update-tracker/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>New Defender security intelligence, engine, platform and Sense builds, Sense issue stages, detection alerts, Patch Tuesday and known-issue changes. Public sources only.</description>
+  <language>en-us</language>
+  <lastBuildDate>Thu, 01 Jan 1970 00:00:00 GMT</lastBuildDate>
+
+</channel>
+</rss>

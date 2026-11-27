@@ -2,7 +2,7 @@ import { stamp, ago, cmpVersion, monthsBetween, versionMonthLabel } from "./time
 
 const OS = { win11: "Win 11", srv2019: "Server 2019", srv2022: "Server 2022", srv2025: "Server 2025" };
 const ALL_OS = Object.keys(OS);
-const TABS = ["status", "updates", "intune", "intel"];
+const TABS = ["status", "updates", "sense", "intune", "intel"];
 
 const state = { pulse: null, catalog: null, curated: null, os: "all", tab: "status", errors: {} };
 
@@ -184,7 +184,7 @@ function renderChanges() {
       return `<li><span class="row-title">${esc(c.field)}</span> ${body}</li>`;
     })
     .join("");
-  return `<div class="card"><p class="meta">Detected ${esc(stamp(p.contentChangedAt))}</p><ul class="list changes">${rows}</ul></div>`;
+  return `<div class="card"><p class="meta">Detected ${esc(stamp(p.contentChangedAt))} · <a href="feed.xml">RSS feed of changes</a></p><ul class="list changes">${rows}</ul></div>`;
 }
 
 function renderStatus() {
@@ -214,7 +214,7 @@ function renderStatus() {
     ${versionCard("Security intelligence", intel?.securityIntelligence || mpam?.version, siWhen, intel?.url || "https://www.microsoft.com/en-us/wdsi/definitions", clockNote)}
     ${versionCard("Engine", intel?.engine || mpam?.engine, engineWhen, intel?.url, engineNote)}
     ${versionCard("Platform", intel?.platform || plat?.version, platWhen, "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates")}
-    ${versionCard("Sense (MsSense.exe)", sense.version, sense.when, sense.url, `${sense.channel ? `<div class="when">Ring: ${esc(sense.channel)}</div>` : ""}${sense.note ? `<p class="meta" style="margin-top:6px">${esc(sense.note)}</p>` : ""}`)}
+    ${versionCard("Sense (MsSense.exe)", sense.version, sense.when, sense.url, `${sense.channel ? `<div class="when">Ring: ${esc(sense.channel)}</div>` : ""}${sense.note ? `<p class="meta" style="margin-top:6px">${esc(sense.note)}</p>` : ""}<div><a class="src" href="#sense-releases">Release history and issues</a></div>`)}
   </div>`;
 
   const wimBehind = (p) => p.id === "wim" && p.version && mpam?.version && cmpVersion(p.version, mpam.version) < 0;
@@ -746,20 +746,89 @@ function renderHashes() {
   </div>`;
 }
 
-function renderIntel() {
-  const news = (data("news")?.items || []).filter((n) => osOk(n.os));
-  const posts = data("community")?.posts || [];
-  const chatter = [...news.map((n) => ({ ...n, where: n.source })), ...posts.map((p) => ({ ...p, where: p.community }))]
-    .filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 14)
-    .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
-  const chatterBody = `<div class="card">
-    <p>News and Reddit posts from the last 14 days that mention a false positive, a signature revision, a detection storm, or MsSense / SenseIR. One post is a lead. Several, plus quarantines on your pilot ring, are a reason to hold the broad ring.</p>
-    ${chatter.length ? `<ul class="list">${chatter
-      .slice(0, 10)
-      .map((x) => `<li><span class="row-title">${link(x.url, x.title)}</span><div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div></li>`)
-      .join("")}</ul>` : `<p class="meta">Nothing matches right now. That is a real empty result, not a missing feed (see Source health).</p>`}
-  </div>`;
+// ---------- Sense tab ----------
+const STAGES = ["Community reports", "Microsoft acknowledged", "Fix announced", "Fix published"];
+/** A date-only value (the catalog and stage dates) in UTC and Chicago, or a full stamp for a time. */
+const dayOrStamp = (v) => (/^\d{4}-\d{2}-\d{2}$/.test(v || "") ? senseReleaseStamp(v).replace(" (time of day not published)", "") : stamp(v));
 
+function renderSenseReleases() {
+  const sd = data("sense");
+  const releases = sd?.releases || [];
+  if (!releases.length) return sectionError("sense", "The Sense release history") || `<div class="card"><p class="meta">No Sense release recorded yet. The first refresh after this update fills it from the Update Catalog.</p></div>`;
+  const rows = releases
+    .map((r, i) => {
+      const catalog = (r.catalog || []).map((c) => `<div>${esc(c.os)}: ${c.date ? esc(dayOrStamp(c.date)) : "date not published"}${c.channel ? ` · ${esc(c.channel)}` : ""}</div>`).join("");
+      return `<tr>
+        <td class="mono">${esc(r.version)}${i === 0 ? ` ${pill("Latest", "ok")}` : ""}</td>
+        <td>${r.released ? esc(dayOrStamp(r.released)) : na("Not published")}<div class="meta">First seen by this tracker ${esc(dayOrStamp(r.firstSeen))}</div></td>
+        <td>${r.os?.length ? esc(r.os.join(", ")) : na("Not in the catalog")}${catalog ? `<details><summary class="meta">Catalog dates per OS</summary><div class="meta">${catalog}</div></details>` : ""}</td>
+        <td>${r.restart ? esc(r.restart) : na("Not stated")}</td>
+        <td>${r.rings?.length ? r.rings.map((x) => pill(x)).join(" ") : na("Not stated")}</td>
+      </tr>`;
+    })
+    .join("");
+  return `<div class="card">
+    <p>Every Sense (MsSense.exe) build this tracker has seen in the Microsoft Update Catalog for KB5005292, newest first. A build stays listed after the catalog drops it. The catalog publishes a date per OS family, not a time of day. Restart text comes from the KB5005292 page and applies to the build that page names.</p>
+    <div class="table-wrap"><table><thead><tr><th>Version</th><th>Released (catalog)</th><th>OS scope</th><th>Restart</th><th>Ring</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${source(sd.url, "Microsoft Update Catalog: KB5005292")}
+  </div>`;
+}
+
+function renderSenseKb() {
+  const kb = data("sense")?.kb;
+  if (!kb) return `<div class="card"><p class="meta">The KB5005292 page has not been read yet.</p>${source("https://support.microsoft.com/en-us/servicing/management-tools/microsoft-defender/update/microsoft-defender-for-endpoint-update-for-edr-sensor", "KB5005292")}</div>`;
+  const status = kb.ok ? pill("Read on the last refresh", "ok") : kb.stale ? pill("Stale: showing the last good read", "warn") : pill("Not read", "bad");
+  return `<div class="card">
+    <p>${status}${kb.error ? ` <span class="meta">${esc(kb.error)}</span>` : ""}</p>
+    <dl class="facts">
+      <dt>Version named</dt><dd>${kb.version ? `<code>${esc(kb.version)}</code>` : na("Not found on the page")}</dd>
+      <dt>Known issues</dt><dd>${kb.knownIssues ? esc(kb.knownIssues) : na("No known-issues text found. That is not the same as no known issues.")}</dd>
+      <dt>Restart requirement</dt><dd>${kb.restart ? esc(kb.restart) : na("Not found on the page")}</dd>
+    </dl>
+    ${source(kb.url, "KB5005292: Defender for Endpoint update for EDR sensor")}
+  </div>`;
+}
+
+function stageTrack(issue) {
+  const at = STAGES.indexOf(issue.stage);
+  return `<ol class="stages">${STAGES.map((st, i) => {
+    const r = issue.reached?.[st];
+    const cls = i <= at ? (i === at ? "done current" : "done") : "";
+    return `<li class="${cls}"><span class="stage-name">${esc(st)}</span>${r ? `<span class="meta">${esc(dayOrStamp(r.at))}</span><span class="meta">${r.url ? link(r.url, r.note) : esc(r.note)}</span>` : `<span class="meta">Not yet</span>`}</li>`;
+  }).join("")}</ol>`;
+}
+
+function renderSenseIssues() {
+  const issues = data("sense")?.issues || [];
+  if (!issues.length) return `<div class="card"><p class="meta">No Sense issues are being tracked. Add one under senseIssues in data/curated.json.</p></div>`;
+  return `<div class="card"><p>Each reported Sense problem is followed until Microsoft ships a fix. The scheduled refresh moves an issue forward when the KB5005292 known-issues text or Windows release health mentions it, when Microsoft says a fix is coming or names a fixed build, and when matching news or Reddit posts appear. An issue never moves back. "Inferred" means the KB page stopped listing it after a newer build shipped.</p>
+    ${issues
+      .map(
+        (i) => `<article class="issue">
+      <h3>${esc(i.title)} ${pill(i.stage || "Tracked", i.stage === "Fix published" ? "ok" : i.stage === "Community reports" ? "warn" : "")}</h3>
+      ${stageTrack(i)}
+      <dl class="facts">
+        ${i.affected ? `<dt>Affected build</dt><dd><code>${esc(i.affected)}</code></dd>` : ""}
+        ${i.scope ? `<dt>Scope</dt><dd>${esc(i.scope)}</dd>` : ""}
+        <dt>Symptom</dt><dd>${esc(i.symptom)}</dd>
+        <dt>Workaround</dt><dd>${esc(i.workaround || "None published.")}</dd>
+        <dt>First reported</dt><dd>${esc(dayOrStamp(i.firstSeen))}</dd>
+      </dl>
+      ${i.posts?.length ? `<details><summary>Matching posts in the last 14 days (${i.posts.length})</summary><ul class="list">${i.posts.map((p) => `<li>${link(p.url, p.title)}<div class="meta">${esc(p.where)} · ${p.published ? esc(stamp(p.published)) : "time not published"}</div></li>`).join("")}</ul></details>` : ""}
+      ${(i.links || []).map((l) => source(l.url, l.label)).join("")}
+    </article>`,
+      )
+      .join("")}</div>`;
+}
+
+function renderSenseSignal() {
+  const sig = data("sense")?.signal;
+  if (!sig) return `<div class="card"><p class="meta">Not computed yet.</p></div>`;
+  return `<div class="card"><p>News and Reddit posts from the last 7 days that mention the sensor (Sense, MsSense, KB5005292, a 10.8xxx build) together with a problem word. Unconfirmed until Microsoft posts. Reddit and the news feeds are listed under Source health; when one of them failed, an empty list means unknown, not none.</p>
+    ${sig.posts?.length ? `<ul class="list">${sig.posts.map((p) => `<li>${link(p.url, p.title)}<div class="meta">${esc(p.where)} · ${p.published ? esc(stamp(p.published)) : "time not published"}</div></li>`).join("")}</ul>` : `<p class="meta">No matching posts in the last 7 days.</p>`}</div>`;
+}
+
+function renderSense() {
   const states = [
     ["Active", "The sensor is reporting. A bad signature still shows up as alerts and quarantines, not as an inactive sensor."],
     ["Impaired communications", "The device cannot fully reach the Defender service URLs, usually because of a proxy. Isolate, live response and file submission fail until that path works."],
@@ -778,6 +847,62 @@ function renderIntel() {
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/check-sensor-status", "Check sensor health state")}
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors", "Fix unhealthy sensors")}
     ${source("https://learn.microsoft.com/en-us/defender-endpoint/device-health-sensor-health-os", "Device health and sensor health reports")}
+  </div>`;
+
+  return [
+    section("sense-issues", "Sense issue tracker", renderSenseIssues(), "sense"),
+    section("sense-releases", "Sense release history", renderSenseReleases(), "sense"),
+    section("sense-kb", "KB5005292: known issues and restart", renderSenseKb()),
+    section("sense-signal", "Sense community signal", renderSenseSignal(), "community"),
+    section("sensor", "Sensor (MsSense / SenseIR)", sensor),
+  ].join("");
+}
+
+function renderDetectionAlerts() {
+  const t = data("threats");
+  if (!t) return sectionError("threats", "The detection alerts");
+  const alerts = t.alerts || [];
+  return `<div class="card"><p>A new security intelligence build added a Defender detection whose family name is exactly a threat named in a news story or vendor research post from the last 14 days. Generic families such as Wacatac or Agent never count. Alerts stay listed for 14 days.</p>
+    ${alerts.length ? `<div class="table-wrap"><table><thead><tr><th>Detection added</th><th>Build</th><th>In the news</th></tr></thead><tbody>${alerts
+      .map((a) => `<tr><td>${link(a.detectionUrl, a.detection)}${a.severity ? `<div class="meta">${esc(a.severity)}</div>` : ""}</td>
+        <td class="mono">${esc(a.version)}<div class="meta">${a.releasedAt ? esc(stamp(a.releasedAt)) : "time not published"}</div></td>
+        <td>${link(a.story.url, a.story.title)}<div class="meta">${esc(a.story.source)}${a.story.published ? ` · ${esc(stamp(a.story.published))}` : ""} · names ${esc(a.threat)}</div></td></tr>`)
+      .join("")}</tbody></table></div>` : `<p class="meta">No build in the last 14 days added a detection for a threat in the news.</p>`}
+  </div>`;
+}
+
+function renderVendorCoverage() {
+  const t = data("threats");
+  if (!t) return sectionError("threats", "The vendor threat coverage");
+  const rows = t.coverage || [];
+  const feeds = data("vendors")?.feeds || [];
+  const tone = { Yes: "ok", No: "bad", Unclear: "warn" };
+  const counts = ["Yes", "No", "Unclear"].map((c) => `${pill(c, tone[c])} ${rows.filter((r) => r.coverage === c).length}`).join(" ");
+  return `<div class="card">
+    <p>Threats named in the last 30 days of research from CrowdStrike, SentinelOne, Sophos, Bitdefender, ESET, Trend Micro and Unit 42, checked against Defender. <strong>Yes</strong>: a Defender detection with exactly the same family name is in the changelog (last 90 days) or Microsoft's malware encyclopedia. <strong>No</strong>: the encyclopedia search answered with no entry and the changelog has none; Defender may still detect it under another name. <strong>Unclear</strong>: the lookup did not answer, or did not find this exact name. Posts that name no specific threat are left out.</p>
+    <p>${counts}</p>
+    ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Threat</th><th>Reported by</th><th>Defender</th><th>Why</th></tr></thead><tbody>${rows
+      .map((r) => `<tr><td><strong>${esc(r.threat)}</strong></td>
+        <td>${link(r.url, r.title)}<div class="meta">${esc(r.vendor)}${r.published ? ` · ${esc(stamp(r.published))}` : ""}</div></td>
+        <td>${pill(r.coverage, tone[r.coverage])}${r.detections?.length ? `<div class="meta mono">${r.detections.map(esc).join("<br>")}</div>` : ""}</td>
+        <td class="meta">${esc(r.basis)}${r.coverage !== "Yes" ? ` ${link(`https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=${encodeURIComponent(r.threat)}`, "Search the encyclopedia ↗")}` : ""}</td></tr>`)
+      .join("")}</tbody></table></div>` : `<p class="meta">No vendor post in the last 30 days names a specific threat.</p>`}
+    ${feeds.length ? `<p class="meta">Feeds: ${feeds.map((f) => `${esc(f.source)} ${f.ok ? pill("Live", "ok") : pill("Failed", "bad")}`).join(" · ")}</p>` : ""}
+  </div>`;
+}
+
+function renderIntel() {
+  const news = (data("news")?.items || []).filter((n) => osOk(n.os));
+  const posts = data("community")?.posts || [];
+  const chatter = [...news.map((n) => ({ ...n, where: n.source })), ...posts.map((p) => ({ ...p, where: p.community }))]
+    .filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 14)
+    .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
+  const chatterBody = `<div class="card">
+    <p>News and Reddit posts from the last 14 days that mention a false positive, a signature revision, a detection storm, or MsSense / SenseIR. One post is a lead. Several, plus quarantines on your pilot ring, are a reason to hold the broad ring.</p>
+    ${chatter.length ? `<ul class="list">${chatter
+      .slice(0, 10)
+      .map((x) => `<li><span class="row-title">${link(x.url, x.title)}</span><div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div></li>`)
+      .join("")}</ul>` : `<p class="meta">Nothing matches right now. That is a real empty result, not a missing feed (see Source health).</p>`}
   </div>`;
 
   // Defender for Endpoint changes that Microsoft announces in Intune's what's new and in-development pages.
@@ -812,7 +937,8 @@ function renderIntel() {
     section("si-trend", "Security intelligence builds: last 8", renderTrend(), "changelog"),
     section("features", "New Defender for Endpoint features", intuneBlock + renderFeatures() + reportedBlock, "mde"),
     section("chatter", "Bad-detection chatter", chatterBody),
-    section("sensor", "Sensor (MsSense / SenseIR)", sensor, "sense"),
+    section("detection-alerts", "Detection alerts: new detections for threats in the news", renderDetectionAlerts(), "threats"),
+    section("vendor-coverage", "Vendor threat coverage", renderVendorCoverage(), "vendors"),
     section("news", "News and Reddit", renderFeed(), "news"),
     section("hashes", "Public hashes and Defender coverage", renderHashes(), "hashes"),
   ].join("");
@@ -837,6 +963,11 @@ function renderAlerts() {
   const posts = data("community")?.posts || [];
   const recentChatter = [...(data("news")?.items || []), ...posts].filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 3);
   if (recentChatter.length >= 2) alerts.push({ tone: "", html: `${recentChatter.length} posts in the last 3 days mention a possible bad detection or sensor problem. ${go("chatter", "Review before widening the broad ring")}` });
+  for (const i of (data("sense")?.issues || []).filter((x) => x.stage && x.stage !== "Fix published").slice(0, 2)) {
+    alerts.push({ tone: "", html: `Sense issue: ${esc(i.title)} (${esc(i.stage)}). ${go("sense-issues", "Sense issue tracker")}` });
+  }
+  const freshAlerts = (data("threats")?.alerts || []).filter((a) => daysOld(a.releasedAt) <= 3);
+  if (freshAlerts.length) alerts.push({ tone: "", html: `${freshAlerts.length} new Defender detection${freshAlerts.length === 1 ? "" : "s"} in the last 3 days for threats in the news, including ${esc(freshAlerts[0].detection)}. ${go("detection-alerts", "Detection alerts")}` });
   const openIssues = (data("knownIssues")?.rows || []).filter((r) => r.scope === "security" && !/resolved/i.test(r.status) && osOk(r.os));
   for (const r of openIssues.slice(0, 2)) alerts.push({ tone: "", html: `Open known issue: ${esc(r.title)} (${esc(r.status)}). ${go("known-issues", "Known issues")}` });
   if (!alerts.length) return "";
@@ -855,7 +986,11 @@ function searchIndex() {
   for (const i of state.curated?.incidents || []) add("CVE", `${i.id} ${i.name}`, i.summary, "exploited", i.url);
   for (const r of data("knownIssues")?.rows || []) add(/KB\d+/.test(r.status) ? "KB" : "Known issue", `${r.title} (${r.status})`, r.detail, "known-issues", r.url);
   for (const p of Array.isArray(data("packages")) ? data("packages") : []) if (p.kb) add("KB", `${p.kb} ${p.name}`, p.file, "packages", p.page);
-  if (data("sense")) add("KB", `KB5005292 Sense (MsSense.exe) ${data("sense").latest?.version || ""}`, "", "versions", data("sense").url);
+  if (data("sense")) add("KB", `KB5005292 Sense (MsSense.exe) ${data("sense").latest?.version || ""}`, "", "sense-releases", data("sense").url);
+  for (const r of data("sense")?.releases || []) add("KB", `Sense ${r.version}`, (r.rings || []).join(" "), "sense-releases", data("sense").url);
+  for (const i of data("sense")?.issues || []) add("Known issue", `Sense: ${i.title} (${i.stage || "tracked"})`, i.symptom, "sense-issues", i.links?.[0]?.url);
+  for (const a of data("threats")?.alerts || []) add("Detection", `${a.detection} (${a.threat})`, a.story.title, "detection-alerts", a.detectionUrl);
+  for (const r of data("threats")?.coverage || []) add("Threat", `${r.threat}: Defender ${r.coverage}`, r.title, "vendor-coverage", r.url);
   const q = data("qualys");
   for (const [m, v] of Object.entries(q?.months || (q ? { [q.month]: q } : {}))) add("QID", `Qualys QIDs for ${m} Patch Tuesday`, (v.qids || []).join(" "), "qualys", v.url);
   for (const w of data("intune")?.weeks || []) {
@@ -898,7 +1033,7 @@ function render() {
     view.innerHTML = `<div class="notice bad">The data file did not load (${esc(state.errors.pulse || "unknown error")}). Check your connection and reload.</div>`;
     return;
   }
-  const fn = { status: renderStatus, updates: renderUpdates, intune: renderIntune, intel: renderIntel }[state.tab];
+  const fn = { status: renderStatus, updates: renderUpdates, sense: renderSense, intune: renderIntune, intel: renderIntel }[state.tab];
   view.innerHTML = renderAlerts() + fn();
   renderSearch();
   document.querySelectorAll("#tabs a").forEach((a) => a.setAttribute("aria-current", a.dataset.tab === state.tab ? "page" : "false"));
@@ -915,7 +1050,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { "out-of-band": "updates", "si-trend": "intel", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "intel", features: "intel", chatter: "intel", sensor: "intel", news: "intel", reddit: "intel" }[hash];
+  const owner = { "out-of-band": "updates", "si-trend": "intel", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "intel", changelog: "intel", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "intel", "vendor-coverage": "intel", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();

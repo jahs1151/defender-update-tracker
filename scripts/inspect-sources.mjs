@@ -42,3 +42,21 @@ await run("last-modified", async () => {
     show(u, `${res.status} last-modified=${res.headers.get("last-modified")}`);
   }
 });
+await run("sense KB5005292 page", async () => {
+  const html = await getText("https://support.microsoft.com/en-us/servicing/management-tools/microsoft-defender/update/microsoft-defender-for-endpoint-update-for-edr-sensor", { timeoutMs: 25000 });
+  show("KB5005292", around(plain(html), /sensor to version|Known issues|Restart requirement/i, 6, 400));
+});
+await run("vendor research feeds", async () => {
+  const { VENDOR_FEEDS } = await import("./lib/sources.mjs");
+  for (const v of VENDOR_FEEDS) {
+    for (const u of v.urls) {
+      const res = await fetch(u, { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)", accept: "application/rss+xml,*/*" } }).catch((e) => ({ status: e.message, text: async () => "" }));
+      const body = await res.text();
+      show(`${v.source} ${u}`, `${res.status} items=${(body.match(/<item[\s>]|<entry[\s>]/gi) || []).length}`);
+    }
+  }
+});
+await run("malware encyclopedia search", async () => {
+  const html = await getText("https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=ValleyRAT", { timeoutMs: 20000 });
+  show("threat-search ValleyRAT", around(plain(html), /entries found|results found|ValleyRAT/i, 4, 300));
+});

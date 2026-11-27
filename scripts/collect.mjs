@@ -10,17 +10,24 @@ import * as S from "./lib/sources.mjs";
 import { lastModifiedSeen } from "./lib/http.mjs";
 import { parseUsClock, patchWindow } from "../site/assets/time.js";
 import { diffPulse, contentKey } from "./lib/diff.mjs";
+import { mergeSenseReleases, trackSenseIssues, senseSignal } from "./lib/sense.mjs";
+import { updateFamilyIndex, detectionAlerts, vendorCoverage, compact } from "./lib/threats.mjs";
+import { appendHistory, buildFeed } from "./lib/notify.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(root, "site", "data", "pulse.json");
+const FAMILIES = join(root, "site", "data", "families.json");
+const HISTORY = join(root, "site", "data", "changes.json");
+const FEED = join(root, "site", "feed.xml");
 
-async function readPrevious() {
+async function readJson(path, fallback = null) {
   try {
-    return JSON.parse(await readFile(OUT, "utf8"));
+    return JSON.parse(await readFile(path, "utf8"));
   } catch {
-    return null;
+    return fallback;
   }
 }
+const readPrevious = () => readJson(OUT);
 
 const LABELS = {
   packages: "Download packages (go.microsoft.com)",
@@ -38,6 +45,8 @@ const LABELS = {
   qualys: "Qualys Patch Tuesday QIDs",
   hashes: "Public hashes (TweetFeed + AlienVault OTX)",
   roadmap: "Microsoft 365 roadmap",
+  vendors: "Vendor threat research feeds",
+  threats: "Detection alerts and vendor coverage (worked out from the sources above)",
 };
 
 // The page a reader can open for each source, and the URL whose Last-Modified header is shown.
@@ -47,6 +56,8 @@ const PAGES = {
   productUpdates: [S.URLS.monthlyReleases, S.URLS.monthlyReleases],
   changelog: [S.URLS.changelog, S.URLS.changelog],
   sense: [S.URLS.senseCatalog, S.URLS.senseCatalog],
+  vendors: ["https://unit42.paloaltonetworks.com/", ""],
+  threats: [S.URLS.encyclopedia, ""],
   patchTuesday: ["https://msrc.microsoft.com/update-guide", ""],
   kev: ["https://www.cisa.gov/known-exploited-vulnerabilities-catalog", S.URLS.kev],
   knownIssues: ["https://learn.microsoft.com/en-us/windows/release-health/", "https://learn.microsoft.com/en-us/windows/release-health/status-windows-11-24h2"],
@@ -73,7 +84,7 @@ async function main() {
   const checkedAt = now.toISOString();
 
   const packages = await S.loadPackages();
-  const [intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, hashes, roadmap] = await Promise.all([
+  const [intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, hashes, roadmap, vendors] = await Promise.all([
     S.loadIntelligence(packages.data),
     S.loadProductUpdates(),
     S.loadChangelog(),
@@ -87,7 +98,9 @@ async function main() {
     S.loadCommunity(),
     S.loadPublicHashes(previous?.sections?.hashes?.data),
     S.loadRoadmap(),
+    S.loadVendorResearch(now),
   ]);
+  let builds = null;
   const qualys = await S.loadQualys(patchTuesday.data?.month || previous?.sections?.patchTuesday?.data?.month || "", previous?.sections?.qualys?.data);
 
   // The changelog uses the same unlabeled clock as the definitions page.
@@ -99,6 +112,8 @@ async function main() {
     };
     changelog.data.releasedAt = conv(changelog.data.releasedRaw);
     for (const h of changelog.data.history || []) h.releasedAt = conv(h.releasedRaw);
+    // Detection names per build, newest first, kept in memory for the alerts and the family index.
+    builds = (changelog.data.history || []).map((h) => ({ version: h.version, releasedAt: h.releasedAt, rows: h.rows }));
     // Each build's detections go to their own file, loaded by the page only when that build is picked.
     const dir = join(root, "site", "data", "changelog");
     await mkdir(dir, { recursive: true });
@@ -115,7 +130,8 @@ async function main() {
     for (const f of await readdir(dir)) if (f.endsWith(".json") && !keep.has(f)) await unlink(join(dir, f));
   }
 
-  const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, qualys, hashes, roadmap };
+  const threats = await deriveThreats({ builds, news, vendors, previous: previous?.sections, now });
+  const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, qualys, hashes, roadmap, vendors, threats };
   const sections = {};
   for (const [key, result] of Object.entries(fresh)) {
     const prev = previous?.sections?.[key];
@@ -128,8 +144,10 @@ async function main() {
     }
   }
 
+  await finishSense(sections, sense, previous?.sections?.sense?.data, now);
+
   const pulse = {
-    schema: 3,
+    schema: 4,
     checkedAt,
     contentChangedAt: previous?.contentChangedAt || checkedAt,
     changes: previous?.changes || [],
@@ -148,11 +166,71 @@ async function main() {
   const shapeChanged = Boolean(previous) && (previous.schema !== pulse.schema || Object.keys(previous.sections || {}).sort().join() !== Object.keys(sections).sort().join());
 
   await writeFile(OUT, `${JSON.stringify(pulse, null, 1)}\n`);
+  // Change history and the RSS feed built from it.
+  const history = appendHistory(await readJson(HISTORY, []), pulse);
+  await writeFile(HISTORY, `${JSON.stringify(history, null, 1)}\n`);
+  await writeFile(FEED, buildFeed(history));
   const okCount = Object.values(sections).filter((s) => s.ok).length;
   console.log(`pulse.json written in ${((Date.now() - started) / 1000).toFixed(1)} s · ${okCount}/${Object.keys(sections).length} sources ok · content ${changed ? "changed" : "unchanged"}`);
   for (const [key, s] of Object.entries(sections)) console.log(`  ${s.ok ? "ok  " : s.stale ? "old " : "FAIL"} ${key}: ${s.detail}`);
   if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `changed=${changed || shapeChanged}\n`);
   if (okCount === 0) process.exitCode = 1;
+}
+
+/** Sense release history, KB text and the tracked issues, built on top of the catalog section. */
+async function finishSense(sections, fresh, prev, now) {
+  const s = sections.sense;
+  if (!s?.data) return;
+  const curated = await readJson(join(root, "site", "data", "curated.json"), {});
+  const freshKb = fresh.ok ? fresh.data.kb : null;
+  // A failed KB read keeps the last good text, marked so no stage is inferred from it.
+  const kb = freshKb?.ok ? freshKb : prev?.kb?.version || prev?.kb?.knownIssues ? { ...prev.kb, ok: false, stale: true, error: freshKb?.error || "Not read this run" } : freshKb || prev?.kb || null;
+  // On a failed catalog read, the last good catalog rows (or, from an older snapshot, its latest build) still count.
+  const fromLatest = (s.data.builds || []).map((b) => ({ version: s.data.latest?.version, date: b.date, channel: b.channel, title: b.os }));
+  const catalogRows = fresh.ok ? fresh.data.catalogRows || [] : s.data.catalogRows || (s.data.latest?.version ? fromLatest : []);
+  const releases = mergeSenseReleases(prev?.releases || [], catalogRows, freshKb?.ok ? freshKb : null, now.toISOString().slice(0, 10));
+  const posts = [
+    ...(sections.news?.data?.items || []).map((n) => ({ ...n, where: n.source })),
+    ...(sections.community?.data?.posts || []).map((p) => ({ ...p, where: p.community })),
+  ];
+  const issues = trackSenseIssues(curated.senseIssues || [], prev?.issues || [], {
+    kb,
+    latest: releases[0]?.version || "",
+    posts,
+    knownIssues: sections.knownIssues?.data?.rows || [],
+    now,
+  });
+  s.data = { ...s.data, kb, releases, issues, signal: senseSignal(posts, now) };
+}
+
+/** Detection alerts and vendor coverage, from the changelog, the news and the vendor feeds. */
+async function deriveThreats({ builds, news, vendors, previous: prevSections, now }) {
+  const previous = prevSections?.threats?.data;
+  try {
+    const index = await readJson(FAMILIES, {});
+    const families = builds ? updateFamilyIndex(index, builds, 90, now) : index;
+    if (builds) await writeFile(FAMILIES, `{\n${Object.entries(families).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => `${JSON.stringify(k)}:${JSON.stringify(v)}`).join(",\n")}\n}\n`);
+    const posts = vendors.data?.posts || prevSections?.vendors?.data?.posts || [];
+    const stories = [...(news.data?.threatStories || prevSections?.news?.data?.threatStories || []), ...posts];
+    const since = new Date(now.getTime() - 14 * 86400000).toISOString();
+    const fresh = builds ? detectionAlerts(builds, stories, { now }) : [];
+    const seen = new Set(fresh.map((a) => `${a.version}|${a.detection}`));
+    // The changelog history covers only the last 10 builds, so alerts from earlier runs are kept for 14 days.
+    const alerts = [...fresh, ...(previous?.alerts || []).filter((a) => (a.releasedAt || "") >= since && !seen.has(`${a.version}|${a.detection}`))]
+      .sort((a, b) => (b.releasedAt || "").localeCompare(a.releasedAt || ""))
+      .slice(0, 30);
+    const unknown = posts.flatMap((p) => p.names || []).filter((n) => !families[compact(n)]);
+    const lookups = await S.lookupEncyclopedia(unknown, previous?.lookups || {}, { now });
+    const coverage = vendorCoverage(posts, families, lookups);
+    const count = (c) => coverage.filter((r) => r.coverage === c).length;
+    return {
+      ok: true,
+      detail: `${alerts.length} detection alert${alerts.length === 1 ? "" : "s"} · ${coverage.length} vendor threats: ${count("Yes")} Yes, ${count("No")} No, ${count("Unclear")} Unclear · ${Object.keys(families).length} detection families indexed${builds ? "" : " (changelog not read this run)"}`,
+      data: { alerts, coverage, lookups, familyCount: Object.keys(families).length },
+    };
+  } catch (error) {
+    return { ok: false, detail: error.message, data: null };
+  }
 }
 
 main().catch((error) => {
