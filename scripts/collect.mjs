@@ -12,7 +12,7 @@ import { parseUsClock, patchWindow } from "../site/assets/time.js";
 import { diffPulse, contentKey } from "./lib/diff.mjs";
 import { mergeSenseReleases, trackSenseIssues, senseSignal } from "./lib/sense.mjs";
 import { updateFamilyIndex, detectionAlerts, compact, firstSeenByBuild, updateDetectionIndex, coverageRows, kevRows, detectionsFor } from "./lib/threats.mjs";
-import { vtLookup } from "./lib/virustotal.mjs";
+import { vtLookup, cleanKey, keyShape } from "./lib/virustotal.mjs";
 import * as Parse from "./lib/parsers.mjs";
 import { appendHistory, buildFeed } from "./lib/notify.mjs";
 
@@ -271,12 +271,13 @@ async function addVirusTotal(hashes, prevData, now) {
   if (!hashes.ok) return;
   const prevByHash = new Map((prevData?.rows || []).map((r) => [r.hash, r.vtResult]));
   const rows = hashes.data.rows.map((r) => ({ ...r, vtResult: r.vtResult || prevByHash.get(r.hash) }));
-  const key = process.env.VIRUSTOTAL_API_KEY || "";
+  const key = cleanKey(process.env.VIRUSTOTAL_API_KEY || "");
   const res = await vtLookup(rows, { key, budget: prevData?.vtBudget || {}, now });
-  const vt = { no_key: "VirusTotal key not set", rejected: "VirusTotal rejected the key", limited: "VirusTotal limit reached; the rest are checked next run", ok: "" }[res.status.replace("-", "_")] || "";
+  const shape = key ? keyShape(key) : "";
+  const vt = { no_key: "VirusTotal key not set", rejected: `VirusTotal rejected the key (${res.reason || "no reason given"}${shape ? `; ${shape}` : ""})`, limited: "VirusTotal limit reached; the rest are checked next run", ok: "" }[res.status.replace("-", "_")] || "";
   const analysed = res.rows.filter((r) => r.vtResult?.found !== undefined).length;
   const gaps = res.rows.filter((r) => r.vtResult?.gap).length;
-  hashes.data = { ...hashes.data, rows: res.rows, vtStatus: res.status, vtBudget: res.budget };
+  hashes.data = { ...hashes.data, rows: res.rows, vtStatus: res.status, vtBudget: res.budget, vtNote: vt };
   hashes.detail = `${hashes.detail} · VirusTotal: ${res.status === "no-key" ? vt : `${analysed} of ${res.rows.length} analysed, ${gaps} that other engines detect and Microsoft does not${vt ? ` (${vt})` : ""}`}`;
 }
 

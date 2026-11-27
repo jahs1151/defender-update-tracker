@@ -776,7 +776,7 @@ function renderHashes() {
       ? `<div class="notice">VirusTotal key not set. Add the repository secret <code>VIRUSTOTAL_API_KEY</code> to check these hashes. The OTX column works without it.</div>`
       : !vtSet
         ? `<p class="meta">VirusTotal has not been asked yet; the next refresh does it.</p>`
-        : `<p><strong>${analysed} of ${hashes.length}</strong> analysed on VirusTotal · <strong>${gaps}</strong> that other engines detect and Microsoft does not.${d.vtStatus === "rejected" ? ` ${pill("VirusTotal rejected the key", "bad")}` : d.vtStatus === "limited" ? ` ${pill("Rate limit reached, continuing next refresh", "warn")}` : ""}</p>`;
+        : `<p><strong>${analysed} of ${hashes.length}</strong> analysed on VirusTotal · <strong>${gaps}</strong> that other engines detect and Microsoft does not.${d.vtStatus === "rejected" ? ` ${pill("VirusTotal rejected the key", "bad")} <span class="meta">${esc((d.vtNote || "").replace(/^VirusTotal rejected the key /, ""))}</span>` : d.vtStatus === "limited" ? ` ${pill("Rate limit reached, continuing next refresh", "warn")}` : ""}</p>`;
   return `<div class="card">
     <p>SHA-256 hashes posted publicly (TweetFeed), checked on VirusTotal and AlienVault OTX. A row marked <strong>Gap</strong> is one where other engines detect the file and Microsoft does not: a candidate to submit to Microsoft.</p>
     ${status}
