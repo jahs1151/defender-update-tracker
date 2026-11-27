@@ -56,14 +56,18 @@ jobs:
       - name: Collect public sources
         id: collect
         if: steps.gate.outputs.collect == 'true'
+        # VirusTotal hash lookups. Set the repository secret VIRUSTOTAL_API_KEY to turn them on.
+        # The key is read from the environment only; it is never printed or written to the data files.
+        env:
+          VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
         run: node scripts/collect.mjs
 
-      - name: Commit data when content changed
-        if: steps.collect.outputs.changed == 'true'
+      - name: Commit data when content or lookup caches changed
+        if: steps.collect.outputs.changed == 'true' || steps.collect.outputs.state == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site/data/pulse.json site/data/changelog site/data/families.json site/data/changes.json site/feed.xml
+          git add -A site/data/pulse.json site/data/changelog site/data/families.json site/data/detections.json site/data/changes.json site/feed.xml
           git commit -m "Data refresh $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do
             git pull --rebase -X theirs origin main && git push origin HEAD:main && break

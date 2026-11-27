@@ -57,6 +57,6 @@ await run("vendor research feeds", async () => {
   }
 });
 await run("malware encyclopedia search", async () => {
-  const html = await getText("https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=ValleyRAT", { timeoutMs: 20000 });
-  show("threat-search ValleyRAT", around(plain(html), /entries found|results found|ValleyRAT/i, 4, 300));
+  const html = await getText("https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=Trojan%3AWin32%2FValleyRAT", { timeoutMs: 20000 });
+  show("threat-search Trojan:Win32/ValleyRAT", around(plain(html), /entries found|results found|ValleyRAT/i, 4, 300));
 });

@@ -1,7 +1,7 @@
 // Threat names, detection alerts and vendor coverage. Most of these tests are about NOT matching.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { threatNamesIn, familyOf, usableFamily, sameFamily, updateFamilyIndex, detectionAlerts, vendorCoverage, parseEncyclopediaSearch } from "../scripts/lib/threats.mjs";
+import { threatNamesIn, familyOf, usableFamily, sameFamily, updateFamilyIndex, detectionAlerts, updateDetectionIndex, relatedFamily, detectionsFor, parseEncyclopediaResults, coverageRows, kevRows } from "../scripts/lib/threats.mjs";
 
 test("family of a Defender detection name", () => {
   assert.equal(familyOf("Trojan:Win32/ValleyRAT.PAHY!MTB"), "ValleyRAT");
@@ -81,39 +81,6 @@ test("family index keeps the first build a family appeared in and drops old ones
   assert.deepEqual(later, {});
 });
 
-test("vendor coverage: Yes from the index, No only on an explicit empty lookup, else Unclear", () => {
-  const idx = updateFamilyIndex({}, builds, 90, now);
-  const posts = [
-    { title: "KuboShell backdoor analysis", url: "https://v/1", source: "Unit 42", published: "2026-11-25T00:00:00Z" },
-    { title: "Inside the GlassWorm2 loader", url: "https://v/2", source: "Sophos", published: "2026-11-25T00:00:00Z" },
-    { title: "Inside the ShadowPadX implant", url: "https://v/3", source: "ESET", published: "2026-11-25T00:00:00Z" },
-    { title: "Our 2026 predictions", url: "https://v/4", source: "CrowdStrike", published: "2026-11-25T00:00:00Z" },
-  ];
-  const lookups = { glassworm2: { names: [], answered: true, empty: true } };
-  const rows = vendorCoverage(posts, idx, lookups);
-  assert.deepEqual(rows.map((r) => [r.threat, r.coverage]), [
-    ["KuboShell", "Yes"],
-    ["GlassWorm2", "No"],
-    ["ShadowPadX", "Unclear"],
-  ]);
-  assert.deepEqual(rows[0].detections, ["Backdoor:Win64/KuboShell.A"]);
-});
-
-test("encyclopedia search parsing keeps only the searched family", () => {
-  const html = `<div>Results for: ValleyRAT</div><div>3 entries found</div><a>Trojan:Win32/ValleyRAT.A!MTB</a><a>Trojan:Win32/Valleyx.B</a><a>Backdoor:Win32/ValleyRAT.PAHY!MTB</a>`;
-  const r = parseEncyclopediaSearch(html, "ValleyRAT");
-  assert.deepEqual(r.names, ["Trojan:Win32/ValleyRAT.A!MTB", "Backdoor:Win32/ValleyRAT.PAHY!MTB"]);
-  assert.equal(r.answered, true);
-  assert.equal(r.empty, false);
-  const none = parseEncyclopediaSearch("<p>No results found for: GlassWorm2</p><p>0 entries found</p>", "GlassWorm2");
-  assert.deepEqual([none.answered, none.empty], [true, true]);
-  const broken = parseEncyclopediaSearch("<p>Loading…</p>", "GlassWorm2");
-  assert.equal(broken.answered, false, "a page that did not render results is not a No");
-  // Live page, Nov 2026: the ?query= URL masks the term and reports 0 even for a family Defender detects.
-  const masked = parseEncyclopediaSearch("<p>No results found for: *** 0 entries found.</p>", "ValleyRAT");
-  assert.deepEqual([masked.answered, masked.empty], [false, false]);
-});
-
 test("notable new detections: families first seen in each build, Windows only", async () => {
   const { firstSeenByBuild } = await import("../scripts/lib/threats.mjs");
   const bs = [
@@ -127,4 +94,109 @@ test("notable new detections: families first seen in each build, Windows only", 
   ];
   const idx = updateFamilyIndex({}, bs, 90, now);
   assert.deepEqual(firstSeenByBuild(bs, idx), { "1.463.497.0": ["Trojan:Win64/SteelC.PAHY!MTB"], "1.463.495.0": ["Backdoor:Win64/KuboShell.A"] });
+});
+
+// ---------- 30-day index, encyclopedia, coverage and KEV rows ----------
+const vinciBuild = { version: "1.463.467.0", releasedAt: "2026-11-25T15:45:22.000Z", rows: [{ name: "Backdoor:PowerShell/VinciRAT!MSR", change: "added" }, { name: "Trojan:Win32/Wacatac.B!ml", change: "added" }] };
+
+test("detection index keeps every version for 30 days and finds older detections", () => {
+  const idx = updateDetectionIndex({}, [vinciBuild, ...builds], 30, now);
+  assert.deepEqual(Object.keys(idx).sort(), ["1.463.467.0", "1.463.495.0", "1.463.497.0"]);
+  assert.deepEqual(detectionsFor(idx, "VinciRAT").map((d) => d.name), ["Backdoor:PowerShell/VinciRAT!MSR"]);
+  assert.deepEqual(detectionsFor(idx, "vincirat").map((d) => d.version), ["1.463.467.0"], "case does not matter");
+  assert.deepEqual(detectionsFor(idx, "Wacatac"), [], "generic families never match");
+  const later = updateDetectionIndex(idx, [], 30, new Date("2026-12-26T00:00:00Z"));
+  assert.ok(!later["1.463.467.0"], "dropped after 30 days");
+  assert.ok(later["1.463.497.0"]);
+});
+
+test("partial matching: a name that begins the other, never a word inside it", () => {
+  assert.ok(relatedFamily("Remus", "RemusStealer"));
+  assert.ok(relatedFamily("LummaStealer", "Lumma"));
+  assert.ok(relatedFamily("valleyrat", "ValleyRAT"));
+  assert.ok(!relatedFamily("Worm", "XWorm"));
+  assert.ok(!relatedFamily("Stealer", "RemusStealer"));
+  assert.ok(!relatedFamily("Agent", "AgentTesla"), "a generic name never matches");
+  assert.ok(!relatedFamily("Antino", "AntiNOD"), "live false match, Nov 2026: the rest must be a malware-type word");
+  assert.ok(!relatedFamily("ARTEX", "ARTEXNetworkStages"));
+  assert.ok(!relatedFamily("ValleyRAT", "Valleyx"));
+});
+
+test("encyclopedia results: the live page's count line and names", () => {
+  const html = `<p>No results found for: *** 57 entries found. Displaying page 1 of 3.</p>
+    <h2 id="threatLink"><a href="malware-encyclopedia-description?Name=Trojan:Win32/ValleyRAT!MSR">Trojan:Win32/ValleyRAT!MSR</a></h2>
+    <h2><a>Trojan:Win32/Valleyx.B</a></h2><h2><a>Backdoor:Win64/ValleyRAT!MTB</a></h2>`;
+  const r = parseEncyclopediaResults(html, "ValleyRAT");
+  assert.deepEqual([r.answered, r.count], [true, 57]);
+  assert.deepEqual(r.names, ["Trojan:Win32/ValleyRAT!MSR", "Backdoor:Win64/ValleyRAT!MTB"]);
+  const none = parseEncyclopediaResults("<p>No results found for: *** 0 entries found.</p>", "GlassWorm2");
+  assert.deepEqual([none.answered, none.count, none.names], [true, 0, []]);
+  assert.equal(parseEncyclopediaResults("<p>Loading…</p>", "GlassWorm2").answered, false, "no count line is not an answer");
+});
+
+test("coverage rows: Yes from the index or encyclopedia, Unclear only on an answer, else Lookup failed", () => {
+  const idx = updateDetectionIndex({}, [vinciBuild, ...builds], 30, now);
+  const items = [
+    { title: "VinciRAT spreads through PowerShell", url: "https://v/1", source: "eSentire", published: "2026-11-26T00:00:00Z", names: ["VinciRAT"] },
+    { title: "Inside the ShadowPadX implant", url: "https://v/2", source: "ESET", published: "2026-11-25T00:00:00Z", names: ["ShadowPadX"] },
+    { title: "Inside the GlassWorm2 loader", url: "https://v/3", source: "Sophos", published: "2026-11-25T00:00:00Z", names: ["GlassWorm2"] },
+    { title: "New XWormZ variant", url: "https://n/1", source: "BleepingComputer", kind: "news", published: "2026-11-25T00:00:00Z", names: ["XWormZ"] },
+    { title: "Our 2026 predictions", url: "https://v/4", source: "CrowdStrike", published: "2026-11-25T00:00:00Z", names: [] },
+  ];
+  const lookups = {
+    glassworm2: { answered: true, names: [], checkedAt: "2026-11-27T10:00:00.000Z" },
+    shadowpadx: { answered: false, names: [], error: "HTTP 403", checkedAt: "2026-11-27T10:00:00.000Z" },
+    xwormz: { answered: true, names: ["Trojan:Win32/XWormZ!MTB"], checkedAt: "2026-11-27T09:00:00.000Z" },
+  };
+  const rows = coverageRows(items, idx, lookups, now);
+  assert.deepEqual(rows.map((r) => [r.threat, r.coverage]), [
+    ["VinciRAT", "Yes"],
+    ["ShadowPadX", "Lookup failed, retrying"],
+    ["GlassWorm2", "Unclear"],
+    ["XWormZ", "Yes"],
+  ]);
+  assert.match(rows[0].basis, /1\.463\.467\.0/);
+  assert.equal(rows[3].kind, "news");
+  assert.equal(rows[2].checkedAt, "2026-11-27T10:00:00.000Z", "each row carries its own check time");
+  assert.equal(rows[0].checkedAt, now.toISOString());
+});
+
+test("KEV rows: last 14 days, due date, and a detection only when a name carries the CVE", () => {
+  const idx = updateDetectionIndex({}, [{ version: "1.463.490.0", releasedAt: "2026-11-26T00:00:00Z", rows: [{ name: "Exploit:Win32/CVE-2026-1234.A", change: "added" }] }], 30, now);
+  const recent = [
+    { cve: "CVE-2026-1234", vendor: "Microsoft", product: "Windows", name: "Windows EoP", dateAdded: "2026-11-25", dueDate: "2026-12-16" },
+    { cve: "CVE-2026-9999", vendor: "Ivanti", product: "EPMM", name: "Ivanti RCE", dateAdded: "2026-11-20", dueDate: "2026-12-11" },
+    { cve: "CVE-2026-1111", vendor: "Cisco", product: "IOS", name: "Old", dateAdded: "2026-10-01", dueDate: "2026-10-22" },
+  ];
+  const rows = kevRows(recent, idx, {}, { now });
+  assert.deepEqual(rows.map((r) => [r.cve, r.dueDate, r.coverage]), [
+    ["CVE-2026-1234", "2026-12-16", "Detection found"],
+    ["CVE-2026-9999", "2026-12-11", "No public MDE detection found"],
+  ]);
+  assert.deepEqual(rows[0].detections, ["Exploit:Win32/CVE-2026-1234.A"]);
+});
+
+test("encyclopedia lookup: prefixed queries, retries next run on failure, 24-hour cache", async () => {
+  const { lookupEncyclopedia } = await import("../scripts/lib/sources.mjs");
+  const asked = [];
+  const page = (q) => (/ValleyRAT/.test(q) ? `<p>1 entries found</p><a>Trojan:Win32/ValleyRAT!MTB</a>` : `<p>No results found for: *** 0 entries found.</p>`);
+  const get = async (url) => {
+    const q = decodeURIComponent(url.split("query=")[1]);
+    asked.push(q);
+    if (/Broken/.test(q)) throw new Error("HTTP 403");
+    return page(q);
+  };
+  const out = await lookupEncyclopedia(["ValleyRAT", "GlassWorm2", "BrokenOne"], {}, { now, get, pause: 0 });
+  assert.equal(asked[0], "ValleyRAT!MTB", "never a bare name: Microsoft masks those");
+  assert.ok(asked.every((q) => /[:!/]/.test(q)));
+  assert.deepEqual(out.valleyrat.names, ["Trojan:Win32/ValleyRAT!MTB"]);
+  assert.deepEqual([out.glassworm2.answered, out.glassworm2.names], [true, []]);
+  assert.deepEqual([out.brokenone.answered, out.brokenone.error], [false, "HTTP 403"]);
+  asked.length = 0;
+  const again = await lookupEncyclopedia(["ValleyRAT", "GlassWorm2", "BrokenOne"], out, { now: new Date(now.getTime() + 3600000), get, pause: 0 });
+  assert.ok(asked.every((q) => /BrokenOne/.test(q)), "answers are cached for 24 hours; only the failure is asked again");
+  assert.equal(again.valleyrat.checkedAt, out.valleyrat.checkedAt);
+  asked.length = 0;
+  await lookupEncyclopedia(["ValleyRAT"], out, { now: new Date(now.getTime() + 25 * 3600000), get, pause: 0 });
+  assert.ok(asked.length > 0, "asked again after 24 hours");
 });

@@ -1,11 +1,11 @@
 // Network loaders. Each returns { ok, detail, data } and never throws.
 import { getText, getJson, resolveDownload, errorText } from "./http.mjs";
 import * as P from "./parsers.mjs";
-import { toIso, osTags } from "./text.mjs";
+import { toIso, osTags, plain } from "./text.mjs";
 import { secondTuesday } from "../../site/assets/time.js";
 import { exeContents, wimPlatform } from "./packages.mjs";
 import { KB_URL, catalogOs, parseSenseKb } from "./sense.mjs";
-import { threatNamesIn, compact, parseEncyclopediaSearch } from "./threats.mjs";
+import { threatNamesIn, compact, parseEncyclopediaResults } from "./threats.mjs";
 
 export const URLS = {
   definitions: "https://www.microsoft.com/en-us/wdsi/definitions",
@@ -146,6 +146,9 @@ export async function loadProductUpdates() {
   }
 }
 
+/** One older changelog version's page. */
+export const getChangelogVersion = (v) => getText(`${URLS.changelog}?requestVersion=${encodeURIComponent(v)}`, { timeoutMs: 20000, retries: 1 });
+
 export async function loadChangelog() {
   try {
     const parsed = P.parseChangelog(await getText(URLS.changelog));
@@ -250,7 +253,12 @@ export async function loadKev() {
     const rows = P.filterKev(json);
     // Every Microsoft CVE in the catalog, so hand-kept incidents can say whether CISA lists them.
     const microsoftCves = (json.vulnerabilities || []).filter((v) => /microsoft/i.test(v.vendorProject)).map((v) => v.cveID);
-    return ok(`${rows.length} Microsoft Windows or endpoint entries in 12 months`, { rows: rows.slice(0, 60), microsoftCves, url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog" });
+    // Every vendor's CVEs added in the last 14 days, for the Detections tab.
+    const since = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
+    const recent = (json.vulnerabilities || [])
+      .filter((v) => (v.dateAdded || "") >= since)
+      .map((v) => ({ cve: v.cveID, vendor: v.vendorProject, product: v.product, name: v.vulnerabilityName, dateAdded: v.dateAdded, dueDate: v.dueDate, ransomware: v.knownRansomwareCampaignUse }));
+    return ok(`${rows.length} Microsoft Windows or endpoint entries in 12 months · ${recent.length} CVEs of any vendor added in 14 days`, { rows: rows.slice(0, 60), microsoftCves, recent, url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog" });
   } catch (error) {
     return fail(error);
   }
@@ -444,6 +452,11 @@ export const VENDOR_FEEDS = [
   { source: "ESET", urls: ["https://www.welivesecurity.com/en/rss/feed/"] },
   { source: "Trend Micro", urls: ["https://feeds.feedburner.com/TrendMicroResearch"] },
   { source: "Unit 42", urls: ["https://unit42.paloaltonetworks.com/feed/"] },
+  { source: "AhnLab ASEC", urls: ["https://asec.ahnlab.com/en/feed/"] },
+  { source: "watchTowr", urls: ["https://labs.watchtowr.com/rss/"] },
+  { source: "Check Point Research", urls: ["https://research.checkpoint.com/feed/"] },
+  { source: "Symantec", urls: ["https://www.security.com/rss/v1/blogs/rss.xml/221"] },
+  { source: "eSentire", urls: ["https://www.esentire.com/sitemaps-1-section-blog-1-sitemap.xml"], sitemap: true },
 ];
 
 /** Research posts from each vendor feed, last 30 days, with the threat names found in each. */
@@ -454,7 +467,7 @@ export async function loadVendorResearch(now = new Date()) {
       let error = "";
       for (const url of v.urls) {
         try {
-          const items = P.parseFeed(await feedText(url), v.source, 25);
+          const items = v.sitemap ? await loadEsentire(now) : P.parseFeed(await feedText(url), v.source, 25);
           if (items.length) return { source: v.source, ok: true, url, items };
           error = "Feed returned no items";
         } catch (e) {
@@ -472,30 +485,84 @@ export async function loadVendorResearch(now = new Date()) {
     .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
   const failed = packs.filter((p) => !p.ok);
   return ok(`${posts.length} posts in 30 days from ${packs.length - failed.length} of ${packs.length} vendors${failed.length ? ` (failed: ${failed.map((p) => `${p.source}: ${p.error}`).join(", ")})` : ""}`, {
-    posts: posts.slice(0, 80),
+    posts: posts.slice(0, 120),
     feeds: packs.map(({ source, ok: feedOk, url, error }) => ({ source, ok: feedOk, url, error: error || "" })),
   });
 }
 
 /**
- * Look threat names up in Microsoft's malware encyclopedia, a few per run.
- * cached: earlier answers, kept for 3 days so each name is looked up at most once every 3 days.
+ * Microsoft's encyclopedia search (live, Nov 2026) masks a bare word ("ValleyRAT" -> "No results found
+ * for: ***") but answers a detection-name prefix: "Trojan:Win32/Valley" lists 57 entries, and
+ * "ValleyRAT!MTB" lists that suffix across platforms. Each threat is asked in these forms until one
+ * names a matching detection.
  */
-export async function lookupEncyclopedia(names, cached = {}, { max = 10, now = new Date() } = {}) {
+export const ENCYCLOPEDIA_FORMS = (name) =>
+  /^CVE-/i.test(name)
+    ? [`Exploit:Win32/${name.toUpperCase()}`, `Exploit:Win64/${name.toUpperCase()}`, `Exploit:Script/${name.toUpperCase()}`]
+    : [`${name}!MTB`, `Trojan:Win32/${name}`, `Trojan:Win64/${name}`, `Backdoor:Win32/${name}`, `Backdoor:Win64/${name}`, `Trojan:MSIL/${name}`, `${name}!MSR`];
+
+const ENC_CACHE_HOURS = 24;
+
+/**
+ * Look threat names up in the encyclopedia, a few names per run.
+ * cached: earlier answers; an answer is kept 24 hours, a failure is retried on the next run.
+ * Returns { [compact(name)]: { answered, names, queries, checkedAt, error, v: 3 } }.
+ */
+export async function lookupEncyclopedia(names, cached = {}, { max = 6, now = new Date(), get = getText, pause = 400 } = {}) {
   const out = {};
-  const fresh = new Date(now.getTime() - 3 * 86400000).toISOString();
-  // v2: answers from before the "results for: ***" fix are dropped (they read every search as 0 entries).
-  for (const [k, v] of Object.entries(cached || {})) if (v.v === 2 && (v.checkedAt || "") >= fresh) out[k] = v;
-  const todo = [...new Set(names)].filter((n) => !out[compact(n)]).slice(0, max);
+  const fresh = new Date(now.getTime() - ENC_CACHE_HOURS * 3600000).toISOString();
+  for (const [k, v] of Object.entries(cached || {})) if (v.v === 3) out[k] = v;
+  const due = (n) => {
+    const c = out[compact(n)];
+    return !c || !c.answered || (c.checkedAt || "") < fresh;
+  };
+  // Failed and never-asked names first, then the oldest answers.
+  const todo = [...new Set(names)].filter(due).sort((a, b) => (out[compact(a)]?.checkedAt || "").localeCompare(out[compact(b)]?.checkedAt || "")).slice(0, max);
   for (const name of todo) {
-    try {
-      const html = await getText(`${URLS.encyclopedia}?query=${encodeURIComponent(name)}`, { timeoutMs: 15000, retries: 1 });
-      out[compact(name)] = { ...parseEncyclopediaSearch(html, name), checkedAt: now.toISOString(), v: 2 };
-    } catch {
-      /* not answered: the row stays Unclear and is tried again next run */
+    const found = new Set();
+    let answered = 0;
+    let error = "";
+    const forms = ENCYCLOPEDIA_FORMS(name);
+    for (const q of forms) {
+      try {
+        // getText retries with backoff (1.5 s, 3 s, 6 s) and sends a browser User-Agent.
+        const html = await get(`${URLS.encyclopedia}?query=${encodeURIComponent(q)}`, { timeoutMs: 20000, retries: 3 });
+        const r = parseEncyclopediaResults(html, name);
+        if (r.answered) answered += 1;
+        for (const n of r.names) found.add(n);
+      } catch (e) {
+        error = errorText(e);
+      }
+      if (found.size) break;
+      if (pause) await new Promise((r) => setTimeout(r, pause));
     }
+    // Answered only when every form came back with a result count (or one of them named a detection).
+    const ok = found.size > 0 || answered === forms.length;
+    out[compact(name)] = ok
+      ? { answered: true, names: [...found].slice(0, 6), checkedAt: now.toISOString(), v: 3 }
+      : { answered: false, names: [], checkedAt: now.toISOString(), error: error || "the search page gave no result count", v: 3 };
   }
   return out;
+}
+
+/** eSentire has no RSS feed: its blog sitemap lists posts with a last-modified date, and each post page has a title. */
+export async function loadEsentire(now = new Date(), { max = 8 } = {}) {
+  const since = new Date(now.getTime() - 30 * 86400000).toISOString();
+  const xml = await getText("https://www.esentire.com/sitemaps-1-section-blog-1-sitemap.xml", { timeoutMs: 20000, retries: 2 });
+  const entries = [...xml.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*(?:<lastmod>([^<]+)<\/lastmod>)?/g)]
+    .map((m) => ({ url: m[1].trim(), published: m[2] ? new Date(m[2]).toISOString() : "" }))
+    .filter((e) => /\/blog\//.test(e.url) && e.published >= since)
+    .sort((a, b) => b.published.localeCompare(a.published))
+    .slice(0, max);
+  const items = [];
+  for (const e of entries) {
+    const html = await getText(e.url, { timeoutMs: 15000, retries: 1 }).catch(() => "");
+    const title = plain((/<title>([^<]+)<\/title>/i.exec(html) || /<h1[^>]*>([\s\S]*?)<\/h1>/i.exec(html) || [])[1] || "").replace(/\s*\|\s*eSentire.*$/i, "").trim();
+    const summary = plain((/<meta name="description" content="([^"]*)"/i.exec(html) || [])[1] || "");
+    if (title) items.push({ title, url: e.url, source: "eSentire", published: e.published, summary });
+  }
+  if (!items.length) throw new Error("No eSentire blog posts in the last 30 days");
+  return items;
 }
 
 /** Qualys QIDs for this month and the month before, merged with months already stored. */

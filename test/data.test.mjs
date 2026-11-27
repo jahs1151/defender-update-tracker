@@ -50,5 +50,5 @@ test("Detections tab: linked at #threats, owns the detection sections, and the j
   assert.match(html, /<a href="#threats" data-tab="threats">Detections<\/a>/);
   assert.match(html, /<nav class="wrap jump" id="jump"/);
   assert.match(app, /const TABS = \[[^\]]*"threats"/);
-  for (const id of ["changelog", "si-trend", "detection-alerts", "vendor-coverage"]) assert.match(app, new RegExp(`"?${id}"?: "threats"`), id);
+  for (const id of ["changelog", "si-trend", "detection-alerts", "vendor-coverage", "kev-coverage", "hashes"]) assert.match(app, new RegExp(`"?${id}"?: "threats"`), id);
 });
