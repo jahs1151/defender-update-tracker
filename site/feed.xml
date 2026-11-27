@@ -6,7 +6,13 @@
   <atom:link href="https://jahs1151.github.io/defender-update-tracker/feed.xml" rel="self" type="application/rss+xml"/>
   <description>New Defender security intelligence, engine, platform and Sense builds, Sense issue stages, detection alerts, Patch Tuesday and known-issue changes. Public sources only.</description>
   <language>en-us</language>
-  <lastBuildDate>Thu, 01 Jan 1970 00:00:00 GMT</lastBuildDate>
-
+  <lastBuildDate>Fri, 27 Nov 2026 18:54:36 GMT</lastBuildDate>
+  <item>
+    <title>Security intelligence: 1.463.497.0 → 1.463.499.0 (+1 more)</title>
+    <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
+    <guid isPermaLink="false">defender-update-tracker-2026-11-27T18:54:36.098Z</guid>
+    <pubDate>Fri, 27 Nov 2026 18:54:36 GMT</pubDate>
+    <description>&lt;p&gt;Detected 27 Nov 2026, 18:54 UTC · 27 Nov 2026, 12:54 CST&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Security intelligence: 1.463.497.0 → 1.463.499.0&lt;/li&gt;&lt;li&gt;mpam-fe.exe: 1.463.497.0 → 1.463.499.0&lt;/li&gt;&lt;/ul&gt;</description>
+  </item>
 </channel>
 </rss>
