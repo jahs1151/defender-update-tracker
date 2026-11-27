@@ -189,6 +189,28 @@ export function detectionAlerts(builds = [], stories = [], { days = 14, now = ne
   return alerts.slice(0, 30);
 }
 
+/**
+ * Per build, the Windows detections whose family this tracker saw for the first time in that build
+ * (for "notable new detections"). index: updateFamilyIndex output. Returns { version: [names] }.
+ */
+export function firstSeenByBuild(builds = [], index = {}, limit = 6) {
+  const out = {};
+  for (const b of builds) {
+    const names = [];
+    const seen = new Set();
+    for (const r of b.rows || []) {
+      if (r.change !== "added" || /:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(r.name)) continue;
+      const fam = familyOf(r.name);
+      const key = compact(fam);
+      if (!usableFamily(fam) || seen.has(key) || index[key]?.first !== b.version) continue;
+      seen.add(key);
+      names.push(r.name);
+    }
+    out[b.version] = names.slice(0, limit);
+  }
+  return out;
+}
+
 /** Encyclopedia search result page -> detection names that belong to the searched family. */
 export function parseEncyclopediaSearch(html = "", name = "") {
   const text = String(html).replace(/<[^>]+>/g, " ");

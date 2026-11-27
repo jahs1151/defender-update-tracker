@@ -599,6 +599,7 @@ function renderChangelog() {
   const nAdded = h.added ?? cur.rows.filter((r) => r.change === "added").length;
   const nUpdated = h.updated ?? cur.rows.filter((r) => r.change === "updated").length;
   let delta = "";
+  let diffList = "";
   if (prev) {
     const pAdded = prev.added ?? before.rows.filter((r) => r.change === "added").length;
     const pUpdated = prev.updated ?? before.rows.filter((r) => r.change === "updated").length;
@@ -606,9 +607,17 @@ function renderChangelog() {
     if (cur.status === "ok" && before.status === "ok") {
       const was = new Set(before.rows.map((r) => r.name));
       const now = new Set(cur.rows.map((r) => r.name));
-      names = ` ${cur.rows.filter((r) => !was.has(r.name)).length} detection names are new in this build's list and ${before.rows.filter((r) => !now.has(r.name)).length} from the previous build's list are not repeated.`;
+      const fresh = cur.rows.filter((r) => !was.has(r.name) && (!winOnly || isWin(r.name)));
+      const gone = before.rows.filter((r) => !now.has(r.name) && (!winOnly || isWin(r.name)));
+      const li = (r, kind) => `<li><span class="${kind === "New" ? "diff-new" : "diff-gone"}">${kind}</span> ${link(r.url, r.name)}</li>`;
+      names = ` ${fresh.length} names only on ${esc(h.version)} · ${gone.length} only on ${esc(prev.version)}${winOnly ? " (Windows families)" : ""}.`;
+      diffList = fresh.length || gone.length
+        ? `<details class="diff"${fresh.length + gone.length <= 40 ? " open" : ""}><summary>New or removed versus ${esc(prev.version)}</summary>
+            <p class="meta">Names on one build's changelog page and not the other's. A changelog page lists that build's additions and updates, not the full signature catalog, so "removed" means not repeated, not withdrawn.</p>
+            <ul class="list compact">${fresh.map((r) => li(r, "New")).join("")}${gone.map((r) => li(r, "Removed")).join("")}</ul></details>`
+        : "";
     }
-    delta = `<div class="delta"><strong>${esc(prev.version)} → ${esc(h.version)}</strong>: ${nAdded} added (was ${pAdded}), ${nUpdated} updated (was ${pUpdated}).${names}</div>`;
+    delta = `<div class="delta"><strong>${esc(prev.version)} → ${esc(h.version)}</strong>: ${nAdded} added (was ${pAdded}), ${nUpdated} updated (was ${pUpdated}).${names}</div>${diffList}`;
   } else if (history.length > 1) delta = `<div class="delta">This is the oldest build kept, so there is no earlier build to compare.</div>`;
   const status = cur.status === "loading" || cur.status === "idle" ? ` ${pill("Loading this build", "warn")}` : "";
   let table;
@@ -622,6 +631,7 @@ function renderChangelog() {
   else table = `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(h.version)} matches "${esc(state.threatQ)}".` : cur.rows.length ? "Every detection in this build is for Android, macOS or Linux. Clear the checkbox to see them." : "Microsoft lists no detections for this build."}</p>`;
   return `<div class="card">
     <p><strong>${esc(h.version)}</strong>${status} · ${h.releasedAt ? esc(stamp(h.releasedAt)) : na("Time not published")} · ${nAdded} added, ${nUpdated} updated</p>
+    ${cur.status === "ok" ? `<p class="meta">${cur.rows.filter((r) => isWin(r.name)).length} Windows-family names · ${cur.rows.length} including other platforms. The OS chips at the top do not change this list.</p>` : ""}
     <div class="controls">
       ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((x, i) => `<option value="${esc(x.version)}" ${i === idx ? "selected" : ""}>${esc(x.version)}${i === 0 ? " (latest)" : ""}${x.releasedAt ? ` · ${esc(stamp(x.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
       <label class="field" style="flex:1 1 220px">Threat name <input type="search" id="threat-q" value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
@@ -649,14 +659,34 @@ function exportRows() {
 }
 
 function renderTrend() {
-  const history = changelogHistory().slice(0, 8);
+  const history = changelogHistory();
   if (!history.length) return sectionError("changelog", "The detection changelog");
-  return `<div class="card table-wrap"><table><thead><tr><th>Build</th><th>Released (UTC)</th><th>Released (Chicago)</th><th>Added</th><th>Updated</th></tr></thead><tbody>${history
+  const added = (h) => h.added ?? buildRows(h).rows.filter((r) => r.change === "added").length;
+  const max = Math.max(1, ...history.map(added));
+  const peak = history.reduce((a, h) => (added(h) > added(a) ? h : a), history[0]);
+  // Oldest on the left so the chart reads forward in time; the table below holds every value.
+  const bars = [...history].reverse().map((h) => {
+    const n = added(h);
+    const when = h.releasedAt ? stamp(h.releasedAt) : "time not published";
+    const label = h === history[0] || h === peak ? `<span class="bar-val">${n}</span>` : "";
+    return `<div class="bar-col" tabindex="0" title="${esc(`${h.version}: ${n} new detections · ${when}`)}" aria-label="${esc(`${h.version}: ${n} new detections, released ${when}`)}">
+      <div class="bar-track">${label}<div class="bar" style="height:${Math.max(2, Math.round((n / max) * 100))}%"></div></div>
+      <span class="bar-x">${esc(h.version.split(".")[2])}</span></div>`;
+  }).join("");
+  // The oldest kept build has nothing earlier to compare with, so it is left out.
+  const notable = history.slice(0, -1).flatMap((h) => (h.newFamilies || []).map((n) => ({ v: h.version, n })));
+  return `<div class="card">
+    <h3>New detections per build</h3>
+    <div class="bars" role="group" aria-label="New detections per security intelligence build, oldest to newest">${bars}</div>
+    <p class="meta">Bars are labelled with the build number's third part (1.463.<strong>497</strong>.0). Hover or focus a bar for its count and time; every value is in the table below.</p>
+    ${notable.length ? `<h3 style="margin-top:12px">Notable new detections</h3><p class="meta">Windows detections whose family this tracker had not seen in any earlier build it keeps (generic families such as Wacatac are left out).</p><ul class="list compact">${notable.slice(0, 12).map((x) => `<li><span class="mono">${esc(x.v)}</span> · ${esc(x.n)}</li>`).join("")}</ul>` : ""}
+  </div>
+  <div class="card table-wrap" style="margin-top:12px"><table><thead><tr><th>Build</th><th>Released (UTC)</th><th>Released (Chicago)</th><th>Added</th><th>Updated</th></tr></thead><tbody>${history
     .map((h, i) => {
       const [utc, chi] = h.releasedAt ? stamp(h.releasedAt).split(" · ") : ["Time not published", ""];
       return `<tr><td class="mono">${esc(h.version)}${i === 0 ? ` ${pill("Latest", "ok")}` : ""}</td><td>${esc(utc)}</td><td>${esc(chi || "")}</td><td>${h.added ?? buildRows(h).rows.filter((r) => r.change === "added").length}</td><td>${h.updated ?? buildRows(h).rows.filter((r) => r.change === "updated").length}</td></tr>`;
     })
-    .join("")}</tbody></table><p class="meta" style="margin-top:6px">The last ${history.length} builds in Microsoft's detection changelog. Chicago times carry CST or CDT.</p></div>`;
+    .join("")}</tbody></table><p class="meta" style="margin-top:6px">The last ${history.length} builds in Microsoft's detection changelog. Microsoft's changelog clock has no time zone; it is read as UTC (see the Security intelligence card for the evidence). Chicago times carry CST or CDT.</p></div>`;
 }
 
 function renderFeatures() {
@@ -934,7 +964,7 @@ function renderIntel() {
 
   return [
     section("changelog", "Detection changelog", renderChangelog(), "changelog"),
-    section("si-trend", "Security intelligence builds: last 8", renderTrend(), "changelog"),
+    section("si-trend", "Recent security intelligence builds", renderTrend(), "changelog"),
     section("features", "New Defender for Endpoint features", intuneBlock + renderFeatures() + reportedBlock, "mde"),
     section("chatter", "Bad-detection chatter", chatterBody),
     section("detection-alerts", "Detection alerts: new detections for threats in the news", renderDetectionAlerts(), "threats"),
