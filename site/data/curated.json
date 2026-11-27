@@ -95,8 +95,8 @@
    "microsoftMatch": "telemetry|stuck (?:in )?pending|no sensor data|stops? reporting|not reporting",
    "links": [
     {
-     "label": "Sensor troubleshooting",
-     "url": "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-sensor"
+     "label": "Fix unhealthy sensors",
+     "url": "https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors"
     },
     {
      "label": "Defender update and rollback",
