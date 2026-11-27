@@ -32,3 +32,8 @@ test("the site carries no OMA-URI or policy values", () => {
   const app = readFileSync(new URL("../site/assets/app.js", import.meta.url), "utf8");
   assert.doesNotMatch(app, /\.\/Vendor\/MSFT|\.\/Device\/Vendor/);
 });
+
+test("the header row class .bar is styled once (a chart class named .bar once turned it into a tall blue column)", () => {
+  const css = readFileSync(new URL("../site/assets/styles.css", import.meta.url), "utf8");
+  assert.equal((css.match(/(^|[\s,}])\.bar\s*[{,:]/g) || []).length, 1);
+});

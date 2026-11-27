@@ -668,16 +668,16 @@ function renderTrend() {
   const bars = [...history].reverse().map((h) => {
     const n = added(h);
     const when = h.releasedAt ? stamp(h.releasedAt) : "time not published";
-    const label = h === history[0] || h === peak ? `<span class="bar-val">${n}</span>` : "";
-    return `<div class="bar-col" tabindex="0" title="${esc(`${h.version}: ${n} new detections · ${when}`)}" aria-label="${esc(`${h.version}: ${n} new detections, released ${when}`)}">
-      <div class="bar-track">${label}<div class="bar" style="height:${Math.max(2, Math.round((n / max) * 100))}%"></div></div>
-      <span class="bar-x">${esc(h.version.split(".")[2])}</span></div>`;
+    const label = h === history[0] || h === peak ? `<span class="si-bar-val">${n}</span>` : "";
+    return `<div class="si-bar-col" tabindex="0" title="${esc(`${h.version}: ${n} new detections · ${when}`)}" aria-label="${esc(`${h.version}: ${n} new detections, released ${when}`)}">
+      <div class="si-bar-track">${label}<div class="si-bar" style="height:${Math.max(2, Math.round((n / max) * 100))}%"></div></div>
+      <span class="si-bar-x">${esc(h.version.split(".")[2])}</span></div>`;
   }).join("");
   // The oldest kept build has nothing earlier to compare with, so it is left out.
   const notable = history.slice(0, -1).flatMap((h) => (h.newFamilies || []).map((n) => ({ v: h.version, n })));
   return `<div class="card">
     <h3>New detections per build</h3>
-    <div class="bars" role="group" aria-label="New detections per security intelligence build, oldest to newest">${bars}</div>
+    <div class="si-bars" role="group" aria-label="New detections per security intelligence build, oldest to newest">${bars}</div>
     <p class="meta">Bars are labelled with the build number's third part (1.463.<strong>497</strong>.0). Hover or focus a bar for its count and time; every value is in the table below.</p>
     ${notable.length ? `<h3 style="margin-top:12px">Notable new detections</h3><p class="meta">Windows detections whose family this tracker had not seen in any earlier build it keeps (generic families such as Wacatac are left out).</p><ul class="list compact">${notable.slice(0, 12).map((x) => `<li><span class="mono">${esc(x.v)}</span> · ${esc(x.n)}</li>`).join("")}</ul>` : ""}
   </div>
