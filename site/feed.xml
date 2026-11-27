@@ -6,7 +6,14 @@
   <atom:link href="https://jahs1151.github.io/defender-update-tracker/feed.xml" rel="self" type="application/rss+xml"/>
   <description>New Defender security intelligence, engine, platform and Sense builds, Sense issue stages, detection alerts, Patch Tuesday and known-issue changes. Public sources only.</description>
   <language>en-us</language>
-  <lastBuildDate>Fri, 27 Nov 2026 18:54:36 GMT</lastBuildDate>
+  <lastBuildDate>Fri, 27 Nov 2026 21:39:10 GMT</lastBuildDate>
+  <item>
+    <title>Threats with no Defender detection found: new Java4Shell (AhnLab ASEC) (+15 more)</title>
+    <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
+    <guid isPermaLink="false">defender-update-tracker-2026-11-27T21:39:10.806Z</guid>
+    <pubDate>Fri, 27 Nov 2026 21:39:10 GMT</pubDate>
+    <description>&lt;p&gt;Detected 27 Nov 2026, 21:39 UTC · 27 Nov 2026, 15:39 CST&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Threats with no Defender detection found: new Java4Shell (AhnLab ASEC)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new PHP2Shell (AhnLab ASEC)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new Java4Shell (CrowdStrike)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new Java4Shell (Symantec)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new Java4Shell (Sophos)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new PerfectPioneer (Unit 42)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new PHP2Shell (Check Point Research)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new NIKKE (Bitdefender)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new Antino (Unit 42)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new CopperDragon (Check Point Research)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new SlippyNunchucks (ESET)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new PHP2Shell (eSentire)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new Aur0ra (Sophos)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new DesktopOK (The Hacker News)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new GoodGuys (BleepingComputer)&lt;/li&gt;&lt;li&gt;Threats with no Defender detection found: new ARTEX (Microsoft Security Blog)&lt;/li&gt;&lt;/ul&gt;</description>
+  </item>
   <item>
     <title>Security intelligence: 1.463.497.0 → 1.463.499.0 (+1 more)</title>
     <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
