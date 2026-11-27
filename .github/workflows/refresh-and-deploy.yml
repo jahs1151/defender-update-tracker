@@ -79,6 +79,11 @@ jobs:
           ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
         run: node scripts/notify.mjs
 
+      # Cache busting: phones keep old CSS and JS for a while, so each deploy gets its own asset URLs.
+      - name: Stamp asset versions
+        if: steps.gate.outputs.skip != 'true'
+        run: sed -i "s/__V__/$(git rev-parse --short HEAD)-${{ github.run_number }}/g" site/index.html
+
       - name: Upload site
         if: steps.gate.outputs.skip != 'true'
         uses: actions/upload-pages-artifact@v3
