@@ -113,3 +113,18 @@ test("encyclopedia search parsing keeps only the searched family", () => {
   const masked = parseEncyclopediaSearch("<p>No results found for: *** 0 entries found.</p>", "ValleyRAT");
   assert.deepEqual([masked.answered, masked.empty], [false, false]);
 });
+
+test("notable new detections: families first seen in each build, Windows only", async () => {
+  const { firstSeenByBuild } = await import("../scripts/lib/threats.mjs");
+  const bs = [
+    { version: "1.463.497.0", releasedAt: "2026-11-27T15:52:53.000Z", rows: [
+      { name: "Trojan:Win64/KuboShell.B", change: "added" },
+      { name: "Trojan:Win64/SteelC.PAHY!MTB", change: "added" },
+      { name: "Trojan:AndroidOS/Joker.A", change: "added" },
+      { name: "Trojan:Win32/Wacatac.B!ml", change: "added" },
+    ] },
+    { version: "1.463.495.0", releasedAt: "2026-11-27T09:00:00.000Z", rows: [{ name: "Backdoor:Win64/KuboShell.A", change: "added" }] },
+  ];
+  const idx = updateFamilyIndex({}, bs, 90, now);
+  assert.deepEqual(firstSeenByBuild(bs, idx), { "1.463.497.0": ["Trojan:Win64/SteelC.PAHY!MTB"], "1.463.495.0": ["Backdoor:Win64/KuboShell.A"] });
+});

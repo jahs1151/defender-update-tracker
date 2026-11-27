@@ -11,7 +11,7 @@ import { lastModifiedSeen } from "./lib/http.mjs";
 import { parseUsClock, patchWindow } from "../site/assets/time.js";
 import { diffPulse, contentKey } from "./lib/diff.mjs";
 import { mergeSenseReleases, trackSenseIssues, senseSignal } from "./lib/sense.mjs";
-import { updateFamilyIndex, detectionAlerts, vendorCoverage, compact } from "./lib/threats.mjs";
+import { updateFamilyIndex, detectionAlerts, vendorCoverage, compact, firstSeenByBuild } from "./lib/threats.mjs";
 import { appendHistory, buildFeed } from "./lib/notify.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -131,6 +131,11 @@ async function main() {
   }
 
   const threats = await deriveThreats({ builds, news, vendors, previous: previous?.sections, now });
+  // Notable new detections: per build, families seen for the first time in that build.
+  if (builds && changelog.ok) {
+    const first = firstSeenByBuild(builds, await readJson(FAMILIES, {}));
+    for (const h of changelog.data.history || []) h.newFamilies = first[h.version] || [];
+  }
   const fresh = { packages, intelligence, productUpdates, changelog, sense, patchTuesday, kev, knownIssues, intune, mde, news, community, qualys, hashes, roadmap, vendors, threats };
   const sections = {};
   for (const [key, result] of Object.entries(fresh)) {
