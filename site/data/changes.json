@@ -1,5 +1,14 @@
 [
  {
+  "at": "2026-11-27T22:14:40.447Z",
+  "lines": [
+   "Security intelligence: 1.463.499.0 → 1.463.500.0",
+   "mpam-fe.exe: 1.463.499.0 → 1.463.500.0",
+   "Detection alerts: new Trojan:PowerShell/VinciRat.EF!MTB in 1.463.500.0 (named in The Hacker News: Vinci)",
+   "Detection alerts: new Trojan:PowerShell/VinciRat.EG!MTB in 1.463.500.0 (named in The Hacker News: Vinci)"
+  ]
+ },
+ {
   "at": "2026-11-27T21:39:10.806Z",
   "lines": [
    "Threats with no Defender detection found: new Java4Shell (AhnLab ASEC)",
