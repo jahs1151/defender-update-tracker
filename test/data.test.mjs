@@ -43,3 +43,12 @@ test("index.html asks for versioned CSS and JS so phones pick up a new deploy", 
   assert.match(html, /assets\/styles\.css\?v=__V__/);
   assert.match(html, /assets\/app\.js\?v=__V__/);
 });
+
+test("Detections tab: linked at #threats, owns the detection sections, and the jump row exists", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+  const app = readFileSync(new URL("../site/assets/app.js", import.meta.url), "utf8");
+  assert.match(html, /<a href="#threats" data-tab="threats">Detections<\/a>/);
+  assert.match(html, /<nav class="wrap jump" id="jump"/);
+  assert.match(app, /const TABS = \[[^\]]*"threats"/);
+  for (const id of ["changelog", "si-trend", "detection-alerts", "vendor-coverage"]) assert.match(app, new RegExp(`"?${id}"?: "threats"`), id);
+});
