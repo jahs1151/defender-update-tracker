@@ -1,7 +1,7 @@
 // VirusTotal lookups: no key, limits, 24-hour cache, gaps, and the key never leaving the request header.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { vtLookup, parseVtFile } from "../scripts/lib/virustotal.mjs";
+import { vtLookup, parseVtFile, cleanKey, keyShape } from "../scripts/lib/virustotal.mjs";
 
 const now = new Date("2026-11-27T18:00:00Z");
 const file = (ms, others) => ({
@@ -60,4 +60,18 @@ test("limits: 4 a minute, 500 a day, answers kept 24 hours, key only in the head
 test("a rejected key stops the run", async () => {
   const r = await vtLookup([{ hash: "a".repeat(64) }, { hash: "b".repeat(64) }], { key: "BAD", now, fetchImpl: async () => ({ status: 401, ok: false }), sleep: async () => {} });
   assert.equal(r.status, "rejected");
+});
+
+test("a pasted key is cleaned, and a wrong shape is described without showing it", () => {
+  const k = "a".repeat(64);
+  assert.equal(cleanKey(`  "${k}"\n`), k);
+  assert.equal(keyShape(k), "");
+  const msg = keyShape("SECRETVALUE");
+  assert.match(msg, /11 characters/);
+  assert.ok(!msg.includes("SECRET"));
+});
+
+test("a rejected key reports VirusTotal's reason code", async () => {
+  const r = await vtLookup([{ hash: "a".repeat(64) }], { key: "BAD", now, fetchImpl: async () => ({ status: 401, ok: false, json: async () => ({ error: { code: "WrongCredentialsError", message: "Wrong API key" } }) }), sleep: async () => {} });
+  assert.deepEqual([r.status, r.reason], ["rejected", "HTTP 401 WrongCredentialsError"]);
 });

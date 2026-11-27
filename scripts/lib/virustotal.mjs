@@ -32,6 +32,16 @@ export function parseVtFile(json) {
  * rows: [{ hash, vtResult? }]; budget: { day, used } from the last run.
  * Returns { rows, budget, status: "ok" | "no-key" | "rejected" | "limited", checked }.
  */
+/** A pasted secret often carries spaces, a newline or quotes. VirusTotal keys are 64 hex characters. */
+export function cleanKey(raw = "") {
+  return String(raw).trim().replace(/^["']|["']$/g, "").trim();
+}
+
+/** What is wrong with a key's shape, without revealing any of it. "" when it looks right. */
+export function keyShape(key = "") {
+  return /^[a-f0-9]{64}$/i.test(key) ? "" : `the secret is ${key.length} characters and VirusTotal keys are 64 letters and digits (0-9, a-f)`;
+}
+
 export async function vtLookup(rows, { key, budget = {}, now = new Date(), maxPerRun = 8, fetchImpl = fetch, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
   if (!key) return { rows, budget, status: "no-key", checked: 0 };
   const day = now.toISOString().slice(0, 10);
@@ -40,6 +50,7 @@ export async function vtLookup(rows, { key, budget = {}, now = new Date(), maxPe
   const due = rows.filter((r) => !r.vtResult?.checkedAt || r.vtResult.checkedAt < fresh || r.vtResult.error);
   const out = new Map(rows.map((r) => [r.hash, r]));
   let status = "ok";
+  let reason = "";
   let checked = 0;
   for (const r of due.slice(0, maxPerRun)) {
     if (b.used >= VT_LIMITS.perDay) {
@@ -58,6 +69,9 @@ export async function vtLookup(rows, { key, budget = {}, now = new Date(), maxPe
     }
     if (res.status === 401 || res.status === 403) {
       status = "rejected";
+      // VirusTotal names the reason (WrongCredentialsError, ForbiddenError ...). It never echoes the key.
+      const body = typeof res.json === "function" ? await res.json().catch(() => null) : null;
+      reason = `HTTP ${res.status}${body?.error?.code ? ` ${String(body.error.code).replace(/[^A-Za-z]/g, "").slice(0, 40)}` : ""}`;
       break;
     }
     if (res.status === 429) {
@@ -69,5 +83,5 @@ export async function vtLookup(rows, { key, budget = {}, now = new Date(), maxPe
     else if (res.ok) out.set(r.hash, { ...r, vtResult: { ...parseVtFile(await res.json()), checkedAt } });
     else out.set(r.hash, { ...r, vtResult: { error: `HTTP ${res.status}`, checkedAt } });
   }
-  return { rows: rows.map((r) => out.get(r.hash)), budget: b, status, checked };
+  return { rows: rows.map((r) => out.get(r.hash)), budget: b, status, checked, reason };
 }
