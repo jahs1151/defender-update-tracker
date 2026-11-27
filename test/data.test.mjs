@@ -37,3 +37,9 @@ test("the header row class .bar is styled once (a chart class named .bar once tu
   const css = readFileSync(new URL("../site/assets/styles.css", import.meta.url), "utf8");
   assert.equal((css.match(/(^|[\s,}])\.bar\s*[{,:]/g) || []).length, 1);
 });
+
+test("index.html asks for versioned CSS and JS so phones pick up a new deploy", () => {
+  const html = readFileSync(new URL("../site/index.html", import.meta.url), "utf8");
+  assert.match(html, /assets\/styles\.css\?v=__V__/);
+  assert.match(html, /assets\/app\.js\?v=__V__/);
+});
