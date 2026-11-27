@@ -1,7 +1,7 @@
 {
  "schema": 4,
- "checkedAt": "2026-11-27T18:57:46.877Z",
- "contentChangedAt": "2026-11-27T18:57:46.877Z",
+ "checkedAt": "2026-11-27T21:33:23.114Z",
+ "contentChangedAt": "2026-11-27T21:33:23.114Z",
  "changes": [],
  "patch": {
   "last": "2026-11-10",
@@ -13,8 +13,8 @@
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
    "lastModified": "",
    "detail": "3 of 3 packages resolved · file lists for 2 · offline kit platform 4.18.26100.4",
@@ -88,8 +88,8 @@
    "label": "Security intelligence page",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions",
    "lastModified": "",
    "detail": "1.463.499.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
@@ -97,8 +97,8 @@
     "securityIntelligence": "1.463.499.0",
     "engine": "1.1.26100.4",
     "platform": "4.18.26100.4",
-    "releasedAt": "2026-11-27T18:41:38.000Z",
-    "releasedRaw": "11/27/2026 6:41:38 PM",
+    "releasedAt": "2026-11-27T18:56:53.000Z",
+    "releasedRaw": "11/27/2026 6:56:53 PM",
     "clockZone": "UTC",
     "clockBasis": "Verified this run: read as Pacific time the release would be in the future, so the page clock is UTC.",
     "url": "https://www.microsoft.com/en-us/wdsi/definitions"
@@ -108,8 +108,8 @@
    "label": "Platform and engine release list (Learn)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support",
    "lastModified": "2026-11-17T23:39:38.000Z",
    "detail": "8 monthly releases listed, latest February 2026",
@@ -187,8 +187,8 @@
    "label": "Detection changelog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
    "lastModified": "",
    "detail": "1.463.499.0 · 152 detections · 10 versions kept",
@@ -1126,7 +1126,14 @@
       "releasedAt": "2026-11-27T18:41:38.000Z",
       "added": 15,
       "updated": 105,
-      "file": "data/changelog/1.463.499.0.json"
+      "file": "data/changelog/1.463.499.0.json",
+      "newFamilies": [
+       "HackTool:Win64/WedgeCut!MTB",
+       "Trojan:MSIL/Zilla.ED!MTB",
+       "Trojan:VBS/OverLord.FC!MTB",
+       "Trojan:Win32/CryptMiner.CG!MTB",
+       "Trojan:Win64/RemusStelaer!MTB"
+      ]
      },
      {
       "version": "1.463.497.0",
@@ -1134,7 +1141,14 @@
       "releasedAt": "2026-11-27T15:52:53.000Z",
       "added": 12,
       "updated": 77,
-      "file": "data/changelog/1.463.497.0.json"
+      "file": "data/changelog/1.463.497.0.json",
+      "newFamilies": [
+       "Adware:Win32/ChadPush!AMTB",
+       "Trojan:Win32/TamperedChef!rfn",
+       "Trojan:Win64/IcarusRat!MTB",
+       "Trojan:Win64/Swrort!AMTB",
+       "TrojanSpy:Win32/Swisyn!AMTB"
+      ]
      },
      {
       "version": "1.463.495.0",
@@ -1142,7 +1156,12 @@
       "releasedAt": "2026-11-27T13:13:36.000Z",
       "added": 8,
       "updated": 112,
-      "file": "data/changelog/1.463.495.0.json"
+      "file": "data/changelog/1.463.495.0.json",
+      "newFamilies": [
+       "Trojan:Win32/Cerbu.MX!MTB",
+       "Trojan:Win64/Crypt.NMX!MTB",
+       "Trojan:Win64/ShadowHost!MTB"
+      ]
      },
      {
       "version": "1.463.493.0",
@@ -1150,7 +1169,8 @@
       "releasedAt": "2026-11-27T10:33:43.000Z",
       "added": 1,
       "updated": 0,
-      "file": "data/changelog/1.463.493.0.json"
+      "file": "data/changelog/1.463.493.0.json",
+      "newFamilies": []
      },
      {
       "version": "1.463.492.0",
@@ -1158,7 +1178,14 @@
       "releasedAt": "2026-11-27T07:34:56.000Z",
       "added": 7,
       "updated": 113,
-      "file": "data/changelog/1.463.492.0.json"
+      "file": "data/changelog/1.463.492.0.json",
+      "newFamilies": [
+       "Trojan:JS/Cryxos.HCD!MTB",
+       "Trojan:Script/SvgStealer.AEL!MTB",
+       "Trojan:Win64/Badur.MK!MTB",
+       "Trojan:Win64/RemusStealer.SP!MTB",
+       "Trojan:Win64/ZStealer.AZ!MTB"
+      ]
      },
      {
       "version": "1.463.490.0",
@@ -1166,7 +1193,8 @@
       "releasedAt": "2026-11-27T04:48:55.000Z",
       "added": 0,
       "updated": 84,
-      "file": "data/changelog/1.463.490.0.json"
+      "file": "data/changelog/1.463.490.0.json",
+      "newFamilies": []
      },
      {
       "version": "1.463.488.0",
@@ -1174,7 +1202,11 @@
       "releasedAt": "2026-11-27T01:58:46.000Z",
       "added": 4,
       "updated": 116,
-      "file": "data/changelog/1.463.488.0.json"
+      "file": "data/changelog/1.463.488.0.json",
+      "newFamilies": [
+       "Trojan:MSIL/LockFile.KX!MTB",
+       "Trojan:Win64/Convagent.BV!MTB"
+      ]
      },
      {
       "version": "1.463.486.0",
@@ -1182,7 +1214,8 @@
       "releasedAt": "2026-11-26T23:08:35.000Z",
       "added": 3,
       "updated": 73,
-      "file": "data/changelog/1.463.486.0.json"
+      "file": "data/changelog/1.463.486.0.json",
+      "newFamilies": []
      },
      {
       "version": "1.463.485.0",
@@ -1190,7 +1223,15 @@
       "releasedAt": "2026-11-26T20:23:19.000Z",
       "added": 18,
       "updated": 102,
-      "file": "data/changelog/1.463.485.0.json"
+      "file": "data/changelog/1.463.485.0.json",
+      "newFamilies": [
+       "Backdoor:Win64/KuboShell!rfn",
+       "Trojan:BAT/Boxter.VK!MTB",
+       "Trojan:JS/FormBook.FA!MTB",
+       "Trojan:JS/QuasarRAT.BA!MTB",
+       "Trojan:MSIL/CryptAgent.DB!AMTB",
+       "Trojan:MSIL/XWorm.KN!MTB"
+      ]
      },
      {
       "version": "1.463.481.0",
@@ -1198,7 +1239,14 @@
       "releasedAt": "2026-11-26T16:14:36.000Z",
       "added": 6,
       "updated": 83,
-      "file": "data/changelog/1.463.481.0.json"
+      "file": "data/changelog/1.463.481.0.json",
+      "newFamilies": [
+       "Trojan:JS/GuLoader.PG!MTB",
+       "Trojan:JS/Runner.GD!MTB",
+       "Trojan:Script/AhkDownloader!AMTB",
+       "Trojan:Win64/DLLHijack.GQ!MTB",
+       "Trojan:Win64/SalatStealer.AU!MTB"
+      ]
      }
     ],
     "url": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
@@ -1209,8 +1257,8 @@
    "label": "Sense (EDR sensor) build, Update Catalog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292",
    "lastModified": "",
    "detail": "Latest 10.8839.26080.2008 · Current Channel (Broad) · 1 version in the catalog · KB5005292 page names 10.8838 or later",
@@ -1351,8 +1399,8 @@
    "label": "Security Update Guide (MSRC API)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://msrc.microsoft.com/update-guide",
    "lastModified": "",
    "detail": "2026-Nov: 723 Windows CVEs, 35 Critical, 2 Defender or Intune · 2 months kept",
@@ -1361,21 +1409,21 @@
     "windowsTotal": 723,
     "critical": 35,
     "perOs": {
+     "win11": {
+      "total": 661,
+      "critical": 33
+     },
      "srv2022": {
       "total": 651,
       "critical": 30
      },
-     "win11": {
-      "total": 661,
+     "srv2025": {
+      "total": 690,
       "critical": 33
      },
      "srv2019": {
       "total": 618,
       "critical": 28
-     },
-     "srv2025": {
-      "total": 690,
-      "critical": 33
      }
     },
     "endpoint": [
@@ -1402,21 +1450,21 @@
       "windowsTotal": 723,
       "critical": 35,
       "perOs": {
+       "win11": {
+        "total": 661,
+        "critical": 33
+       },
        "srv2022": {
         "total": 651,
         "critical": 30
        },
-       "win11": {
-        "total": 661,
+       "srv2025": {
+        "total": 690,
         "critical": 33
        },
        "srv2019": {
         "total": 618,
         "critical": 28
-       },
-       "srv2025": {
-        "total": 690,
-        "critical": 33
        }
       },
       "endpoint": [
@@ -1495,11 +1543,11 @@
    "label": "CISA Known Exploited Vulnerabilities",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
    "lastModified": "2026-11-27T18:03:12.000Z",
-   "detail": "19 Microsoft Windows or endpoint entries in 12 months",
+   "detail": "19 Microsoft Windows or endpoint entries in 12 months · 29 CVEs of any vendor added in 14 days",
    "data": {
     "rows": [
      {
@@ -2218,6 +2266,269 @@
      "CVE-2021-36955",
      "CVE-2021-38648"
     ],
+    "recent": [
+     {
+      "cve": "CVE-2026-120705",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "name": "OSGeo GeoServer XML Injection Vulnerability",
+      "dateAdded": "2026-11-27",
+      "dueDate": "2026-11-30",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-129243",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "name": "OSGeo GeoServer Incorrect Authorization Vulnerability",
+      "dateAdded": "2026-11-27",
+      "dueDate": "2026-11-30",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-136716",
+      "vendor": "Drupal",
+      "product": "Core",
+      "name": "Drupal Core Improper Check for Unusual or Exceptional Conditions Vulnerability",
+      "dateAdded": "2026-11-27",
+      "dueDate": "2026-11-30",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-103406",
+      "vendor": "Hewlett Packard Enterprise (HPE)",
+      "product": "Juniper Session Smart Conductor and Session Smart Router",
+      "name": "Hewlett Packard Enterprise (HPE) Juniper Session Smart Conductor and Session Smart Router OS Command Injection Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133469",
+      "vendor": "Vates",
+      "product": "Xen Orchestra",
+      "name": "Vates Xen Orchestra Improper Validation of Specified Type of Input Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2025-41450",
+      "vendor": "Danfoss",
+      "product": "AK-SM 800A Series",
+      "name": "Danfoss AK-SM 800A Series Improper Authentication Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-12-09",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2023-25914",
+      "vendor": "Danfoss",
+      "product": "AK-SM 800A Series",
+      "name": "Danfoss AK-SM 800A Series Path Traversal Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2023-25915",
+      "vendor": "Danfoss",
+      "product": "AK-SM 800A Series",
+      "name": "Danfoss AK-SM 800A Series Improper Input Validation Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133324",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab Not Failing Securely Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133275",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab Unrestricted Upload of File with Dangerous Type Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133311",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab Weak Authentication Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-12-09",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133303",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab XML Injection Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133323",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab OS Command Injection Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-132224",
+      "vendor": "Optimizely",
+      "product": "Web Experimentation",
+      "name": "Optimizely Web Experimentation External Control of Critical State Data Vulnerability",
+      "dateAdded": "2026-11-24",
+      "dueDate": "2026-11-27",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-131914",
+      "vendor": "Idunno",
+      "product": "AntiCsrf",
+      "name": "Idunno AntiCsrf Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-11-24",
+      "dueDate": "2026-11-27",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-132165",
+      "vendor": "Drupal",
+      "product": "Core",
+      "name": "Drupal Core Remote Code Execution Vulnerability",
+      "dateAdded": "2026-11-24",
+      "dueDate": "2026-11-27",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-133968",
+      "vendor": "Project MONAI",
+      "product": "MONAI Label",
+      "name": "Project MONAI MONAI Label Path Traversal Vulnerability",
+      "dateAdded": "2026-11-23",
+      "dueDate": "2026-11-26",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-134624",
+      "vendor": "N-able",
+      "product": "MailAssure",
+      "name": "N-able MailAssure (SpamExperts) Server-Side Request Forgery (SSRF) Vulnerability",
+      "dateAdded": "2026-11-23",
+      "dueDate": "2026-11-26",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-129448",
+      "vendor": "Apache",
+      "product": "Roller",
+      "name": "Apache Roller Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-123890",
+      "vendor": "Broadcom",
+      "product": "VMware vCenter",
+      "name": "VMWare vCenter Authentication Bypass Using an Alternate Path or Channel Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2025-42884",
+      "vendor": "SAP",
+      "product": "NetWeaver",
+      "name": "SAP NetWeaver Improper Neutralization of Special Elements in Data Query Logic Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-76466",
+      "vendor": "Cisco",
+      "product": "Expressway Series",
+      "name": "Cisco Expressway Series Use of Hard-coded Credentials Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2024-10441",
+      "vendor": "Synology",
+      "product": "DiskStation Manager (DSM)",
+      "name": "Synology DiskStation Manager (DSM) Improper Encoding or Escaping of Output Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-11-21",
+      "ransomware": "Known"
+     },
+     {
+      "cve": "CVE-2026-40217",
+      "vendor": "BerriAI",
+      "product": "LiteLLM",
+      "name": "BerriAI LiteLLM Unprotected Alternate Channel Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-12-02",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-90817",
+      "vendor": "Vanderbilt University",
+      "product": "Research Electronic Data Capture (REDCap)",
+      "name": "Vanderbilt University Research Electronic Data Capture (REDCap) Code Injection Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-11-21",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-90436",
+      "vendor": "Apache",
+      "product": "Axis",
+      "name": "Apache Axis Unsafe Reflection Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-11-21",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-115731",
+      "vendor": "Perforce",
+      "product": "Puppet Enterprise",
+      "name": "Perforce Puppet Enterprise Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-11-17",
+      "dueDate": "2026-12-01",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-114713",
+      "vendor": "UnrealIRCd",
+      "product": "UnrealIRCd",
+      "name": "UnrealIRCd Improper Neutralization of Delimiters Vulnerability",
+      "dateAdded": "2026-11-13",
+      "dueDate": "2026-11-16",
+      "ransomware": "Unknown"
+     },
+     {
+      "cve": "CVE-2026-123039",
+      "vendor": "Check Point",
+      "product": "Multiple Products",
+      "name": "Check Point Multiple Products Incorrect Permission Assignment for Critical Resource Vulnerability",
+      "dateAdded": "2026-11-13",
+      "dueDate": "2026-11-16",
+      "ransomware": "Unknown"
+     }
+    ],
     "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
    }
   },
@@ -2225,8 +2536,8 @@
    "label": "Windows release health",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://learn.microsoft.com/en-us/windows/release-health/",
    "lastModified": "2026-11-25T18:07:11.000Z",
    "detail": "1 open across 5 pages",
@@ -2351,8 +2662,8 @@
    "label": "Intune what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://learn.microsoft.com/en-us/intune/whats-new/",
    "lastModified": "2026-11-17T18:35:20.000Z",
    "detail": "7 weeks with 24 Windows or security items · 14 in-development items",
@@ -2637,8 +2948,8 @@
    "label": "Defender for Endpoint what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
    "lastModified": "2026-11-25T23:37:19.000Z",
    "detail": "8 Windows items",
@@ -2737,8 +3048,8 @@
    "label": "News feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.microsoft.com/en-us/security/blog/",
    "lastModified": "",
    "detail": "13 relevant headlines from 5 feeds",
@@ -2971,16 +3282,6 @@
       ]
      },
      {
-      "title": "SYS010 malware abuses browser management to spy on Gmail, Outlook",
-      "url": "https://www.bleepingcomputer.com/news/security/sys010-malware-abuses-browser-management-to-spy-on-gmail-outlook/",
-      "source": "BleepingComputer",
-      "published": "2026-11-26T11:50:17.000Z",
-      "names": [
-       "SYS010",
-       "SYS01"
-      ]
-     },
-     {
       "title": "What defenders need to know about ARTEX, the agentic AI framework threat actors abuse",
       "url": "https://www.microsoft.com/en-us/security/blog/2026/11/25/what-defenders-need-to-know-artex-agentic-ai-framework-threat-actors-abuse/",
       "source": "Microsoft Security Blog",
@@ -3033,8 +3334,8 @@
    "label": "Reddit (via Arctic Shift)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.reddit.com/r/DefenderATP/",
    "lastModified": "",
    "detail": "28 posts",
@@ -3285,8 +3586,8 @@
    "label": "Qualys Patch Tuesday QIDs",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://threatprotect.qualys.com/",
    "lastModified": "",
    "detail": "19 QIDs for 2026-Nov, 28 QIDs for 2026-Oct",
@@ -3382,13 +3683,27 @@
    "label": "Public hashes (TweetFeed + AlienVault OTX)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://tweetfeed.live/",
    "lastModified": "",
-   "detail": "20 Windows hashes kept, 0 analysed, 0 where another scanner names it and Defender does not",
+   "detail": "20 Windows hashes kept, 0 analysed, 0 where another scanner names it and Defender does not · VirusTotal: VirusTotal key not set",
    "data": {
     "rows": [
+     {
+      "hash": "6afa4283b2164247b05668c063698157f5af9a6449d7f2736758f3fd4d720152",
+      "reportedAt": "2026-11-27T19:46:13.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126402233344381058",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-27T21:33:25.709Z",
+      "vt": "https://www.virustotal.com/gui/file/6afa4283b2164247b05668c063698157f5af9a6449d7f2736758f3fd4d720152",
+      "otx": "https://otx.alienvault.com/indicator/file/6afa4283b2164247b05668c063698157f5af9a6449d7f2736758f3fd4d720152"
+     },
      {
       "hash": "efe785d1b6f4593915108b6d3b1b4d836f63f61e7ce0e0babbb5ba974a9775ce",
       "reportedAt": "2026-11-27T17:30:22.000Z",
@@ -3399,7 +3714,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.369Z",
+      "checkedAt": "2026-11-27T21:33:25.935Z",
       "vt": "https://www.virustotal.com/gui/file/efe785d1b6f4593915108b6d3b1b4d836f63f61e7ce0e0babbb5ba974a9775ce",
       "otx": "https://otx.alienvault.com/indicator/file/efe785d1b6f4593915108b6d3b1b4d836f63f61e7ce0e0babbb5ba974a9775ce"
      },
@@ -3413,7 +3728,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.523Z",
+      "checkedAt": "2026-11-27T21:33:26.083Z",
       "vt": "https://www.virustotal.com/gui/file/a62a80d85acb7fad7b3fbc1051babede63abd190e5efd3cd4a5022d262e40659",
       "otx": "https://otx.alienvault.com/indicator/file/a62a80d85acb7fad7b3fbc1051babede63abd190e5efd3cd4a5022d262e40659"
      },
@@ -3427,7 +3742,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.603Z",
+      "checkedAt": "2026-11-27T21:33:26.190Z",
       "vt": "https://www.virustotal.com/gui/file/04295570a759dc514c9833f9976d23c2876fa1bad8510b1831f7d9869683cff6",
       "otx": "https://otx.alienvault.com/indicator/file/04295570a759dc514c9833f9976d23c2876fa1bad8510b1831f7d9869683cff6"
      },
@@ -3441,7 +3756,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.690Z",
+      "checkedAt": "2026-11-27T21:33:26.293Z",
       "vt": "https://www.virustotal.com/gui/file/0a7e5b83991728cb9d7d54f10a2739ccc4042e985b1b3d71446d1e204448895a",
       "otx": "https://otx.alienvault.com/indicator/file/0a7e5b83991728cb9d7d54f10a2739ccc4042e985b1b3d71446d1e204448895a"
      },
@@ -3455,7 +3770,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.776Z",
+      "checkedAt": "2026-11-27T21:33:26.390Z",
       "vt": "https://www.virustotal.com/gui/file/2360967336a462d12425140a6d6cb324996d1460b5eb25b06baaffb2f5878fda",
       "otx": "https://otx.alienvault.com/indicator/file/2360967336a462d12425140a6d6cb324996d1460b5eb25b06baaffb2f5878fda"
      },
@@ -3469,7 +3784,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.859Z",
+      "checkedAt": "2026-11-27T21:33:26.488Z",
       "vt": "https://www.virustotal.com/gui/file/2d860ff34d4d074002bb963832571ba37a09d30266dca224a6168d729ea9ce42",
       "otx": "https://otx.alienvault.com/indicator/file/2d860ff34d4d074002bb963832571ba37a09d30266dca224a6168d729ea9ce42"
      },
@@ -3483,7 +3798,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:48.946Z",
+      "checkedAt": "2026-11-27T21:33:26.584Z",
       "vt": "https://www.virustotal.com/gui/file/3a252766b99463844b779ff1681bf1a43f7f3b0e3571886422655b88528848e8",
       "otx": "https://otx.alienvault.com/indicator/file/3a252766b99463844b779ff1681bf1a43f7f3b0e3571886422655b88528848e8"
      },
@@ -3497,7 +3812,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.033Z",
+      "checkedAt": "2026-11-27T21:33:26.683Z",
       "vt": "https://www.virustotal.com/gui/file/3afce1ae01a8b346338fe7348e3f470655ffb9fa833a5977af33aafd27241684",
       "otx": "https://otx.alienvault.com/indicator/file/3afce1ae01a8b346338fe7348e3f470655ffb9fa833a5977af33aafd27241684"
      },
@@ -3511,7 +3826,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.110Z",
+      "checkedAt": "2026-11-27T21:33:26.787Z",
       "vt": "https://www.virustotal.com/gui/file/4028d6040fcbe75410869c9615ccda137d77f4c9a81855dc25e368e7677b620c",
       "otx": "https://otx.alienvault.com/indicator/file/4028d6040fcbe75410869c9615ccda137d77f4c9a81855dc25e368e7677b620c"
      },
@@ -3525,7 +3840,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.197Z",
+      "checkedAt": "2026-11-27T21:33:26.889Z",
       "vt": "https://www.virustotal.com/gui/file/51652ffe763a85b0e3240c740ac3af678c6e8f57f24c89ab4f55b43270a8ca6f",
       "otx": "https://otx.alienvault.com/indicator/file/51652ffe763a85b0e3240c740ac3af678c6e8f57f24c89ab4f55b43270a8ca6f"
      },
@@ -3539,7 +3854,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.280Z",
+      "checkedAt": "2026-11-27T21:33:26.984Z",
       "vt": "https://www.virustotal.com/gui/file/5314b4ee2356a6434124d67afa4088f30b7b4e0807131e896680f6e4492cd4a6",
       "otx": "https://otx.alienvault.com/indicator/file/5314b4ee2356a6434124d67afa4088f30b7b4e0807131e896680f6e4492cd4a6"
      },
@@ -3553,7 +3868,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.364Z",
+      "checkedAt": "2026-11-27T21:33:27.092Z",
       "vt": "https://www.virustotal.com/gui/file/62d86cd7e9f9196209ed79ba4403b8f65a4834ab5a06010d6ea33be2f9ebd782",
       "otx": "https://otx.alienvault.com/indicator/file/62d86cd7e9f9196209ed79ba4403b8f65a4834ab5a06010d6ea33be2f9ebd782"
      },
@@ -3567,7 +3882,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.443Z",
+      "checkedAt": "2026-11-27T21:33:27.235Z",
       "vt": "https://www.virustotal.com/gui/file/6e3a95cfc4b4dd81e62ee9ab9b758aef6c6478956271dd3bc0c24d8845271f57",
       "otx": "https://otx.alienvault.com/indicator/file/6e3a95cfc4b4dd81e62ee9ab9b758aef6c6478956271dd3bc0c24d8845271f57"
      },
@@ -3581,7 +3896,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.531Z",
+      "checkedAt": "2026-11-27T21:33:27.339Z",
       "vt": "https://www.virustotal.com/gui/file/8278611c63a252c7ec591ce7b7dc12090331a4183063107d10df4e1e2d9f1a7b",
       "otx": "https://otx.alienvault.com/indicator/file/8278611c63a252c7ec591ce7b7dc12090331a4183063107d10df4e1e2d9f1a7b"
      },
@@ -3595,7 +3910,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.611Z",
+      "checkedAt": "2026-11-27T21:33:27.440Z",
       "vt": "https://www.virustotal.com/gui/file/85979cd81142f80f8f84a12160e192760916ea3eaebee104be3db85e189c52e3",
       "otx": "https://otx.alienvault.com/indicator/file/85979cd81142f80f8f84a12160e192760916ea3eaebee104be3db85e189c52e3"
      },
@@ -3609,7 +3924,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.712Z",
+      "checkedAt": "2026-11-27T21:33:27.546Z",
       "vt": "https://www.virustotal.com/gui/file/870bcfbee99b0fba4f4d5e92440b3f2fdb5417a6799a1bcaf5f2ebf3ba14a9cb",
       "otx": "https://otx.alienvault.com/indicator/file/870bcfbee99b0fba4f4d5e92440b3f2fdb5417a6799a1bcaf5f2ebf3ba14a9cb"
      },
@@ -3623,7 +3938,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:49.796Z",
+      "checkedAt": "2026-11-27T21:33:27.652Z",
       "vt": "https://www.virustotal.com/gui/file/9ff82e910a9291dbae97b809b87b4cd03257befbab2d35c1e2f7b8f324f3f226",
       "otx": "https://otx.alienvault.com/indicator/file/9ff82e910a9291dbae97b809b87b4cd03257befbab2d35c1e2f7b8f324f3f226"
      },
@@ -3637,7 +3952,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:50.043Z",
+      "checkedAt": "2026-11-27T21:33:27.754Z",
       "vt": "https://www.virustotal.com/gui/file/aa399ff327b8fbafbd9bd4f1054c20fb7cb9fc0ebe9ea2b8eb912f21d3606474",
       "otx": "https://otx.alienvault.com/indicator/file/aa399ff327b8fbafbd9bd4f1054c20fb7cb9fc0ebe9ea2b8eb912f21d3606474"
      },
@@ -3651,33 +3966,21 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-27T18:57:50.126Z",
+      "checkedAt": "2026-11-27T21:33:27.852Z",
       "vt": "https://www.virustotal.com/gui/file/b5c0345aa6b0413dd004b9adf77452344b97c46e723bc5bf6c57d472cbf910c1",
       "otx": "https://otx.alienvault.com/indicator/file/b5c0345aa6b0413dd004b9adf77452344b97c46e723bc5bf6c57d472cbf910c1"
-     },
-     {
-      "hash": "c02822545654341c888cce46cb0cb15b300dc7eac246e44ab24154c1ea446c75",
-      "reportedAt": "2026-11-27T16:04:35.000Z",
-      "reporter": "LandscapeThreat",
-      "tags": "",
-      "tweet": "https://x.com/LandscapeThreat/status/2126346454771904642",
-      "analysed": false,
-      "fileType": "",
-      "defender": "",
-      "other": "",
-      "checkedAt": "2026-11-27T18:57:50.223Z",
-      "vt": "https://www.virustotal.com/gui/file/c02822545654341c888cce46cb0cb15b300dc7eac246e44ab24154c1ea446c75",
-      "otx": "https://otx.alienvault.com/indicator/file/c02822545654341c888cce46cb0cb15b300dc7eac246e44ab24154c1ea446c75"
      }
-    ]
+    ],
+    "vtStatus": "no-key",
+    "vtBudget": {}
    }
   },
   "roadmap": {
    "label": "Microsoft 365 roadmap",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.microsoft.com/microsoft-365/roadmap",
    "lastModified": "",
    "detail": "23 items stored, 21 for Defender for Endpoint or Intune",
@@ -3921,11 +4224,11 @@
    "label": "Vendor threat research feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://unit42.paloaltonetworks.com/",
    "lastModified": "",
-   "detail": "50 posts in 30 days from 7 of 7 vendors",
+   "detail": "100 posts in 30 days from 12 of 12 vendors",
    "data": {
     "posts": [
      {
@@ -3942,6 +4245,14 @@
       "source": "Unit 42",
       "published": "2026-11-25T15:00:09.000Z",
       "summary": "Unit 42 examines the evolution of AI-driven cyberattacks and outlines proactive defense strategies for security teams. The post The AI Threat Horizon: Why Speed, Edge AI and Baselines Are Our Best Defense appeared first on Unit 42 .",
+      "names": []
+     },
+     {
+      "title": "Software Supply Chain Attack via the Official SoftwareOK Website: Tampering with Q-Dir and DesktopOK Installation Files",
+      "url": "https://asec.ahnlab.com/en/96827/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-25T15:00:00.000Z",
+      "summary": "1. Overview AhnLab SEcurity intelligence Center (ASEC) recently confirmed that some Q-Dir and DesktopOK installation files distributed on the official SoftwareOK website had been tampered with to contain malicious files. Evidence indicates ",
       "names": []
      },
      {
@@ -3969,6 +4280,16 @@
       "names": []
      },
      {
+      "title": "Vinci RAT Delivered Through a Malicious Microsoft Store App",
+      "url": "https://www.esentire.com/blog/vinci-rat-lives-in-the-microsoft-store",
+      "source": "eSentire",
+      "published": "2026-11-24T15:48:39.000Z",
+      "summary": "eSentire TRU uncovered Vinci RAT, a new PowerShell RAT delivered via a malicious Microsoft Store app. Get the technical analysis and defense recommendations.",
+      "names": [
+       "Vinci"
+      ]
+     },
+     {
       "title": "Recent Trends and Tactics of Agentic AI Attacks",
       "url": "https://unit42.paloaltonetworks.com/autonomous-ai-agent-threat-campaigns/",
       "source": "Unit 42",
@@ -3977,11 +4298,39 @@
       "names": []
      },
      {
+      "title": "Ransom & Dark Web Issues Week 4, November 2026",
+      "url": "https://asec.ahnlab.com/en/96757/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-24T15:00:00.000Z",
+      "summary": "ASEC Blog publishes Ransom & Dark Web Issues Week 4, November 2026 Large-Scale Data Leak Claimed at a South Korean Energy Organization [1] [2] Ukrainian Police and FBI Arrest Four Suspects Linked to Chaos Ransomware ShinyHunters Announces N",
+      "names": [
+       "ShinyHunters"
+      ]
+     },
+     {
+      "title": "Volant Manticore: Flying Under the Radar",
+      "url": "https://research.checkpoint.com/2026/volant-manticore-flying-under-the-radar/",
+      "source": "Check Point Research",
+      "published": "2026-11-24T14:13:55.000Z",
+      "summary": "Key Points Introduction Check Point Research is tracking a previously undocumented Iran-nexus threat group who we named Volant Manticore. What started in July 2026 as a single backdoor delivered to a Cyprus-based airline through a fake CV h",
+      "names": [
+       "Volant"
+      ]
+     },
+     {
       "title": "Reprioritizing Automated Leads with CrowdStrike Signal",
       "url": "https://www.crowdstrike.com/en-us/blog/reprioritizing-automated-leads-crowdstrike-signal/",
       "source": "CrowdStrike",
       "published": "2026-11-24T08:00:00.000Z",
       "summary": "",
+      "names": []
+     },
+     {
+      "title": "23rd November – Threat Intelligence Report",
+      "url": "https://research.checkpoint.com/2026/23rd-november-threat-intelligence-report/",
+      "source": "Check Point Research",
+      "published": "2026-11-23T15:16:27.000Z",
+      "summary": "For the latest discoveries in cyber research for the week of 23rd November, please download our Threat Intelligence Bulletin. TOP ATTACKS AND BREACHES The FBI has reportedly experienced a second cyber incident in recent months, this time ta",
       "names": []
      },
      {
@@ -4013,6 +4362,73 @@
       ]
      },
      {
+      "title": "ROMULUS ClickFix to LegionLoader and Warden Stealer: Analysis",
+      "url": "https://www.esentire.com/blog/romulus-clickfix-to-legionloader-and-warden-stealer-breaking-down-a-multi-stage-malware-intrusion",
+      "source": "eSentire",
+      "published": "2026-11-20T14:46:39.000Z",
+      "summary": "eSentire TRU breaks down a ROMULUS ClickFix intrusion that delivered LegionLoader and Warden Stealer. Get the full attack chain, IOCs, and defense steps.",
+      "names": [
+       "Warden",
+       "ROMULUS",
+       "ClickFix",
+       "LegionLoader"
+      ]
+     },
+     {
+      "title": "It hasn’t even been that long since PHP2Shell was disclosed—and now another PHP vulnerability?",
+      "url": "https://asec.ahnlab.com/en/96690/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-19T15:00:00.000Z",
+      "summary": "A Three-Line Summary for Those in a Hurry The PHP development team released a security update on November 19, 2026, that addressed seven critical-level vulnerabilities; no instances of these being exploited in actual attacks have been repor",
+      "names": [
+       "PHP2Shell"
+      ]
+     },
+     {
+      "title": "October 2026 Infostealer Trend Report",
+      "url": "https://asec.ahnlab.com/en/96698/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-19T15:00:00.000Z",
+      "summary": "Content This report summarizes the distribution channels, number of Infostealers, number of detections, and information on the companies disguised to appear as legitimate entities by new Infostealers collected over the course of October 202",
+      "names": []
+     },
+     {
+      "title": "Attempts to Compromise Domestic Security Products via BYOVD: Beware of Malware Distribution Using Legitimate AI Tools to Disguise It",
+      "url": "https://asec.ahnlab.com/en/96708/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-19T15:00:00.000Z",
+      "summary": "Overview Recently, the AhnLab SEcurity intelligence Center (ASEC) identified an attempt to bypass domestic security solutions using BYOVD (Bring Your Own Vulnerable Driver) in malware that disguises itself as legitimate AI tools. The malwar",
+      "names": [
+       "BYOVD"
+      ]
+     },
+     {
+      "title": "Java4Shell: JDK Vulnerability Exploiting a Flaw in High-Speed Base64 Processing Logic (CVE-2026-114938)",
+      "url": "https://asec.ahnlab.com/en/96686/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-19T15:00:00.000Z",
+      "summary": "Overview At approximately 6:00 a.M. On November 18, 2026 (Korea Standard Time), CVE-2026-114938, a vulnerability in Java’s standard Base64 decoder, was disclosed. Calif, the security research firm that discovered and disclosed the vulnerabi",
+      "names": [
+       "Java4Shell"
+      ]
+     },
+     {
+      "title": "30 Years of Gatekeeper Asymmetry Doom: The Paradox that Makes Powerful LLMs More Vulnerable",
+      "url": "https://research.checkpoint.com/2026/30-years-of-gatekeeper-asymmetry-doom-the-paradox-that-makes-powerful-llms-more-vulnerable/",
+      "source": "Check Point Research",
+      "published": "2026-11-19T13:19:10.000Z",
+      "summary": "Abstract We give an exposition for a principle of gatekeeper asymmetry doom in information security, which states that “If the system vetting adversarial input has strictly less power than the system processing that input, without leveragin",
+      "names": []
+     },
+     {
+      "title": "Major African Stock Exchange Targeted in AI-Assisted Attack",
+      "url": "https://www.security.com/threat-intelligence/african-stock-exchange-ai-assisted-attack",
+      "source": "Symantec",
+      "published": "2026-11-19T11:00:00.000Z",
+      "summary": "A 41-module PowerShell toolkit with all the hallmarks of AI authorship tested credentials and API keys against the exchange's investment API and a securities depository gateway.",
+      "names": []
+     },
+     {
       "title": "My IoT devices are no longer supported – is my smart home safe?",
       "url": "https://www.welivesecurity.com/en/internet-of-things/iot-devices-no-longer-supported-smart-home-safe/",
       "source": "ESET",
@@ -4039,11 +4455,37 @@
       "names": []
      },
      {
+      "title": "October 2026 Threat Trend Report on APT Attacks (South Korea)",
+      "url": "https://asec.ahnlab.com/en/96684/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-18T15:00:00.000Z",
+      "summary": "Content AhnLab utilized its own infrastructure to monitor APT (Advanced Persistent Threat, an attack that covertly targets specific victims over a long period) attacks against targets in Korea throughout the month of October 2026. The repor",
+      "names": []
+     },
+     {
       "title": "LABScon26 Replay | Governing Just-in-Time Intelligence: AI, Dual-Use Capabilities, and the Limits of Guardrails",
       "url": "https://www.sentinelone.com/labs/labscon26-replay-governing-just-in-time-intelligence-ai-dual-use-capabilities-and-the-limits-of-guardrails/",
       "source": "SentinelOne",
       "published": "2026-11-18T14:00:00.000Z",
       "summary": "ICRC’s Mauro Vignati argues AI guardrails can’t fix a deeper problem: a 70-year-old distribution model now applied to dual-use cognitive capabilities.",
+      "names": []
+     },
+     {
+      "title": "Java4Shell: Critical OpenJDK Flaw Allows Unauthenticated Remote Code Execution",
+      "url": "https://www.security.com/threat-intelligence/java4shell-cve2026114938-patch-now",
+      "source": "Symantec",
+      "published": "2026-11-18T11:39:22.000Z",
+      "summary": "A heap overflow vulnerability in the OpenJDK Base64 decoder, tracked as CVE-2026-114938, lets remote attackers run code on Java servers with AVX-512 processors. Patches are available.",
+      "names": [
+       "Java4Shell"
+      ]
+     },
+     {
+      "title": "Behind the Power Outage: Unmasking a New Intrusion Vector in Enterprise Infrastructure Tools",
+      "url": "https://www.security.com/threat-intelligence/power-management-software-attack-vector",
+      "source": "Symantec",
+      "published": "2026-11-18T11:00:00.000Z",
+      "summary": "A UPS management feature that runs a script when the power fails gives an intruder a trusted, built-in way to execute code on a domain controller, dump Active Directory secrets and launch a persistent implant.",
       "names": []
      },
      {
@@ -4079,6 +4521,14 @@
       "names": []
      },
      {
+      "title": "The State of Ransomware Q3 2026",
+      "url": "https://research.checkpoint.com/2026/the-state-of-ransomware-q3-2026/",
+      "source": "Check Point Research",
+      "published": "2026-11-17T22:01:28.000Z",
+      "summary": "Ransomware reached record levels in Q3 2026, but the scale of activity is only part of what changed. The ecosystem producing those attacks is becoming increasingly fragmented: more ransomware brands are claiming victims, the top groups acco",
+      "names": []
+     },
+     {
       "title": "Borrowed Code, Real Consequences: What OPTIMJACK Teaches Us",
       "url": "https://unit42.paloaltonetworks.com/optimjack-supply-chain-attack/",
       "source": "Unit 42",
@@ -4087,11 +4537,35 @@
       "names": []
      },
      {
+      "title": "OpenJDK Java Vulnerability Patch Recommendation (CVE-2026-114938)",
+      "url": "https://asec.ahnlab.com/en/96615/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-17T15:00:00.000Z",
+      "summary": "Oracle released a Java security patch on November 17, 2026, at 6:00 a.M. (Korea Standard Time). This patch includes a fix for CVE-2026-114938. If exploited, this vulnerability could lead to memory corruption and, in some cases, allow a thre",
+      "names": []
+     },
+     {
+      "title": "Ransom & Dark Web Issues Week 3, November 2026",
+      "url": "https://asec.ahnlab.com/en/96624/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-17T15:00:00.000Z",
+      "summary": "ASEC Blog publishes Ransom & Dark Web Issues Week 3, November 2026 Large-Scale Data Leak Claimed at a Major Qatari Commercial Bank The Gentlemen Ransomware Attack on a Major Saudi Pharmacy Chain n0n Claims Data Theft from a South Korean Sem",
+      "names": []
+     },
+     {
       "title": "How AI Agents Become New Targets in GitHub Malware Campaign",
       "url": "https://www.bitdefender.com/en-us/blog/labs/how-ai-agents-become-new-targets-in-github-malware-campaign",
       "source": "Bitdefender",
       "published": "2026-11-17T14:39:55.000Z",
       "summary": "Bitdefender Labs has uncovered a malware campaign that uses compromised GitHub content to target developers working with AI coding assistants. So far, Bitdefender Labs researcher Andrei Anton-Aanei has identified 22 malicious GitHub links c",
+      "names": []
+     },
+     {
+      "title": "Attackers Pick the Target, AI Does the Rest: Cyber Predictions for 2027",
+      "url": "https://www.security.com/threat-intelligence/cyber-ai-predictions-2027",
+      "source": "Symantec",
+      "published": "2026-11-17T11:00:00.000Z",
+      "summary": "Attackers are handing more of their work to AI. Next year could bring the first major breach in which the victim’s own AI agents do most of the attacker’s work.",
       "names": []
      },
      {
@@ -4121,6 +4595,30 @@
       "names": [
        "PerfectPioneer"
       ]
+     },
+     {
+      "title": "October 2026: Major APT Group Trends",
+      "url": "https://asec.ahnlab.com/en/96569/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-16T15:00:00.000Z",
+      "summary": "Purpose and Scope In October 2026, state-sponsored threat actors expanded their attacks beyond their traditional spear phishing-centric activities to directly target development environments, cloud services, virtual asset infrastructure, an",
+      "names": []
+     },
+     {
+      "title": "16th November – Threat Intelligence Report",
+      "url": "https://research.checkpoint.com/2026/16th-november-threat-intelligence-report/",
+      "source": "Check Point Research",
+      "published": "2026-11-16T14:44:36.000Z",
+      "summary": "For the latest discoveries in cyber research for the week of 16th November, please download our Threat Intelligence Bulletin. TOP ATTACKS AND BREACHES TSMC, a major Taiwanese semiconductor manufacturer, has confirmed a data breach at an unn",
+      "names": []
+     },
+     {
+      "title": "Typosquatters Copy Big Brands’ New Domains Within a Day of Registration",
+      "url": "https://www.security.com/threat-intelligence/typosquatting-new-brand-domains",
+      "source": "Symantec",
+      "published": "2026-11-16T11:00:00.000Z",
+      "summary": "Malicious actors registered one-letter lookalikes of new domains for a series of major brands a day after each real domain appeared. They seemed to be monitoring the specialist registrars corporations use to protect their names.",
+      "names": []
      },
      {
       "title": "Is it safe to upload my passport or ID online?",
@@ -4163,11 +4661,63 @@
       "names": []
      },
      {
+      "title": "October 2026 Threat Trend Report on Ransomware",
+      "url": "https://asec.ahnlab.com/en/96734/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-12T15:00:00.000Z",
+      "summary": "Purpose and Scope This report summarizes the quantity of new ransomware samples collected, the number of affected systems, and statistics on targeted businesses during the month of October 2026, as well as major Korean & Global ransomware i",
+      "names": [
+       "Global"
+      ]
+     },
+     {
+      "title": "October 2026 Dark Web Breach Incident Trend Report",
+      "url": "https://asec.ahnlab.com/en/96574/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-12T15:00:00.000Z",
+      "summary": "Note In October 2026, widespread instances of database leaks, the sale of accounts and credentials, and the disclosure of source code were observed on dark web and deep web forums. The government, public sector, defense, finance, healthcare",
+      "names": []
+     },
+     {
+      "title": "October 2026 Dark Web Issue Trend Report",
+      "url": "https://asec.ahnlab.com/en/96583/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-12T15:00:00.000Z",
+      "summary": "Note The October 2026 Dark Web Issue Trend Report summarized major issues that occurred on the deep web and the dark web. However, the report noted that, due to the nature of the sources, it may be difficult to fully verify the accuracy of ",
+      "names": []
+     },
+     {
+      "title": "October 2026 Dark Web Threat Actor Trend Report",
+      "url": "https://asec.ahnlab.com/en/96586/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-12T15:00:00.000Z",
+      "summary": "Note The October 2026 Dark Web Threat Actor Trend Report focuses on hacktivists, deep web and dark web activities, and publicly reported cyberattack incidents. It was noted that the factual accuracy of some of the content is difficult to ve",
+      "names": []
+     },
+     {
       "title": "LABScon26 Replay | Let’s Get Physical: Why Cybersecurity Needs Hardware-Based Security to Survive AI",
       "url": "https://www.sentinelone.com/labs/labscon26-replay-let-s-get-physical-why-cybersecurity-needs-hardware-based-security-to-survive-ai/",
       "source": "SentinelOne",
       "published": "2026-11-12T14:00:02.000Z",
       "summary": "Adyen’s Dino Dai Zovi shows how hardware security proven in payments can contain AI-driven attacks, even when vulnerabilities cannot be patched.",
+      "names": []
+     },
+     {
+      "title": "PHP2Shell Exploitation on Check Point Gateway",
+      "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+      "source": "Check Point Research",
+      "published": "2026-11-12T13:56:37.000Z",
+      "summary": "Key findings Introduction We have now confirmed that, in late October 2026, approximately one week after a security fix became available, activity originating from 130.94.19[.]204 targeted Israeli organizations through vulnerable Mobile Acc",
+      "names": [
+       "PHP2Shell"
+      ]
+     },
+     {
+      "title": "How AI Revived a Stalled Attack on a U.S. Retailer",
+      "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+      "source": "Symantec",
+      "published": "2026-11-12T11:00:00.000Z",
+      "summary": "After hand-typed commands against a U.S. retailer's web server were blocked, the attackers switched to what appears to be AI-generated commands and began harvesting credentials and moving laterally within minutes.",
       "names": []
      },
      {
@@ -4207,12 +4757,46 @@
       ]
      },
      {
+      "title": "Beware of phishing emails disguised as quote requests (SnakeKeylogger)",
+      "url": "https://asec.ahnlab.com/en/96495/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-11T15:00:00.000Z",
+      "summary": "The AhnLab SEcurity intelligence Center (ASEC) recently confirmed that phishing emails disguised as requests for quotes are being circulated. The email body is disguised as a request from a representative of the Materials Management Divisio",
+      "names": []
+     },
+     {
+      "title": "Beware of phishing emails disguised as purchase order confirmation requests (Xloader)",
+      "url": "https://asec.ahnlab.com/en/96513/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-11T15:00:00.000Z",
+      "summary": "Recently, the AhnLab SEcurity intelligence Center (ASEC) identified a case of phishing emails that disguise themselves as requests to confirm purchase orders. The email body prompts recipients to open a malicious DOCX file disguised as a pu",
+      "names": []
+     },
+     {
       "title": "Malicious ScreenConnect deployments observed",
       "url": "https://www.sophos.com/en-us/blog/malicious-screenconnect-deployments-observed",
       "source": "Sophos",
       "published": "2026-11-11T00:00:00.000Z",
       "summary": "Categories: Threat Research Tags: advisory, connectwise, ScreenConnect",
       "names": []
+     },
+     {
+      "title": "Ransom & Dark Web Issues Week 2, November 2026",
+      "url": "https://asec.ahnlab.com/en/96481/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-10T15:00:00.000Z",
+      "summary": "ASEC Blog publishes Ransom & Dark Web Issues Week 2, November 2026 INC Ransom Claims Data Theft from a South Korean Chemical Manufacturer Metaencryptor Lists Five South Korean Companies as Ransomware Victims [1] [2] [3] [4] [5] French Gover",
+      "names": []
+     },
+     {
+      "title": "Not All That Glitters Is Gold: Tracking CopperDragon’s Sparrow Framework Around the Globe",
+      "url": "https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/",
+      "source": "Check Point Research",
+      "published": "2026-11-10T14:01:14.000Z",
+      "summary": "Key Points Introduction Over the past year, Check Point Research investigated a series of intrusion campaigns targeting several dozens of high-profile organizations across Latin America, Asia, and Europe. These campaigns initially appeared ",
+      "names": [
+       "CopperDragon"
+      ]
      },
      {
       "title": "Exchange for breakfast: Turla’s Cereal tricks are not for kids",
@@ -4239,12 +4823,70 @@
       "names": []
      },
      {
+      "title": "9th November – Threat Intelligence Report",
+      "url": "https://research.checkpoint.com/2026/9th-november-threat-intelligence-report/",
+      "source": "Check Point Research",
+      "published": "2026-11-09T16:15:41.000Z",
+      "summary": "For the latest discoveries in cyber research for the week of 9th November, please download our Threat Intelligence Bulletin. TOP ATTACKS AND BREACHES Queens Public Library, a New York City public library system serving approximately 2.3 mil",
+      "names": []
+     },
+     {
+      "title": "Atlas Email Security Launches Email Detection and Response",
+      "url": "https://www.esentire.com/blog/atlas-email-security-launches-with-a-soc-behind-every-inbox",
+      "source": "eSentire",
+      "published": "2026-11-09T14:38:38.000Z",
+      "summary": "Atlas Email Security is now available for Microsoft 365. See how it adds explainable verdicts and 24/7 SOC response, with no MX changes. Talk to an expert.",
+      "names": []
+     },
+     {
       "title": "Turning Up the Heat: Inside the Attacks on Europe’s Refrigeration Systems",
       "url": "https://unit42.paloaltonetworks.com/europes-refrigeration-systems-attacks/",
       "source": "Unit 42",
       "published": "2026-11-06T21:15:09.000Z",
       "summary": "Unit 42 examines recent cyberattacks targeting European refrigeration systems and outlines defense and mitigation strategies. The post Turning Up the Heat: Inside the Attacks on Europe’s Refrigeration Systems appeared first on Unit 42 .",
       "names": []
+     },
+     {
+      "title": "Barracuda Networks is your new best friend (Barracuda Email Security Gateway Pre-Auth Remote Root RCE CVE-2026-116606 / CVE-2026-111560)",
+      "url": "https://labs.watchtowr.com/barracuda-networks-is-your-new-best-friend-barracuda-email-security-gateway-pre-auth-remote-root-rce-cve-2026-116606-cve-2026-111560/",
+      "source": "watchTowr",
+      "published": "2026-11-05T21:19:58.000Z",
+      "summary": "Yes, that's right! Today we're at the aquarium. Welcome back to yet another watchTowr Labs blog post. You can begin preparing your comments now. What Is A Barracuda, And Why? Must We? Barracuda’s Email Security Gateway solution (ESG) is no ",
+      "names": []
+     },
+     {
+      "title": "Hacking on Autopilot: Inside ARTEX Cybercrime Campaigns",
+      "url": "https://research.checkpoint.com/2026/hacking-on-autopilot-inside-artex-cybercrime-campaigns/",
+      "source": "Check Point Research",
+      "published": "2026-11-05T17:22:06.000Z",
+      "summary": "Key Points Introduction ARTEX is a Chinese open-source, AI-powered penetration testing platform designed to help security teams assess systems they own or are authorized to test. It uses large language models (LLMs) to coordinate multiple A",
+      "names": []
+     },
+     {
+      "title": "Analysis of Wpcdoor Attack Cases Spread via Korea-Based DVR Management Software",
+      "url": "https://asec.ahnlab.com/en/96477/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-05T15:00:00.000Z",
+      "summary": "On October 27, 2026, Huntress disclosed a case of malware distribution that exploited DVR management software. [1] The company targeted in this incident was a Korean firm that develops products such as CCTV and DVR systems, and according to",
+      "names": []
+     },
+     {
+      "title": "ChatGPT Lockdown Mode Bypass: Phishing, Malware Delivery, and Silent Data Exfiltration",
+      "url": "https://research.checkpoint.com/2026/chatgpt-lockdown-mode-bypass-phishing-malware-delivery-and-silent-data-exfiltration/",
+      "source": "Check Point Research",
+      "published": "2026-11-05T14:00:11.000Z",
+      "summary": "Research by: Alexey Bukhteyev Key Takeaways Introduction Earlier this year, Check Point Research disclosed a security flaw in ChatGPT’s code-execution runtime that allowed sensitive conversation data to be silently exfiltrated to an attacke",
+      "names": []
+     },
+     {
+      "title": "New Lindnor Backdoor and Glut of Security Killers Used in Ransomware Attack on U.S. Org",
+      "url": "https://www.security.com/threat-intelligence/lindnor-new-backdoor-anubis-ransomware",
+      "source": "Symantec",
+      "published": "2026-11-05T11:00:00.000Z",
+      "summary": "Attackers using the Anubis ransomware deployed a new custom backdoor and a large set of Bring Your Own Vulnerable Driver (BYOVD) tools, but attack was thwarted before encryption phase could begin.",
+      "names": [
+       "Anubis"
+      ]
      },
      {
       "title": "GhostMap: The Android flaw that crashes your phone before you open the app",
@@ -4273,12 +4915,38 @@
       ]
      },
      {
+      "title": "eSentire Wins 3 AVANT Summit Awards, Including Top NPS",
+      "url": "https://www.esentire.com/blog/esentire-wins-three-2026-avant-summit-awards-including-top-overall-vendor-nps",
+      "source": "eSentire",
+      "published": "2026-11-03T15:38:26.000Z",
+      "summary": "eSentire was named Top Vendor: Security, Top Vendor NPS: Security, and Top Overall Vendor NPS at the 2026 AVANT Summit Awards. See what earned the recognition.",
+      "names": []
+     },
+     {
+      "title": "Ransom & Dark Web Issues Week 1, November 2026",
+      "url": "https://asec.ahnlab.com/en/96414/",
+      "source": "AhnLab ASEC",
+      "published": "2026-11-03T15:00:00.000Z",
+      "summary": "ASEC Blog publishes Ransom & Dark Web Issues Week 1, November 2026 FBI Seizes Domain of Bulletproof Hosting Service Virtualine Internal Data of a Saudi ERP and IT Solutions Company Offered for Sale Cyberattacks on Supermarket Refrigeration ",
+      "names": []
+     },
+     {
       "title": "Defrost and Disrupt | An Assessment of Europe’s Refrigeration Attacks",
       "url": "https://www.sentinelone.com/labs/defrost-and-disrupt-an-assessment-of-europe-s-refrigeration-attacks/",
       "source": "SentinelOne",
       "published": "2026-11-03T14:57:27.000Z",
       "summary": "Store fridges and freezers warmed overnight in six countries on November 2-3. Russian-aligned groups are credible suspects, but attribution remains open.",
       "names": []
+     },
+     {
+      "title": "Free the Model, Sell the Gateway: Prompt Adware hidden in Jailbreak Bundles",
+      "url": "https://research.checkpoint.com/2026/free-the-model-sell-the-gateway-prompt-adware-hidden-in-jailbreak-bundles/",
+      "source": "Check Point Research",
+      "published": "2026-11-03T13:57:04.000Z",
+      "summary": "Key Points Free the Model, Sell the Gateway: Prompt Adware hidden in Jailbreak Bundles Check Point Research found a misconfigured webserver of a threat actor operating the Cobalt Strike framework. Besides an open Cobalt Strike server, whose",
+      "names": [
+       "Strike"
+      ]
      },
      {
       "title": "Gorbag: Orcs at the border harvesting intelligence from Ukraine",
@@ -4294,6 +4962,24 @@
       "source": "Unit 42",
       "published": "2026-11-02T23:00:45.000Z",
       "summary": "Unit 42 details recent threat intelligence, highlighting cyberespionage, financial extortion, and the rapid adoption of AI across offensive workflows. The post Unit 42 Threat Intelligence Highlights - Nov. 2, 2026 appeared first on Unit 42 ",
+      "names": []
+     },
+     {
+      "title": "PHP2Shell: Two Critical PHP Flaws Explained",
+      "url": "https://www.esentire.com/blog/php2shell-two-critical-php-flaws-explained",
+      "source": "eSentire",
+      "published": "2026-11-02T19:13:34.000Z",
+      "summary": "Learn how the PHP2Shell vulnerability works, why PHP exposure is hard to find, and how eSentire helps you act. Talk to an eSentire Security Specialist.",
+      "names": [
+       "PHP2Shell"
+      ]
+     },
+     {
+      "title": "2nd November – Threat Intelligence Report",
+      "url": "https://research.checkpoint.com/2026/2nd-november-threat-intelligence-report/",
+      "source": "Check Point Research",
+      "published": "2026-11-02T15:57:23.000Z",
+      "summary": "For the latest discoveries in cyber research for the week of 2nd November, please download our Threat Intelligence Bulletin. TOP ATTACKS AND BREACHES Binance, a global cryptocurrency exchange, has suffered a cyberattack resulting in the the",
       "names": []
      },
      {
@@ -4313,6 +4999,14 @@
       "names": []
      },
      {
+      "title": "How eSentire Responded to a Citrix NetScaler Zero-Day in One Day",
+      "url": "https://www.esentire.com/blog/how-esentire-responded-to-a-citrix-netscaler-zero-day-in-one-day",
+      "source": "eSentire",
+      "published": "2026-10-30T11:35:41.000Z",
+      "summary": "Read how eSentire's TRU found exploitation at 10 customers within hours of a Citrix NetScaler zero-day disclosure, and the questions to ask your own provider.",
+      "names": []
+     },
+     {
       "title": "Malicious Claude Code extension distributed through Cursor marketplace",
       "url": "https://www.sophos.com/en-us/blog/malicious-claude-code-extension-distributed-through-cursor-marketplace",
       "source": "Sophos",
@@ -4321,11 +5015,51 @@
       "names": []
      },
      {
+      "title": "STX RAT: A new RAT in 2026 with Infostealer Capabilities",
+      "url": "https://www.esentire.com/blog/stx-rat-a-new-rat-in-2026-with-infostealer-capabilities",
+      "source": "eSentire",
+      "published": "2026-10-29T18:49:00.000Z",
+      "summary": "Learn more about the STX RAT, a newly discovered remote access trojan targeting financial services industry, and learn more about how to protect your organization from this cyber threat.",
+      "names": []
+     },
+     {
       "title": "Threat Brief: Critical Vulnerabilities in PHP: CVE-2026-109618, CVE-2026-109619 (Updated November 19)",
       "url": "https://unit42.paloaltonetworks.com/cve-2026-109618-cve-2026-109619/",
       "source": "Unit 42",
       "published": "2026-10-29T18:00:34.000Z",
       "summary": "CVE-2026-109618 and CVE-2026-109619 are Critical vulnerabilities in PHP, a scripting language used globally for web servers and CMS systems. The post Threat Brief: Critical Vulnerabilities in PHP: CVE-2026-109618, CVE-2026-109619 (Updated N",
+      "names": []
+     },
+     {
+      "title": "eSentire in the Gartner® 2026 MDR Market Guide",
+      "url": "https://www.esentire.com/blog/esentire-named-in-the-gartner-2026-mdr-market-guide-and-our-take-on-ai-in-mdr",
+      "source": "eSentire",
+      "published": "2026-10-29T15:21:31.000Z",
+      "summary": "Gartner® named eSentire a Representative Vendor in its 2026 MDR Market Guide. See how we believe Controlled Autonomy SecOps matches the report's AI findings.",
+      "names": []
+     },
+     {
+      "title": "September 2026 Threat Trend Report on APT Attacks (South Korea)",
+      "url": "https://asec.ahnlab.com/en/96295/",
+      "source": "AhnLab ASEC",
+      "published": "2026-10-29T15:00:00.000Z",
+      "summary": "Content AhnLab monitored APT (Advanced Persistent Threat) attacks targeting entities in Korea using its own infrastructure. This report summarizes the classification, statistics, and functional characteristics for each type of domestic APT ",
+      "names": []
+     },
+     {
+      "title": "Cohere’s Qwen Story: Looks More Like Model Jaggedness",
+      "url": "https://research.checkpoint.com/2026/coheres-qwen-story-looks-more-like-model-jaggedness/",
+      "source": "Check Point Research",
+      "published": "2026-10-29T14:08:46.000Z",
+      "summary": "Key findings On October 26, Cohere reported a puzzling incident involving Qwen3.8-Flash-Next, an open-weight model from Alibaba. The task was straightforward: write a detection rule for suspicious curl downloads followed by bash execution. ",
+      "names": []
+     },
+     {
+      "title": "Sandbox Flipped to ‘Danger-Full-Access’: Unauthorized AI Relays Create Risk for Organizations",
+      "url": "https://www.security.com/threat-intelligence/openai-claude-unauthorized-relays",
+      "source": "Symantec",
+      "published": "2026-10-29T10:00:00.000Z",
+      "summary": "A grey market relay service installs the real OpenAI Codex and Anthropic Claude Code CLIs, then reconfigures them to route every prompt and credential through third-party servers with sandboxing switched off.",
       "names": []
      },
      {
@@ -4389,6 +5123,36 @@
       "ok": true,
       "url": "https://unit42.paloaltonetworks.com/feed/",
       "error": ""
+     },
+     {
+      "source": "AhnLab ASEC",
+      "ok": true,
+      "url": "https://asec.ahnlab.com/en/feed/",
+      "error": ""
+     },
+     {
+      "source": "watchTowr",
+      "ok": true,
+      "url": "https://labs.watchtowr.com/rss/",
+      "error": ""
+     },
+     {
+      "source": "Check Point Research",
+      "ok": true,
+      "url": "https://research.checkpoint.com/feed/",
+      "error": ""
+     },
+     {
+      "source": "Symantec",
+      "ok": true,
+      "url": "https://www.security.com/rss/v1/blogs/rss.xml/221",
+      "error": ""
+     },
+     {
+      "source": "eSentire",
+      "ok": true,
+      "url": "https://www.esentire.com/sitemaps-1-section-blog-1-sitemap.xml",
+      "error": ""
      }
     ]
    }
@@ -4397,11 +5161,11 @@
    "label": "Detection alerts and vendor coverage (worked out from the sources above)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-27T18:57:46.877Z",
-   "lastOkAt": "2026-11-27T18:57:46.877Z",
+   "checkedAt": "2026-11-27T21:33:23.114Z",
+   "lastOkAt": "2026-11-27T21:33:23.114Z",
    "page": "https://www.microsoft.com/en-us/wdsi/threats/threat-search",
    "lastModified": "",
-   "detail": "3 detection alerts · 9 vendor threats: 1 Yes, 0 No, 8 Unclear · 271 detection families indexed",
+   "detail": "3 detection alerts · 34 threats: 8 Yes, 6 Unclear, 20 lookup failed · 29 KEV CVEs in 14 days · 70 changelog versions indexed (30 days)",
    "data": {
     "alerts": [
      {
@@ -4417,7 +5181,8 @@
        "url": "https://www.bleepingcomputer.com/news/security/remus-malware-steals-gmail-messages-via-fake-google-sheets-extension/",
        "source": "BleepingComputer",
        "published": "2026-11-26T15:23:28.000Z"
-      }
+      },
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "version": "1.463.485.0",
@@ -4432,7 +5197,8 @@
        "url": "https://thehackernews.com/2026/11/iran-aligned-volant-manticore-uses-ipfs.html",
        "source": "The Hacker News",
        "published": "2026-11-24T16:54:07.000Z"
-      }
+      },
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "version": "1.463.485.0",
@@ -4447,166 +5213,871 @@
        "url": "https://www.bleepingcomputer.com/news/security/remus-malware-steals-gmail-messages-via-fake-google-sheets-extension/",
        "source": "BleepingComputer",
        "published": "2026-11-26T15:23:28.000Z"
-      }
+      },
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      }
     ],
     "coverage": [
      {
+      "threat": "Vinci",
+      "vendor": "eSentire",
+      "kind": "vendor",
+      "title": "Vinci RAT Delivered Through a Malicious Microsoft Store App",
+      "url": "https://www.esentire.com/blog/vinci-rat-lives-in-the-microsoft-store",
+      "published": "2026-11-24T15:48:39.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Backdoor:PowerShell/VinciRAT!MSR"
+      ],
+      "basis": "In Defender's detection changelog: Backdoor:PowerShell/VinciRAT!MSR in security intelligence 1.463.467.0.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "ShinyHunters",
+      "vendor": "AhnLab ASEC",
+      "kind": "vendor",
+      "title": "Ransom & Dark Web Issues Week 4, November 2026",
+      "url": "https://asec.ahnlab.com/en/96757/",
+      "published": "2026-11-24T15:00:00.000Z",
+      "coverage": "Unclear",
+      "detections": [],
+      "basis": "Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Volant",
+      "vendor": "Check Point Research",
+      "kind": "vendor",
+      "title": "Volant Manticore: Flying Under the Radar",
+      "url": "https://research.checkpoint.com/2026/volant-manticore-flying-under-the-radar/",
+      "published": "2026-11-24T14:13:55.000Z",
+      "coverage": "Unclear",
+      "detections": [],
+      "basis": "Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
       "threat": "Upload2Shell",
       "vendor": "Sophos",
+      "kind": "vendor",
       "title": "Proof-of-concept exploit code available for Ghostscript ‘Upload2Shell’ vulnerability (CVE-2026-125396)",
       "url": "https://www.sophos.com/en-us/blog/proof-of-concept-available-for-ghostscript-upload2shell",
       "published": "2026-11-23T00:00:00.000Z",
       "coverage": "Unclear",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "ClickFix",
       "vendor": "Bitdefender",
+      "kind": "vendor",
       "title": "Fake GTA VI PC client spreads malware through a ClickFix attack",
       "url": "https://www.bitdefender.com/en-us/blog/labs/fake-gta-vi-pc-client-malware-clickfix",
       "published": "2026-11-20T16:49:31.000Z",
       "coverage": "Yes",
       "detections": [
-       "Trojan:Win32/ClickFix",
-       "Behavior:Win32/ClickFix"
+       "Trojan:JS/ClickFix.ZYX!MTB",
+       "Trojan:Win32/ClickFix.NK!MTB",
+       "Trojan:Win32/ClickFix.NL!MTB",
+       "Trojan:Win32/ClickFix.JH6"
       ],
-      "basis": "Named in Microsoft's malware encyclopedia."
+      "basis": "In Defender's detection changelog: Trojan:JS/ClickFix.ZYX!MTB in security intelligence 1.463.480.0 and 6 more in the last 30 days.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Warden",
+      "vendor": "eSentire",
+      "kind": "vendor",
+      "title": "ROMULUS ClickFix to LegionLoader and Warden Stealer: Analysis",
+      "url": "https://www.esentire.com/blog/romulus-clickfix-to-legionloader-and-warden-stealer-breaking-down-a-multi-stage-malware-intrusion",
+      "published": "2026-11-20T14:46:39.000Z",
+      "coverage": "Unclear",
+      "detections": [],
+      "basis": "Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "ROMULUS",
+      "vendor": "eSentire",
+      "kind": "vendor",
+      "title": "ROMULUS ClickFix to LegionLoader and Warden Stealer: Analysis",
+      "url": "https://www.esentire.com/blog/romulus-clickfix-to-legionloader-and-warden-stealer-breaking-down-a-multi-stage-malware-intrusion",
+      "published": "2026-11-20T14:46:39.000Z",
+      "coverage": "Unclear",
+      "detections": [],
+      "basis": "Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "ClickFix",
+      "vendor": "eSentire",
+      "kind": "vendor",
+      "title": "ROMULUS ClickFix to LegionLoader and Warden Stealer: Analysis",
+      "url": "https://www.esentire.com/blog/romulus-clickfix-to-legionloader-and-warden-stealer-breaking-down-a-multi-stage-malware-intrusion",
+      "published": "2026-11-20T14:46:39.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Trojan:JS/ClickFix.ZYX!MTB",
+       "Trojan:Win32/ClickFix.NK!MTB",
+       "Trojan:Win32/ClickFix.NL!MTB",
+       "Trojan:Win32/ClickFix.JH6"
+      ],
+      "basis": "In Defender's detection changelog: Trojan:JS/ClickFix.ZYX!MTB in security intelligence 1.463.480.0 and 6 more in the last 30 days.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "LegionLoader",
+      "vendor": "eSentire",
+      "kind": "vendor",
+      "title": "ROMULUS ClickFix to LegionLoader and Warden Stealer: Analysis",
+      "url": "https://www.esentire.com/blog/romulus-clickfix-to-legionloader-and-warden-stealer-breaking-down-a-multi-stage-malware-intrusion",
+      "published": "2026-11-20T14:46:39.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Trojan:Win32/LegionLoader!MTB"
+      ],
+      "basis": "Named in Microsoft's malware encyclopedia.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "PHP2Shell",
+      "vendor": "AhnLab ASEC",
+      "kind": "vendor",
+      "title": "It hasn’t even been that long since PHP2Shell was disclosed—and now another PHP vulnerability?",
+      "url": "https://asec.ahnlab.com/en/96690/",
+      "published": "2026-11-19T15:00:00.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "BYOVD",
+      "vendor": "AhnLab ASEC",
+      "kind": "vendor",
+      "title": "Attempts to Compromise Domestic Security Products via BYOVD: Beware of Malware Distribution Using Legitimate AI Tools to Disguise It",
+      "url": "https://asec.ahnlab.com/en/96708/",
+      "published": "2026-11-19T15:00:00.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Java4Shell",
+      "vendor": "AhnLab ASEC",
+      "kind": "vendor",
+      "title": "Java4Shell: JDK Vulnerability Exploiting a Flaw in High-Speed Base64 Processing Logic (CVE-2026-114938)",
+      "url": "https://asec.ahnlab.com/en/96686/",
+      "published": "2026-11-19T15:00:00.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "Java4Shell",
       "vendor": "CrowdStrike",
+      "kind": "vendor",
       "title": "Java4Shell (CVE-2026-114938): CrowdStrike Detects Exposure and Post-Exploitation Activity",
       "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-helps-protect-against-java4shell-cve-2026-114938/",
       "published": "2026-11-19T06:00:00.000Z",
-      "coverage": "Unclear",
+      "coverage": "Lookup failed, retrying",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Java4Shell",
+      "vendor": "Symantec",
+      "kind": "vendor",
+      "title": "Java4Shell: Critical OpenJDK Flaw Allows Unauthenticated Remote Code Execution",
+      "url": "https://www.security.com/threat-intelligence/java4shell-cve2026114938-patch-now",
+      "published": "2026-11-18T11:39:22.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "Java4Shell",
       "vendor": "Sophos",
+      "kind": "vendor",
       "title": "'Java4Shell' vulnerability (CVE-2026-114938) could allow remote code execution",
       "url": "https://www.sophos.com/en-us/blog/java4shell-could-allow-remote-code-execution",
       "published": "2026-11-17T00:00:00.000Z",
-      "coverage": "Unclear",
+      "coverage": "Lookup failed, retrying",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "PerfectPioneer",
       "vendor": "Unit 42",
+      "kind": "vendor",
       "title": "QUIC and Covert: Novel HTTP/3-Powered RATs Target Southeast Asian Governments",
       "url": "https://unit42.paloaltonetworks.com/custom-rats-target-southeast-asia-governments/",
       "published": "2026-11-16T23:00:55.000Z",
-      "coverage": "Unclear",
+      "coverage": "Lookup failed, retrying",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Global",
+      "vendor": "AhnLab ASEC",
+      "kind": "vendor",
+      "title": "October 2026 Threat Trend Report on Ransomware",
+      "url": "https://asec.ahnlab.com/en/96734/",
+      "published": "2026-11-12T15:00:00.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "PHP2Shell",
+      "vendor": "Check Point Research",
+      "kind": "vendor",
+      "title": "PHP2Shell Exploitation on Check Point Gateway",
+      "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+      "published": "2026-11-12T13:56:37.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "NIKKE",
       "vendor": "Bitdefender",
+      "kind": "vendor",
       "title": "Attackers turn NIKKE’s game launcher into malware",
       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
       "published": "2026-11-12T10:22:26.000Z",
-      "coverage": "Unclear",
+      "coverage": "Lookup failed, retrying",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "Antino",
       "vendor": "Unit 42",
+      "kind": "vendor",
       "title": "The XG Files: Falcon C2 Flying Under The (Browser) Radar",
       "url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
       "published": "2026-11-11T15:00:23.000Z",
-      "coverage": "Unclear",
+      "coverage": "Lookup failed, retrying",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "CopperDragon",
+      "vendor": "Check Point Research",
+      "kind": "vendor",
+      "title": "Not All That Glitters Is Gold: Tracking CopperDragon’s Sparrow Framework Around the Globe",
+      "url": "https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/",
+      "published": "2026-11-10T14:01:14.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Anubis",
+      "vendor": "Symantec",
+      "kind": "vendor",
+      "title": "New Lindnor Backdoor and Glut of Security Killers Used in Ransomware Attack on U.S. Org",
+      "url": "https://www.security.com/threat-intelligence/lindnor-new-backdoor-anubis-ransomware",
+      "published": "2026-11-05T11:00:00.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "SlippyNunchucks",
       "vendor": "ESET",
+      "kind": "vendor",
       "title": "SlippyNunchucks hijacks Sogou Input Method’s brand promotion mechanism to distribute malware",
       "url": "https://www.welivesecurity.com/en/eset-research/slippynunchucks-hijacks-sogou-input-methods-brand-promotion-mechanism-to-distribute-malware/",
       "published": "2026-11-04T09:55:00.000Z",
-      "coverage": "Unclear",
+      "coverage": "Lookup failed, retrying",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Strike",
+      "vendor": "Check Point Research",
+      "kind": "vendor",
+      "title": "Free the Model, Sell the Gateway: Prompt Adware hidden in Jailbreak Bundles",
+      "url": "https://research.checkpoint.com/2026/free-the-model-sell-the-gateway-prompt-adware-hidden-in-jailbreak-bundles/",
+      "published": "2026-11-03T13:57:04.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "PHP2Shell",
+      "vendor": "eSentire",
+      "kind": "vendor",
+      "title": "PHP2Shell: Two Critical PHP Flaws Explained",
+      "url": "https://www.esentire.com/blog/php2shell-two-critical-php-flaws-explained",
+      "published": "2026-11-02T19:13:34.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      },
      {
       "threat": "Aur0ra",
       "vendor": "Sophos",
+      "kind": "vendor",
       "title": "AI used in Aur0ra ransomware testing and execution",
       "url": "https://www.sophos.com/en-us/blog/ai-used-in-aur0ra-ransomware-testing-and-execution",
       "published": "2026-10-29T00:00:00.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Vinci",
+      "vendor": "The Hacker News",
+      "kind": "news",
+      "title": "Microsoft Store App Found Delivering Vinci RAT Capable of Remote System Control",
+      "url": "https://thehackernews.com/2026/11/microsoft-store-app-found-delivering.html",
+      "published": "2026-11-27T11:49:34.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Backdoor:PowerShell/VinciRAT!MSR"
+      ],
+      "basis": "In Defender's detection changelog: Backdoor:PowerShell/VinciRAT!MSR in security intelligence 1.463.467.0.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "DesktopOK",
+      "vendor": "The Hacker News",
+      "kind": "news",
+      "title": "Hackers Trojanize Official Q-Dir and DesktopOK Downloads to Deliver Remote Access Malware",
+      "url": "https://thehackernews.com/2026/11/hackers-trojanize-official-q-dir-and.html",
+      "published": "2026-11-27T09:29:30.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "GoodGuys",
+      "vendor": "BleepingComputer",
+      "kind": "news",
+      "title": "Fake paid expert interviews impersonate brands to steal Google logins",
+      "url": "https://www.bleepingcomputer.com/news/apple/fake-paid-expert-interviews-impersonate-brands-to-steal-google-logins/",
+      "published": "2026-11-26T17:15:27.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Remus",
+      "vendor": "BleepingComputer",
+      "kind": "news",
+      "title": "Remus malware steals Gmail messages via fake Google Sheets extension",
+      "url": "https://www.bleepingcomputer.com/news/security/remus-malware-steals-gmail-messages-via-fake-google-sheets-extension/",
+      "published": "2026-11-26T15:23:28.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Trojan:Win64/Remus.PAHY!MTB",
+       "Trojan:Win64/Remus!MTB",
+       "Trojan:Win64/RemusStealer!MTB",
+       "Trojan:Win64/RemusStealer.SP!MTB"
+      ],
+      "basis": "In Defender's detection changelog: Trojan:Win64/Remus.PAHY!MTB in security intelligence 1.463.497.0 and 8 more in the last 30 days.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "PolinRider",
+      "vendor": "The Hacker News",
+      "kind": "news",
+      "title": "North Korea-Linked PolinRider Poisons Over 7,600 GitHub Repositories to Spread Malware",
+      "url": "https://thehackernews.com/2026/11/north-korea-linked-polinrider-poisons.html",
+      "published": "2026-11-26T15:13:41.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Trojan:NPM/PolinRider!rfn",
+       "Trojan:NPM/PolinRider.A!AMTB",
+       "Trojan:NPM/PolinRider.DM!MTB"
+      ],
+      "basis": "In Defender's detection changelog: Trojan:NPM/PolinRider!rfn in security intelligence 1.463.488.0 and 2 more in the last 30 days.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "ARTEX",
+      "vendor": "Microsoft Security Blog",
+      "kind": "news",
+      "title": "What defenders need to know about ARTEX, the agentic AI framework threat actors abuse",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/25/what-defenders-need-to-know-artex-agentic-ai-framework-threat-actors-abuse/",
+      "published": "2026-11-25T18:09:06.000Z",
+      "coverage": "Lookup failed, retrying",
+      "detections": [],
+      "basis": "The encyclopedia has not been asked yet. The next refresh tries again.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "KuboShell",
+      "vendor": "The Hacker News",
+      "kind": "news",
+      "title": "Iran-Aligned Volant Manticore Uses IPFS-Based KuboShell Backdoor in Espionage Campaigns",
+      "url": "https://thehackernews.com/2026/11/iran-aligned-volant-manticore-uses-ipfs.html",
+      "published": "2026-11-24T16:54:07.000Z",
+      "coverage": "Yes",
+      "detections": [
+       "Backdoor:Win64/KuboShell!rfn",
+       "Backdoor:Win64/KuboShell.DA!MTB",
+       "Trojan:Win64/KuboShell.DA!MTB"
+      ],
+      "basis": "In Defender's detection changelog: Backdoor:Win64/KuboShell!rfn in security intelligence 1.463.485.0 and 2 more in the last 30 days.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "threat": "Volant",
+      "vendor": "The Hacker News",
+      "kind": "news",
+      "title": "Iran-Aligned Volant Manticore Uses IPFS-Based KuboShell Backdoor in Espionage Campaigns",
+      "url": "https://thehackernews.com/2026/11/iran-aligned-volant-manticore-uses-ipfs.html",
+      "published": "2026-11-24T16:54:07.000Z",
       "coverage": "Unclear",
       "detections": [],
-      "basis": "No Defender detection with this exact family name was seen, and the encyclopedia lookup did not run or did not answer."
+      "basis": "Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     }
+    ],
+    "kev": [
+     {
+      "cve": "CVE-2026-120705",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "name": "OSGeo GeoServer XML Injection Vulnerability",
+      "dateAdded": "2026-11-27",
+      "dueDate": "2026-11-30",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-120705",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-129243",
+      "vendor": "OSGeo",
+      "product": "GeoServer",
+      "name": "OSGeo GeoServer Incorrect Authorization Vulnerability",
+      "dateAdded": "2026-11-27",
+      "dueDate": "2026-11-30",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-129243",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-136716",
+      "vendor": "Drupal",
+      "product": "Core",
+      "name": "Drupal Core Improper Check for Unusual or Exceptional Conditions Vulnerability",
+      "dateAdded": "2026-11-27",
+      "dueDate": "2026-11-30",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-136716",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2023-25914",
+      "vendor": "Danfoss",
+      "product": "AK-SM 800A Series",
+      "name": "Danfoss AK-SM 800A Series Path Traversal Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-25914",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2023-25915",
+      "vendor": "Danfoss",
+      "product": "AK-SM 800A Series",
+      "name": "Danfoss AK-SM 800A Series Improper Input Validation Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-25915",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2025-41450",
+      "vendor": "Danfoss",
+      "product": "AK-SM 800A Series",
+      "name": "Danfoss AK-SM 800A Series Improper Authentication Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-12-09",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-41450",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-103406",
+      "vendor": "Hewlett Packard Enterprise (HPE)",
+      "product": "Juniper Session Smart Conductor and Session Smart Router",
+      "name": "Hewlett Packard Enterprise (HPE) Juniper Session Smart Conductor and Session Smart Router OS Command Injection Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-103406",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133275",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab Unrestricted Upload of File with Dangerous Type Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133275",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133303",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab XML Injection Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133303",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133311",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab Weak Authentication Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-12-09",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133311",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133323",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab OS Command Injection Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133323",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133324",
+      "vendor": "Mitel",
+      "product": "MiCollab",
+      "name": "Mitel MiCollab Not Failing Securely Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133324",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133469",
+      "vendor": "Vates",
+      "product": "Xen Orchestra",
+      "name": "Vates Xen Orchestra Improper Validation of Specified Type of Input Vulnerability",
+      "dateAdded": "2026-11-25",
+      "dueDate": "2026-11-28",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133469",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-131914",
+      "vendor": "Idunno",
+      "product": "AntiCsrf",
+      "name": "Idunno AntiCsrf Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-11-24",
+      "dueDate": "2026-11-27",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-131914",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-132165",
+      "vendor": "Drupal",
+      "product": "Core",
+      "name": "Drupal Core Remote Code Execution Vulnerability",
+      "dateAdded": "2026-11-24",
+      "dueDate": "2026-11-27",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-132165",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-132224",
+      "vendor": "Optimizely",
+      "product": "Web Experimentation",
+      "name": "Optimizely Web Experimentation External Control of Critical State Data Vulnerability",
+      "dateAdded": "2026-11-24",
+      "dueDate": "2026-11-27",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-132224",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-133968",
+      "vendor": "Project MONAI",
+      "product": "MONAI Label",
+      "name": "Project MONAI MONAI Label Path Traversal Vulnerability",
+      "dateAdded": "2026-11-23",
+      "dueDate": "2026-11-26",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-133968",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-134624",
+      "vendor": "N-able",
+      "product": "MailAssure",
+      "name": "N-able MailAssure (SpamExperts) Server-Side Request Forgery (SSRF) Vulnerability",
+      "dateAdded": "2026-11-23",
+      "dueDate": "2026-11-26",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-134624",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2025-42884",
+      "vendor": "SAP",
+      "product": "NetWeaver",
+      "name": "SAP NetWeaver Improper Neutralization of Special Elements in Data Query Logic Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-42884",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-123890",
+      "vendor": "Broadcom",
+      "product": "VMware vCenter",
+      "name": "VMWare vCenter Authentication Bypass Using an Alternate Path or Channel Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-123890",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-129448",
+      "vendor": "Apache",
+      "product": "Roller",
+      "name": "Apache Roller Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-129448",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-76466",
+      "vendor": "Cisco",
+      "product": "Expressway Series",
+      "name": "Cisco Expressway Series Use of Hard-coded Credentials Vulnerability",
+      "dateAdded": "2026-11-20",
+      "dueDate": "2026-11-23",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-76466",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2024-10441",
+      "vendor": "Synology",
+      "product": "DiskStation Manager (DSM)",
+      "name": "Synology DiskStation Manager (DSM) Improper Encoding or Escaping of Output Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-11-21",
+      "ransomware": "Known",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-10441",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-40217",
+      "vendor": "BerriAI",
+      "product": "LiteLLM",
+      "name": "BerriAI LiteLLM Unprotected Alternate Channel Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-12-02",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-40217",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-90436",
+      "vendor": "Apache",
+      "product": "Axis",
+      "name": "Apache Axis Unsafe Reflection Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-11-21",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-90436",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-90817",
+      "vendor": "Vanderbilt University",
+      "product": "Research Electronic Data Capture (REDCap)",
+      "name": "Vanderbilt University Research Electronic Data Capture (REDCap) Code Injection Vulnerability",
+      "dateAdded": "2026-11-18",
+      "dueDate": "2026-11-21",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-90817",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-115731",
+      "vendor": "Perforce",
+      "product": "Puppet Enterprise",
+      "name": "Perforce Puppet Enterprise Deserialization of Untrusted Data Vulnerability",
+      "dateAdded": "2026-11-17",
+      "dueDate": "2026-12-01",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-115731",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-114713",
+      "vendor": "UnrealIRCd",
+      "product": "UnrealIRCd",
+      "name": "UnrealIRCd Improper Neutralization of Delimiters Vulnerability",
+      "dateAdded": "2026-11-13",
+      "dueDate": "2026-11-16",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114713",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
+     },
+     {
+      "cve": "CVE-2026-123039",
+      "vendor": "Check Point",
+      "product": "Multiple Products",
+      "name": "Check Point Multiple Products Incorrect Permission Assignment for Critical Resource Vulnerability",
+      "dateAdded": "2026-11-13",
+      "dueDate": "2026-11-16",
+      "ransomware": "Unknown",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-123039",
+      "detections": [],
+      "coverage": "No public MDE detection found",
+      "checkedAt": "2026-11-27T21:33:23.114Z"
      }
     ],
     "lookups": {
-     "upload2shell": {
-      "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
-     },
-     "clickfix": {
-      "names": [
-       "Trojan:Win32/ClickFix",
-       "Behavior:Win32/ClickFix"
-      ],
+     "shinyhunters": {
       "answered": true,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
-     },
-     "java4shell": {
       "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
+      "checkedAt": "2026-11-27T21:33:23.114Z",
+      "v": 3
      },
-     "perfectpioneer": {
+     "volant": {
+      "answered": true,
       "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
+      "checkedAt": "2026-11-27T21:33:23.114Z",
+      "v": 3
      },
-     "nikke": {
+     "upload2shell": {
+      "answered": true,
       "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
+      "checkedAt": "2026-11-27T21:33:23.114Z",
+      "v": 3
      },
-     "antino": {
+     "warden": {
+      "answered": true,
       "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
+      "checkedAt": "2026-11-27T21:33:23.114Z",
+      "v": 3
      },
-     "slippynunchucks": {
+     "romulus": {
+      "answered": true,
       "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
+      "checkedAt": "2026-11-27T21:33:23.114Z",
+      "v": 3
      },
-     "aur0ra": {
-      "names": [],
-      "answered": false,
-      "empty": false,
-      "checkedAt": "2026-11-27T18:57:46.877Z",
-      "v": 2
+     "legionloader": {
+      "answered": true,
+      "names": [
+       "Trojan:Win32/LegionLoader!MTB"
+      ],
+      "checkedAt": "2026-11-27T21:33:23.114Z",
+      "v": 3
      }
     },
-    "familyCount": 271
+    "familyCount": 271,
+    "indexedVersions": 70,
+    "indexedNames": 7622
    }
   }
  }
