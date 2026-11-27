@@ -38,7 +38,7 @@ const NOT_THREATS = new Set(
     "amazon", "aws", "cloudflare", "akamai", "adobe", "java", "python", "powershell", "javascript", "rust", "golang", "dotnet",
     "inside", "behind", "under", "inception", "spread", "spreads", "spreading", "deliver", "delivers", "delivery", "distribute",
     "deploy", "deploys", "deploying", "using", "uses", "target", "targets", "targeting", "malicious", "fake", "mobile", "cloud",
-    "custom", "novel", "stealthy", "sophisticated", "dangerous", "evolving", "multiple", "several", "another", "other", "operation", "group", "actor", "actors", "gang", "apt", "rce", "cve",
+    "custom", "novel", "global", "strike", "byovd", "stealthy", "sophisticated", "dangerous", "evolving", "multiple", "several", "another", "other", "operation", "group", "actor", "actors", "gang", "apt", "rce", "cve",
   ],
 );
 
@@ -310,8 +310,9 @@ export function coverageRows(items = [], detIndex = {}, lookups = {}, now = new 
         coverage = "Unclear";
         basis = `Microsoft's malware encyclopedia answered with no entry for this family, and the last 30 days of the changelog have none. Defender may still detect it under another name.`;
       } else {
-        coverage = "Lookup failed, retrying";
-        basis = look?.error ? `The encyclopedia lookup failed (${look.error}). The next refresh tries again.` : "The encyclopedia has not been asked yet. The next refresh tries again.";
+        // A real failure says so; a name not yet reached in the per-run budget is only queued.
+        coverage = look ? "Lookup failed, retrying" : "Queued for lookup";
+        basis = look ? `The encyclopedia lookup failed (${look.error || "no answer"}). The next refresh tries again.` : "Not in the last 30 days of the changelog. The encyclopedia is asked a few names per refresh; this one is next.";
       }
       rows.push({ threat: name, vendor: p.source, kind: p.kind || "vendor", title: p.title, url: p.url, published: p.published || "", coverage, detections, basis, checkedAt: look?.checkedAt || now.toISOString() });
     }

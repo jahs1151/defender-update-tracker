@@ -142,6 +142,7 @@ test("coverage rows: Yes from the index or encyclopedia, Unclear only on an answ
     { title: "Inside the GlassWorm2 loader", url: "https://v/3", source: "Sophos", published: "2026-11-25T00:00:00Z", names: ["GlassWorm2"] },
     { title: "New XWormZ variant", url: "https://n/1", source: "BleepingComputer", kind: "news", published: "2026-11-25T00:00:00Z", names: ["XWormZ"] },
     { title: "Our 2026 predictions", url: "https://v/4", source: "CrowdStrike", published: "2026-11-25T00:00:00Z", names: [] },
+    { title: "Inside NotYetAsked", url: "https://v/5", source: "ESET", published: "2026-11-25T00:00:00Z", names: ["NotYetAsked"] },
   ];
   const lookups = {
     glassworm2: { answered: true, names: [], checkedAt: "2026-11-27T10:00:00.000Z" },
@@ -154,6 +155,7 @@ test("coverage rows: Yes from the index or encyclopedia, Unclear only on an answ
     ["ShadowPadX", "Lookup failed, retrying"],
     ["GlassWorm2", "Unclear"],
     ["XWormZ", "Yes"],
+    ["NotYetAsked", "Queued for lookup"],
   ]);
   assert.match(rows[0].basis, /1\.463\.467\.0/);
   assert.equal(rows[3].kind, "news");
