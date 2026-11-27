@@ -79,5 +79,54 @@
    "title": "Fix unhealthy sensors",
    "url": "https://learn.microsoft.com/en-us/defender-endpoint/fix-unhealthy-sensors"
   }
- ]
+ ],
+ "senseIssues": [
+  {
+   "id": "sense-telemetry-pending-reboot",
+   "title": "No telemetry and stuck pending until reboot after the November Sense update",
+   "affected": "10.8839.26080.2008",
+   "scope": "Reported on Windows devices. Server scope not confirmed.",
+   "symptom": "After the November 2026 Sense upgrade a device stops sending telemetry and shows as pending in the Defender portal until it is restarted.",
+   "workaround": "Restart the device. Microsoft documents a restart for SENSE events 85 and 100. To roll back the sensor: MpCmdRun.exe -RevertEdr -ToVersion Previous (needs a restart).",
+   "firstSeen": "2026-11-26",
+   "stage": "Community reports",
+   "stageNote": "Admin-observed, carried over from the Grok build. Microsoft is reported to be aware through a support case; no public acknowledgment found.",
+   "communityMatch": "telemetry|pending|until (?:a )?re(?:boot|start)|no sensor data|not reporting|impaired",
+   "microsoftMatch": "telemetry|stuck (?:in )?pending|no sensor data|stops? reporting|not reporting",
+   "links": [
+    {
+     "label": "Sensor troubleshooting",
+     "url": "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-sensor"
+    },
+    {
+     "label": "Defender update and rollback",
+     "url": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates"
+    }
+   ]
+  },
+  {
+   "id": "kb5005292-0x800700aa",
+   "title": "KB5005292 install error 0x800700aa",
+   "affected": "10.8839.26080.2008",
+   "scope": "Reported on Windows devices.",
+   "symptom": "The KB5005292 Sense package fails to install with error 0x800700aa. This is an install failure, not the telemetry problem above.",
+   "workaround": "None published.",
+   "firstSeen": "2026-11-11",
+   "stage": "Community reports",
+   "stageNote": "Microsoft Q&A thread (11 Nov 2026) and WindowsDigitals (18 Nov 2026), carried over from the Grok build. No Microsoft acknowledgment found.",
+   "communityMatch": "0x800700aa",
+   "microsoftMatch": "0x800700aa",
+   "links": [
+    {
+     "label": "Microsoft Q&A",
+     "url": "https://learn.microsoft.com/en-us/answers/questions/6067537/install-error-0x800700aa"
+    },
+    {
+     "label": "WindowsDigitals",
+     "url": "https://www.windowsdigitals.com/kb5005292-install-error-0x800700aa/"
+    }
+   ]
+  }
+ ],
+ "senseIssuesNote": "Hand-kept Sense issues. The collector moves each one forward (Community reports, Microsoft acknowledged, Fix announced, Fix published) from the KB5005292 page, Windows release health, news and Reddit. communityMatch and microsoftMatch are case-insensitive regular expressions. stage is the lowest stage to show."
 }

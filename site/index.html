@@ -7,6 +7,7 @@
   <meta name="description" content="Microsoft Defender engine, platform, security intelligence and Sense versions, Patch Tuesday, known issues and Intune policy notes for Windows 11 and Windows Server 2019, 2022 and 2025. Public Microsoft sources only.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z' fill='%232563eb'/%3E%3Cpath d='m11 16 4 4 7-8' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="alternate" type="application/rss+xml" title="Defender Update Tracker: what changed" href="feed.xml">
   <script type="module" src="assets/app.js"></script>
 </head>
 <body>
@@ -29,6 +30,7 @@
       <nav class="tabs" aria-label="Sections" id="tabs">
         <a href="#status" data-tab="status">Status</a>
         <a href="#updates" data-tab="updates">Updates</a>
+        <a href="#sense" data-tab="sense">Sense</a>
         <a href="#intune" data-tab="intune">Intune</a>
         <a href="#intel" data-tab="intel">Intel</a>
       </nav>
@@ -53,7 +55,7 @@
   </main>
   <footer class="wrap foot">
     <p>Times are shown in UTC, then US Central (CST or CDT). Data refreshes hourly, and every 15 minutes in Patch Tuesday week, by a scheduled GitHub Action. Not affiliated with Microsoft.</p>
-    <p><a href="data/pulse.json">Raw data</a> · <a id="repo-link" href="https://github.com/jahs1151/defender-update-tracker">Source on GitHub</a> · <a id="run-link" href="https://github.com/jahs1151/defender-update-tracker/actions/workflows/refresh-and-deploy.yml">Refresh runs</a></p>
+    <p><a href="data/pulse.json">Raw data</a> · <a href="feed.xml">RSS feed of changes</a> · <a id="repo-link" href="https://github.com/jahs1151/defender-update-tracker">Source on GitHub</a> · <a id="run-link" href="https://github.com/jahs1151/defender-update-tracker/actions/workflows/refresh-and-deploy.yml">Refresh runs</a></p>
   </footer>
 </body>
 </html>

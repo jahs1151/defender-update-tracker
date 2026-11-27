@@ -4,6 +4,12 @@ const pick = (pulse) => {
   const s = pulse?.sections || {};
   const d = (k) => s[k]?.data || {};
   const packages = Array.isArray(s.packages?.data) ? s.packages.data : [];
+  const sense = d("sense");
+  const threats = s.threats?.data;
+  // Fields added in schema 4 are undefined in an older snapshot, and diffPulse skips them, so
+  // the first run after an upgrade does not report every Sense release and alert as new.
+  const issues = {};
+  for (const i of sense.issues || []) issues[`Sense issue: ${i.title}`] = i.stage || "Tracked";
   return {
     "Security intelligence": d("intelligence").securityIntelligence || "",
     Engine: d("intelligence").engine || "",
@@ -19,8 +25,16 @@ const pick = (pulse) => {
     "Open known issues": (d("knownIssues").rows || []).filter((r) => !/resolved/i.test(r.status)).map((r) => r.title),
     "Latest headline": d("news").items?.[0]?.title || "",
     "Latest Intune week": d("intune").weeks?.[0]?.week || "",
+    "Sense releases": sense.releases ? sense.releases.map((r) => r.version) : undefined,
+    "KB5005292 known issues": sense.kb?.ok ? sense.kb.knownIssues || "None listed" : undefined,
+    ...issues,
+    "Detection alerts": threats?.alerts ? threats.alerts.map((a) => `${a.detection} in ${a.version} (named in ${a.story.source}: ${a.threat})`) : undefined,
+    "Vendor threats with no Defender entry": threats?.coverage ? [...new Set(threats.coverage.filter((r) => r.coverage === "No").map((r) => `${r.threat} (${r.vendor})`))] : undefined,
   };
 };
+
+/** Lists where only new entries are news: an alert or vendor post ageing out is not a change worth sending. */
+const ADD_ONLY = new Set(["Sense releases", "Detection alerts", "Vendor threats with no Defender entry"]);
 
 export function contentKey(pulse) {
   return JSON.stringify(pick(pulse));
@@ -31,11 +45,12 @@ export function diffPulse(before, after) {
   const b = pick(after);
   const out = [];
   for (const key of Object.keys(b)) {
+    if (b[key] === undefined || a[key] === undefined) continue;
     if (Array.isArray(b[key])) {
       const added = b[key].filter((x) => !(a[key] || []).includes(x));
       const removed = (a[key] || []).filter((x) => !b[key].includes(x));
       for (const t of added) out.push({ field: key, kind: "added", to: t });
-      for (const t of removed) out.push({ field: key, kind: "removed", from: t });
+      if (!ADD_ONLY.has(key)) for (const t of removed) out.push({ field: key, kind: "removed", from: t });
     } else if (a[key] !== b[key] && b[key]) {
       out.push({ field: key, kind: a[key] ? "changed" : "added", from: a[key] || "", to: b[key] });
     }

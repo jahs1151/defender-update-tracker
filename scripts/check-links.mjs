@@ -26,6 +26,7 @@ for (const f of features.features) add(f.docs, `feature ${f.id}`);
 for (const r of curated.references) add(r.url, `reference ${r.title}`);
 for (const i of curated.incidents) if (!/^CVE-/.test(i.id)) add(i.url, `incident ${i.id}`);
 add(curated.senseFallback?.url, "sense fallback");
+for (const i of curated.senseIssues || []) for (const l of i.links || []) add(l.url, `sense issue ${i.id}`);
 
 async function check(url) {
   try {
