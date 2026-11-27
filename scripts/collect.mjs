@@ -316,7 +316,7 @@ async function deriveThreats({ builds, news, vendors, kev, detIndex, previous: p
     const indexed = Object.keys(detIndex).length;
     return {
       ok: true,
-      detail: `${alerts.length} detection alert${alerts.length === 1 ? "" : "s"} · ${coverage.length} threats: ${count("Yes")} Yes, ${count("Unclear")} Unclear, ${count("Lookup failed, retrying")} lookup failed · ${kevCoverage.length} KEV CVEs in 14 days · ${indexed} changelog versions indexed (30 days)`,
+      detail: `${alerts.length} detection alert${alerts.length === 1 ? "" : "s"} · ${coverage.length} threats: ${count("Yes")} Yes, ${count("Unclear")} Unclear, ${count("Lookup failed, retrying")} lookup failed, ${count("Queued for lookup")} queued · ${kevCoverage.length} KEV CVEs in 14 days · ${indexed} changelog versions indexed (30 days)`,
       data: { alerts, coverage, kev: kevCoverage, lookups, familyCount: Object.keys(families).length, indexedVersions: indexed, indexedNames: Object.values(detIndex).reduce((n, e) => n + e.names.length, 0) },
     };
   } catch (error) {

@@ -508,7 +508,7 @@ const ENC_CACHE_HOURS = 24;
  * cached: earlier answers; an answer is kept 24 hours, a failure is retried on the next run.
  * Returns { [compact(name)]: { answered, names, queries, checkedAt, error, v: 3 } }.
  */
-export async function lookupEncyclopedia(names, cached = {}, { max = 6, now = new Date(), get = getText, pause = 400 } = {}) {
+export async function lookupEncyclopedia(names, cached = {}, { max = 12, now = new Date(), get = getText, pause = 400 } = {}) {
   const out = {};
   const fresh = new Date(now.getTime() - ENC_CACHE_HOURS * 3600000).toISOString();
   for (const [k, v] of Object.entries(cached || {})) if (v.v === 3) out[k] = v;

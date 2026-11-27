@@ -923,14 +923,14 @@ function renderDetectionAlerts() {
   </div>`;
 }
 
-const COVER_TONE = { Yes: "ok", Unclear: "warn", "Lookup failed, retrying": "bad", No: "bad" };
+const COVER_TONE = { Yes: "ok", Unclear: "warn", "Lookup failed, retrying": "bad", "Queued for lookup": "", No: "bad" };
 
 function renderVendorCoverage() {
   const t = data("threats");
   if (!t) return sectionError("threats", "The threat coverage");
   const rows = t.coverage || [];
   const feeds = [...(data("vendors")?.feeds || []), ...(data("news")?.feeds || []).filter((f) => !/^M(icrosoft|SRC)/.test(f.source))];
-  const kinds = ["Yes", "Unclear", "Lookup failed, retrying"];
+  const kinds = ["Yes", "Unclear", "Lookup failed, retrying", "Queued for lookup"];
   const counts = kinds.map((c) => `${pill(c, COVER_TONE[c])} ${rows.filter((r) => r.coverage === c).length}`).join(" ");
   return `<div class="card">
     <p>Malware and campaign names from the last 30 days of vendor research (CrowdStrike, SentinelOne, Sophos, Bitdefender, ESET, Trend Micro, Unit 42, eSentire, AhnLab ASEC, watchTowr, Check Point Research, Symantec) and the last 14 days of headlines (The Hacker News, BleepingComputer, SecurityWeek), checked against Defender.</p>
@@ -938,6 +938,7 @@ function renderVendorCoverage() {
       <li><strong>Yes</strong>: a Defender detection for this family is in the last 30 days of the detection changelog (every version, not only the latest builds) or in Microsoft's malware encyclopedia. Matching ignores case and accepts a name that begins the other ("Remus" and "RemusStealer").</li>
       <li><strong>Unclear</strong>: the encyclopedia answered and has no entry for the family, and the changelog has none. Defender may still detect it under another name.</li>
       <li><strong>Lookup failed, retrying</strong>: the encyclopedia did not answer. Each refresh tries again; answers are kept for 24 hours.</li>
+      <li><strong>Queued for lookup</strong>: not asked yet. Each refresh asks the encyclopedia about 12 names.</li>
     </ul>
     <p>${counts}</p>
     ${rows.length ? `<div class="table-wrap"><table><thead><tr><th>Threat</th><th>Reported by</th><th>Defender</th><th>Why</th><th>Last checked</th></tr></thead><tbody>${rows
