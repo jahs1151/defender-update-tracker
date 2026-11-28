@@ -1,5 +1,11 @@
 [
  {
+  "at": "2026-11-28T15:39:26.776Z",
+  "lines": [
+   "Threats with no Defender detection found: new DesktopOK (BleepingComputer)"
+  ]
+ },
+ {
   "at": "2026-11-28T13:22:12.898Z",
   "lines": [
    "Security intelligence: 1.463.509.0 → 1.463.510.0",
