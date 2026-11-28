@@ -505,6 +505,8 @@
 ["Trojan:Win32/Hematite!pz","s","2023-11-30"],
 ["Trojan:Win32/Hematite!rfn","s","2020-07-19"],
 ["Trojan:Win32/Hematite.DHA!MTB","s","2020-04-24"],
+["Trojan:Win64/HashvaultMiner.A","s","2026-11-28"],
+["Trojan:Win64/HashvaultMiner.A!MTB","s","2026-11-28"],
 ["TrojanDownloader:Win32/Harnig","s","2009-07-16"],
 ["TrojanDownloader:Win32/Harnig!pz","s","2023-11-01"],
 ["TrojanDownloader:Win32/Harnig!rfn","s","2015-04-23"],
