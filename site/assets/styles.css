@@ -144,7 +144,9 @@ details > summary { cursor: pointer; color: var(--accent); font-size: 13.5px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .top-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .intro { margin: 14px 0 10px; color: var(--muted); max-width: 70em; }
-.search { margin: 0 0 6px; }
+.search { margin: 0 0 6px; display: flex; gap: 8px; align-items: stretch; }
+.search input { flex: 1 1 auto; min-width: 0; }
+.det-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
 .search input, .field input[type="search"] { width: 100%; font: inherit; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); }
 #search-out .card { margin-bottom: 12px; }
 .seg { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }

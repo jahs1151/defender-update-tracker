@@ -49,7 +49,8 @@
     <p class="intro" id="intro">This page tracks Microsoft Defender Antivirus and Defender for Endpoint on Windows 11 and Windows Server 2019, 2022 and 2025: the current security intelligence, engine, platform and sensor versions, Patch Tuesday and exploited vulnerabilities, Windows known issues, Intune changes, and security news, all for Windows (Linux, macOS, Android and iOS detections and files are left out). It reads only public Microsoft and security pages, refreshed by a scheduled job.</p>
     <form class="search" id="search-form" role="search" autocomplete="off">
       <label for="search-q" class="sr-only">Search</label>
-      <input type="search" id="search-q" placeholder="Search CVE, KB, QID, feature or news" spellcheck="false">
+      <input type="search" id="search-q" placeholder="Search CVE, KB, QID, detection name, feature or news" inputmode="search" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button type="submit" class="btn">Search</button>
     </form>
     <div id="search-out" aria-live="polite"></div>
     <noscript><p class="card">This page needs JavaScript to show the data. The raw data is at <a href="data/pulse.json">data/pulse.json</a>.</p></noscript>

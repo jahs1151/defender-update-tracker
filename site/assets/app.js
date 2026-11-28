@@ -1,4 +1,5 @@
 import { stamp, ago, cmpVersion, monthsBetween, versionMonthLabel } from "./time.js";
+import { findDetections, indexWindow, firstListing, notFoundText, detectionHandlers } from "./detect.js";
 
 const OS = { win11: "Win 11", srv2019: "Server 2019", srv2022: "Server 2022", srv2025: "Server 2025" };
 const ALL_OS = Object.keys(OS);
@@ -637,7 +638,7 @@ function renderChangelog() {
     ${cur.status === "ok" ? `<p class="meta">${cur.rows.filter((r) => isWin(r.name)).length} Windows detection names. Windows only: Linux, macOS, Android and iOS detections are not tracked here. The OS chips at the top do not change this list.</p>` : ""}
     <div class="controls">
       ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((x, i) => `<option value="${esc(x.version)}" ${i === idx ? "selected" : ""}>${esc(x.version)}${i === 0 ? " (latest)" : ""}${x.releasedAt ? ` · ${esc(stamp(x.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
-      <label class="field" style="flex:1 1 220px">Threat name <input type="search" id="threat-q" value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
+      <label class="field" style="flex:1 1 220px">Filter this build by name <input type="search" id="threat-q" enterkeyhint="search" autocapitalize="off" autocorrect="off"  value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
     </div>
     ${delta}
     <div class="controls" style="margin:6px 0">
@@ -1017,9 +1018,97 @@ function renderIntel() {
   ].join("");
 }
 
+// ---------- Detection lookup: which security intelligence build first listed a name ----------
+const DET_HINT = `<p class="meta">Type part of a detection name, for example <code>Wacatac.B!ml</code>, <code>Trojan:Win32/Wacatac</code> or just <code>Spoofer</code>, then press Search (or Enter, Go on your phone keyboard). Case, spaces and the ! ending do not matter.</p>`;
+
+function renderDetectionLookup() {
+  return `<div class="card">
+    <form class="det-form" id="det-form" role="search" autocomplete="off" action="#">
+      <label class="field" style="flex:1 1 240px">Detection name
+        <input type="search" id="det-q" name="q" value="${esc(state.detQ || "")}" placeholder="e.g. Trojan:VBA/Obfuse!AMTB" inputmode="search" enterkeyhint="search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></label>
+      <button type="submit" class="btn">Search</button>
+    </form>
+    <div id="det-out" aria-live="polite" style="margin-top:10px">${state.detHtml || DET_HINT}</div>
+    <p class="meta">Looks through every Windows detection in Microsoft's security intelligence changelog for the last 30 days (about ${Object.keys(state.detIndex?.versions || {}).length || "200"} builds). Linux, macOS, Android and iOS names are not tracked.</p>
+  </div>`;
+}
+
+async function ensureDetIndex() {
+  if (state.detIndex) return state.detIndex;
+  state.detIndex = await getJson("data/detections.json", 20000, 1);
+  return state.detIndex;
+}
+
+/** added / updated for the builds whose own file is available (the newest 10). */
+async function changesFor(versions) {
+  const out = {};
+  const hist = changelogHistory();
+  for (const v of versions) {
+    const h = hist.find((x) => x.version === v);
+    if (!h) continue;
+    let rows = state.builds[v]?.status === "ok" ? state.builds[v].rows : Array.isArray(h.rows) ? h.rows : null;
+    if (!rows && h.file) {
+      try {
+        rows = (await getJson(h.file, 10000, 0)).rows || [];
+        state.builds[v] = { status: "ok", rows };
+      } catch {
+        rows = null;
+      }
+    }
+    if (rows) out[v] = rows;
+  }
+  return out;
+}
+
+async function runDetectionLookup(query) {
+  state.detQ = String(query || "");
+  const box = () => document.getElementById("det-out");
+  const q = state.detQ.trim();
+  if (!q) {
+    state.detHtml = "";
+    if (box()) box().innerHTML = DET_HINT;
+    return;
+  }
+  if (box()) box().innerHTML = `<p class="meta">Searching…</p>`;
+  let html;
+  try {
+    const index = await ensureDetIndex();
+    const versions = index.versions || {};
+    const res = findDetections(versions, q);
+    if (res.tooShort) html = `<p class="meta">Type at least 3 letters or digits of a detection name.</p>`;
+    else if (!res.total) html = `<div class="notice">${esc(notFoundText(q, indexWindow(versions)))}</div>`;
+    else {
+      const rowsBy = await changesFor([...new Set(res.matches.map((m) => m.first.version))]);
+      const win = indexWindow(versions);
+      html = `<p><strong>${res.total} ${res.total === 1 ? "detection" : "detections"}</strong> match "${esc(q)}"${res.total > res.matches.length ? `, showing the first ${res.matches.length}` : ""}. Data covers ${win.builds} builds, ${esc(win.from.slice(0, 10))} to ${esc(win.to.slice(0, 10))}.</p>
+        <ul class="list">${res.matches
+          .map((m) => {
+            const row = (rowsBy[m.first.version] || []).find((r) => r.name === m.name);
+            const fl = firstListing(m, row ? { [m.first.version]: row.change } : {});
+            const url = row?.url || `https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=${encodeURIComponent(m.name)}`;
+            const when = (b) => (b.releasedAt ? stamp(b.releasedAt) : "time not published");
+            const later = m.builds.slice(1);
+            return `<li><span class="row-title mono">${link(url, m.name)}</span>
+              <div>${esc(fl.label)} <strong class="mono">${esc(m.first.version)}</strong> · ${esc(when(m.first))}</div>
+              ${fl.note ? `<div class="meta">${esc(fl.note)}</div>` : ""}
+              <div class="meta">${later.length ? `Listed again in ${later.length} later ${later.length === 1 ? "build" : "builds"}, most recently <span class="mono">${esc(m.last.version)}</span> · ${esc(when(m.last))}.${later.length > 1 ? ` Others: ${later.slice(0, -1).slice(-5).map((b) => `<span class="mono">${esc(b.version)}</span>`).join(", ")}${later.length > 6 ? " and earlier ones" : ""}.` : ""}` : "Listed in this build only."}</div></li>`;
+          })
+          .join("")}</ul>`;
+    }
+  } catch (e) {
+    html = `<div class="notice bad">The detection index did not load (${esc(e?.message || e)}). <button type="button" class="btn small" data-action="retry-det">Retry</button></div>`;
+    state.detIndex = null;
+  }
+  state.detHtml = html;
+  if (box() && document.getElementById("det-q")?.value.trim() === q) box().innerHTML = html;
+}
+
+const detHandlers = detectionHandlers((q) => runDetectionLookup(q));
+
 // ---------- Detections tab (#threats) ----------
 function renderThreats() {
   return [
+    section("detection-lookup", "Find a detection", renderDetectionLookup()),
     section("changelog", "Detections in security intelligence", renderChangelog(), "changelog"),
     section("si-trend", "Recent security intelligence builds", renderTrend(), "changelog"),
     section("detection-alerts", "Detection alerts: new detections for threats in the news", renderDetectionAlerts(), "threats"),
@@ -1127,10 +1216,16 @@ function renderSearch() {
     return new RegExp(/^\d+$/.test(w) ? `(^|[^0-9])${e}($|[^0-9])` : `(^|[^a-z0-9])${e}`, "i");
   });
   const hits = searchIndex().filter((x) => tests.every((t) => t.test(x.text)));
+  // Detection names: which build first listed them. The index loads on the first search.
+  let det = "";
+  if (state.detIndex) {
+    const d = findDetections(state.detIndex.versions || {}, q, { limit: 5 });
+    if (d.total) det = `<p style="margin-top:10px"><strong>${d.total} detection ${d.total === 1 ? "name" : "names"}</strong> <a class="meta" href="#detection-lookup" data-det="${esc(q)}">Open in Find a detection</a></p><ul class="list">${d.matches.map((m) => `<li><span class="mono">${esc(m.name)}</span> <span class="meta">first listed in ${esc(m.first.version)}${m.first.releasedAt ? ` · ${esc(stamp(m.first.releasedAt))}` : ""}</span></li>`).join("")}</ul>`;
+  } else if (q.length >= 3) ensureDetIndex().then(() => renderSearch()).catch(() => {});
   box.innerHTML = `<div class="card"><p><strong>${hits.length} ${hits.length === 1 ? "result" : "results"}</strong> for "${esc(q)}" across CVEs, KBs, QIDs, features and news.</p>${hits.length ? `<ul class="list">${hits
     .slice(0, 30)
     .map((x) => `<li>${pill(x.kind)} <span class="row-title">${link(x.url, x.title)}</span> <a class="meta" href="#${esc(x.where)}">Go to section</a></li>`)
-    .join("")}</ul>` : ""}</div>`;
+    .join("")}</ul>` : ""}${det}</div>`;
 }
 
 // ---------- render + events ----------
@@ -1159,7 +1254,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { "out-of-band": "updates", "si-trend": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", compare: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "threats", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", "kev-coverage": "threats", news: "intel", reddit: "intel" }[hash];
+  const owner = { "out-of-band": "updates", "si-trend": "threats", "detection-lookup": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", compare: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "threats", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", "kev-coverage": "threats", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
@@ -1256,8 +1351,30 @@ document.addEventListener("click", async (e) => {
   }
 });
 
+document.addEventListener("keydown", (e) => {
+  if (detHandlers.onKeydown(e)) return;
+  // Enter in the build filter closes the phone keyboard; the list already filtered as you typed.
+  if (e.target.id === "threat-q" && e.key === "Enter") {
+    e.preventDefault();
+    e.target.blur();
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const a = e.target.closest?.("[data-det]");
+  if (a) {
+    state.detQ = a.dataset.det;
+    state.detHtml = "";
+    state.tab = "threats";
+    render();
+    runDetectionLookup(state.detQ);
+  }
+  if (e.target.closest?.('[data-action="retry-det"]')) runDetectionLookup(state.detQ);
+});
+
 document.addEventListener("input", (e) => {
   const t = e.target;
+  if (detHandlers.onInput(e)) return;
   if (t.id === "threat-q") {
     state.threatQ = t.value;
     const pos = t.selectionStart;
@@ -1294,6 +1411,7 @@ document.addEventListener("change", (e) => {
 });
 
 document.addEventListener("submit", (e) => {
+  if (detHandlers.onSubmit(e)) return;
   if (e.target.id === "search-form") {
     e.preventDefault();
     return;
