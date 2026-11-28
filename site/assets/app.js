@@ -788,7 +788,7 @@ function renderHashes() {
         <td class="meta">${esc(stamp(h.vtResult?.checkedAt || h.checkedAt || sec("hashes").lastOkAt || sec("hashes").checkedAt))}</td>
         <td>${link(h.vt, "VirusTotal")} · ${link(h.otx, "OTX")}</td></tr>`)
       .join("")}</tbody></table></div>` : "<p>No Windows hashes in the feed yet.</p>") : sectionError("hashes", "The public hash feed")}
-    <p class="meta" style="margin-top:8px">Third-party, unvetted data. VirusTotal is asked at most 4 times a minute and 500 times a day, and each answer is kept for 24 hours. The latest 20 hashes are kept.</p>
+    <p class="meta" style="margin-top:8px">Third-party, unvetted data. VirusTotal is asked at most 4 times a minute and 500 times a day, and each answer is kept for 24 hours. The latest 20 Windows hashes are kept. A file for Android, Linux or macOS is left out: by its TweetFeed tags, or once VirusTotal shows what it is (a ZIP is judged by its contents).${d?.excluded?.length ? ` ${d.excluded.length} left out so far.` : ""}</p>
     <form id="hash-form" class="controls" style="margin-top:10px">
       <label class="field" style="flex:1 1 260px">Look up a hash <input type="text" id="hash-q" placeholder="MD5, SHA-1 or SHA-256" autocomplete="off" spellcheck="false"></label>
       <button type="submit" class="btn" style="align-self:end">Check Microsoft detection</button>

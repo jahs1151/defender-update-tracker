@@ -4,6 +4,26 @@
 
 export const VT_LIMITS = { perMinute: 4, perDay: 500, cacheHours: 24 };
 
+const NON_WIN = /\b(?:android|androidos|andr|apk|dex|linux|elf|mirai|gafgyt|macos|osx|mach-?o|ios|unix)\b/i;
+const WIN = /\b(?:win(?:32|64|dows)?|msil|lnk|pe32|pe64|peexe|dll|vbs|vba|o97m|powershell|ps1|bat|cmd|js|jscript|html|msi|w97m|x97m)\b/i;
+
+/**
+ * Which platform a VirusTotal file targets: "windows", "other" or "unknown". A ZIP or RAR is judged by
+ * what is inside (type tags such as "android" or "apk", and the names engines give it), so a ZIP holding
+ * a Windows shortcut stays Windows while a ZIP holding an Android dropper does not.
+ */
+export function vtPlatform(attrs = {}) {
+  const tags = [attrs.type_tag, ...(attrs.tags || []), attrs.type_description].filter(Boolean).join(" ").replace(/[-_]/g, " ");
+  if (/\b(?:peexe|pedll|lnk|windows|win32|win64|msi)\b/i.test(tags)) return "windows";
+  if (/\b(?:android|apk|dex|elf|linux|macho|mach o|macos|ios|ipa|shell)\b/i.test(tags)) return "other";
+  const names = Object.values(attrs.last_analysis_results || {}).map((r) => r?.result || "").filter(Boolean).map((n) => n.replace(/[\/:._!-]/g, " "));
+  const other = names.filter((n) => NON_WIN.test(n) && !WIN.test(n)).length;
+  const win = names.filter((n) => WIN.test(n)).length;
+  if (other >= 2 && other > win) return "other";
+  if (win > 0) return "windows";
+  return "unknown";
+}
+
 /** One /api/v3/files/{hash} answer -> what the page needs. */
 export function parseVtFile(json) {
   const a = json?.data?.attributes || {};
@@ -24,6 +44,7 @@ export function parseVtFile(json) {
     gap: others.length > 0 && !microsoft,
     analysedAt: a.last_analysis_date ? new Date(a.last_analysis_date * 1000).toISOString() : "",
     fileType: a.type_description || "",
+    platform: vtPlatform(a),
   };
 }
 
@@ -47,7 +68,8 @@ export async function vtLookup(rows, { key, budget = {}, now = new Date(), maxPe
   const day = now.toISOString().slice(0, 10);
   const b = { day, used: budget.day === day ? Number(budget.used || 0) : 0 };
   const fresh = new Date(now.getTime() - VT_LIMITS.cacheHours * 3600000).toISOString();
-  const due = rows.filter((r) => !r.vtResult?.checkedAt || r.vtResult.checkedAt < fresh || r.vtResult.error);
+  // Answers saved before the platform check (no "platform" field) are asked again once.
+  const due = rows.filter((r) => !r.vtResult?.checkedAt || r.vtResult.checkedAt < fresh || r.vtResult.error || (r.vtResult.found && !r.vtResult.platform));
   const out = new Map(rows.map((r) => [r.hash, r]));
   let status = "ok";
   let reason = "";
