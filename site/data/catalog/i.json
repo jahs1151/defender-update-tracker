@@ -251,6 +251,11 @@
 ["Trojan:JS/IcedID.SA","s","2022-08-03"],
 ["Trojan:JS/IcedID.SMKL!MTB","s","2023-09-13"],
 ["Trojan:JS/IcedID.SSS!MTB","s","2023-06-28"],
+["Trojan:JS/InfoStealer!ams","s","2022-09-14"],
+["Trojan:JS/InfoStealer!AMTB","s","2026-06-01"],
+["Trojan:JS/InfoStealer!MSR","s","2022-10-10"],
+["Trojan:JS/InfoStealer.A!AMTB","s","2026-01-28"],
+["Trojan:JS/InfoStealer.KK!MTB","s","2026-11-28"],
 ["Trojan:JS/Inject!AMTB","s","2025-07-21"],
 ["Trojan:JS/Injector.GPA!MTB","s","2024-02-27"],
 ["Trojan:JS/Injector.PGF!MTB","s","2026-01-07"],
@@ -1333,5 +1338,7 @@
 ["Trojan:Win64/InjectorCrypt.SO!rfn","s","2020-11-18"],
 ["Trojan:Win64/InjectorNetT.A!MTB","s","2025-05-20"],
 ["Trojan:Win64/InjectorX!MTB","s","2023-08-17"],
-["Trojan:Win64/InjectorX.CS!MTB","s","2023-08-17"]
+["Trojan:Win64/InjectorX.CS!MTB","s","2023-08-17"],
+["VirTool:Python/Imgepesz!rfn","s","2025-05-20"],
+["VirTool:Python/Imgepesz.A!MTB","s","2023-06-13"]
 ]}
