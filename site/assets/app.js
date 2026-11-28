@@ -479,7 +479,6 @@ function renderIntune() {
       <li><strong>Microsoft Defender Antimalware minimum version</strong>: the lowest allowed Defender client version, for example 4.18.xxxx.x. The Status tab shows which platform versions are still within N-2.</li>
     </ul>
     <p><strong>Require BitLocker</strong> is read through Device Health Attestation, which is measured at boot. A device that finishes encrypting only reports compliant after its next restart. After a BIOS or firmware update, BitLocker can be suspended until it is resumed, which shows as non-compliant. That is not an antivirus failure.</p>
-    <p>This site cannot see your tenant, policies or devices.</p>
     ${source("https://learn.microsoft.com/en-us/intune/intune-service/protect/compliance-policy-create-windows", "Windows compliance settings in Intune")}
   </div>`;
 
