@@ -1,5 +1,11 @@
 [
  {
+  "at": "2026-11-28T01:37:21.661Z",
+  "lines": [
+   "Detection alerts: new Trojan:Python/PolinRider.A!HN in 1.463.503.0 (named in The Hacker News: PolinRider)"
+  ]
+ },
+ {
   "at": "2026-11-28T00:08:27.827Z",
   "lines": [
    "Security intelligence: 1.463.500.0 → 1.463.503.0",

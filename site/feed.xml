@@ -6,7 +6,14 @@
   <atom:link href="https://jahs1151.github.io/defender-update-tracker/feed.xml" rel="self" type="application/rss+xml"/>
   <description>New Defender security intelligence, engine, platform and Sense builds, Sense issue stages, detection alerts, Patch Tuesday and known-issue changes. Public sources only.</description>
   <language>en-us</language>
-  <lastBuildDate>Sat, 28 Nov 2026 00:08:27 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 28 Nov 2026 01:37:21 GMT</lastBuildDate>
+  <item>
+    <title>Detection alerts: new Trojan:Python/PolinRider.A!HN in 1.463.503.0 (named in The Hacker News: PolinRider)</title>
+    <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
+    <guid isPermaLink="false">defender-update-tracker-2026-11-28T01:37:21.661Z</guid>
+    <pubDate>Sat, 28 Nov 2026 01:37:21 GMT</pubDate>
+    <description>&lt;p&gt;Detected 28 Nov 2026, 01:37 UTC · 27 Nov 2026, 19:37 CST&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Detection alerts: new Trojan:Python/PolinRider.A!HN in 1.463.503.0 (named in The Hacker News: PolinRider)&lt;/li&gt;&lt;/ul&gt;</description>
+  </item>
   <item>
     <title>Security intelligence: 1.463.500.0 → 1.463.503.0 (+1 more)</title>
     <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
