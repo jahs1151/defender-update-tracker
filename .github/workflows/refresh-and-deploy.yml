@@ -62,15 +62,28 @@ jobs:
           VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
         run: node scripts/collect.mjs
 
-      - name: Commit data when content or lookup caches changed
-        if: steps.collect.outputs.changed == 'true' || steps.collect.outputs.state == 'true'
+      # Microsoft's threat catalog, saved as static shards for the "Find a detection" box (the browser cannot call
+      # Microsoft's search directly). Each run walks a few more minutes until the catalog is complete, then only
+      # looks up new changelog names, and repeats the whole walk every 30 days. A failure here never stops the refresh.
+      - name: Threat catalog index
+        if: steps.gate.outputs.collect == 'true'
+        continue-on-error: true
+        run: node scripts/catalog.mjs --minutes 5 --families
+
+      - name: Commit data when content, lookup caches or the catalog changed
+        if: steps.gate.outputs.collect == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site/data/pulse.json site/data/changelog site/data/families.json site/data/detections.json site/data/changes.json site/feed.xml
+          # pulse.json carries a fresh timestamp every run, so it is committed only when content or lookup caches changed.
+          if [ "${{ steps.collect.outputs.changed }}" = "true" ] || [ "${{ steps.collect.outputs.state }}" = "true" ]; then
+            git add -A site/data/pulse.json site/data/changelog site/data/families.json site/data/detections.json site/data/changes.json site/feed.xml
+          fi
+          git add -A site/data/catalog
+          if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
           git commit -m "Data refresh $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push origin HEAD:main && break
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && break
             sleep $((i * 5))
           done
 

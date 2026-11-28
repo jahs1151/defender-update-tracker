@@ -1,4 +1,5 @@
 import { stamp, ago, cmpVersion, monthsBetween, versionMonthLabel } from "./time.js";
+import { searchCatalog, shardForQuery, catalogSearchUrl, entryUrl, longDate } from "./catalog.js";
 import { findDetections, indexWindow, firstListing, notFoundText, detectionHandlers } from "./detect.js";
 
 const OS = { win11: "Win 11", srv2019: "Server 2019", srv2022: "Server 2022", srv2025: "Server 2025" };
@@ -1060,6 +1061,40 @@ async function changesFor(versions) {
   return out;
 }
 
+/** Microsoft's threat catalog, saved as data/catalog/<letter>.json. Only the shard a search needs is loaded. */
+async function loadCatalogShard(letter) {
+  state.catalog2 = state.catalog2 || { shards: {}, info: null };
+  if (!state.catalog2.shards[letter]) {
+    state.catalog2.shards[letter] = getJson(`data/catalog/${encodeURIComponent(letter)}.json`, 20000, 1).then((j) => j.rows || []).catch((e) => {
+      delete state.catalog2.shards[letter];
+      throw e;
+    });
+  }
+  if (!state.catalog2.info) state.catalog2.info = getJson("data/catalog/_state.json", 15000, 0).catch(() => ({}));
+  const [rows, info] = await Promise.all([state.catalog2.shards[letter], state.catalog2.info]);
+  (state.catRows = state.catRows || {})[letter] = rows;
+  return { rows, info };
+}
+
+function catalogBlock(q, res, info) {
+  const open = `<a href="${esc(catalogSearchUrl(q))}" target="_blank" rel="noopener" class="meta">Open this search on Microsoft's catalog ↗</a>`;
+  const building = info?.completedAt ? "" : `<p class="meta">The catalog copy on this site is still being filled in${info?.names ? ` (${info.names.toLocaleString("en-US")} Windows names so far)` : ""}, so a name may be missing here. Use the link to ask Microsoft directly.</p>`;
+  const asOf = info?.updatedAt ? ` Copy saved ${esc(info.updatedAt.slice(0, 10))}.` : "";
+  if (!res.total) return `<h3>Microsoft threat catalog</h3><p class="meta">No Windows name matching "${esc(q)}" in the catalog copy.${asOf}</p>${building}<p>${open}</p>`;
+  return `<h3>Microsoft threat catalog</h3><p><strong>${res.total} Windows ${res.total === 1 ? "name" : "names"}</strong>${res.total > res.rows.length ? `, showing the first ${res.rows.length}` : ""}. These are Microsoft's published entries, with the date each was last updated, whether or not they appeared in a recent changelog.${asOf}</p>
+    <ul class="list">${res.rows.map((r) => `<li><span class="row-title mono">${link(entryUrl(r.name), r.name)}</span> ${r.severity ? pill(r.severity, SEV_TONE[r.severity] || "") : ""} <span class="meta">${r.updated ? `Updated ${esc(longDate(r.updated))}` : "Microsoft threat catalog"}</span></li>`).join("")}</ul>${building}<p>${open}</p>`;
+}
+
+async function catalogHtml(q) {
+  if (q.replace(/[^a-z0-9]/gi, "").length < 3) return "";
+  try {
+    const { rows, info } = await loadCatalogShard(shardForQuery(q));
+    return catalogBlock(q, searchCatalog(rows, q), info);
+  } catch {
+    return `<h3>Microsoft threat catalog</h3><p class="meta">The catalog copy did not load. <a href="${esc(catalogSearchUrl(q))}" target="_blank" rel="noopener">Open this search on Microsoft's catalog ↗</a></p>`;
+  }
+}
+
 async function runDetectionLookup(query) {
   state.detQ = String(query || "");
   const box = () => document.getElementById("det-out");
@@ -1076,11 +1111,11 @@ async function runDetectionLookup(query) {
     const versions = index.versions || {};
     const res = findDetections(versions, q);
     if (res.tooShort) html = `<p class="meta">Type at least 3 letters or digits of a detection name.</p>`;
-    else if (!res.total) html = `<div class="notice">${esc(notFoundText(q, indexWindow(versions)))}</div>`;
+    else if (!res.total) html = `<h3>Saved changelogs</h3><div class="notice">${esc(notFoundText(q, indexWindow(versions)))} The changelog pages list additions and updates, not the whole catalog: see the catalog below.</div>`;
     else {
       const rowsBy = await changesFor([...new Set(res.matches.map((m) => m.first.version))]);
       const win = indexWindow(versions);
-      html = `<p><strong>${res.total} ${res.total === 1 ? "detection" : "detections"}</strong> match "${esc(q)}"${res.total > res.matches.length ? `, showing the first ${res.matches.length}` : ""}. Data covers ${win.builds} builds, ${esc(win.from.slice(0, 10))} to ${esc(win.to.slice(0, 10))}.</p>
+      html = `<h3>Saved changelogs</h3><p><strong>${res.total} ${res.total === 1 ? "detection" : "detections"}</strong> match "${esc(q)}"${res.total > res.matches.length ? `, showing the first ${res.matches.length}` : ""}. Data covers ${win.builds} builds, ${esc(win.from.slice(0, 10))} to ${esc(win.to.slice(0, 10))}.</p>
         <ul class="list">${res.matches
           .map((m) => {
             const row = (rowsBy[m.first.version] || []).find((r) => r.name === m.name);
@@ -1099,6 +1134,8 @@ async function runDetectionLookup(query) {
     html = `<div class="notice bad">The detection index did not load (${esc(e?.message || e)}). <button type="button" class="btn small" data-action="retry-det">Retry</button></div>`;
     state.detIndex = null;
   }
+  // Then Microsoft's whole catalog (a saved copy; Microsoft's own search cannot be called from a browser on this site).
+  html = `${html}${await catalogHtml(q)}`;
   state.detHtml = html;
   if (box() && document.getElementById("det-q")?.value.trim() === q) box().innerHTML = html;
 }
@@ -1222,6 +1259,12 @@ function renderSearch() {
     const d = findDetections(state.detIndex.versions || {}, q, { limit: 5 });
     if (d.total) det = `<p style="margin-top:10px"><strong>${d.total} detection ${d.total === 1 ? "name" : "names"}</strong> <a class="meta" href="#detection-lookup" data-det="${esc(q)}">Open in Find a detection</a></p><ul class="list">${d.matches.map((m) => `<li><span class="mono">${esc(m.name)}</span> <span class="meta">first listed in ${esc(m.first.version)}${m.first.releasedAt ? ` · ${esc(stamp(m.first.releasedAt))}` : ""}</span></li>`).join("")}</ul>`;
   } else if (q.length >= 3) ensureDetIndex().then(() => renderSearch()).catch(() => {});
+  // Microsoft's catalog (saved copy): the shard for this search loads on demand.
+  const catRows = state.catRows?.[shardForQuery(q)];
+  if (catRows) {
+    const c = searchCatalog(catRows, q, { limit: 5 });
+    if (c.total) det += `<p style="margin-top:10px"><strong>${c.total} Microsoft catalog ${c.total === 1 ? "name" : "names"}</strong> <a class="meta" href="#detection-lookup" data-det="${esc(q)}">Open in Find a detection</a></p><ul class="list">${c.rows.map((r) => `<li><span class="mono">${link(entryUrl(r.name), r.name)}</span> <span class="meta">${esc([r.severity, r.updated ? `updated ${longDate(r.updated)}` : ""].filter(Boolean).join(" · "))}</span></li>`).join("")}</ul>`;
+  } else if (q.replace(/[^a-z0-9]/gi, "").length >= 3) loadCatalogShard(shardForQuery(q)).then(() => renderSearch()).catch(() => {});
   box.innerHTML = `<div class="card"><p><strong>${hits.length} ${hits.length === 1 ? "result" : "results"}</strong> for "${esc(q)}" across CVEs, KBs, QIDs, features and news.</p>${hits.length ? `<ul class="list">${hits
     .slice(0, 30)
     .map((x) => `<li>${pill(x.kind)} <span class="row-title">${link(x.url, x.title)}</span> <a class="meta" href="#${esc(x.where)}">Go to section</a></li>`)

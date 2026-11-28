@@ -85,3 +85,11 @@ The rules live in `scripts/lib/platform.mjs` and are covered by `test/platform.t
 - Dropped hashes are remembered in `excluded` so they are not picked again.
 
 **Other text**: Intune and roadmap items and vendor, news and community headlines whose title is about macOS, iOS, Android or Linux and not Windows are left out.
+
+## Microsoft threat catalog copy
+
+The "Find a detection" box also searches Microsoft's own threat catalog (the WDSI threat encyclopedia), because the changelog pages list only additions and updates. Microsoft's search page sends no CORS headers, so a browser on GitHub Pages cannot call it. Instead `scripts/catalog.mjs` reads it on the schedule and saves Windows-only names as static files:
+
+- `site/data/catalog/<letter>.json`: rows of `[name, severity, updated]`, sharded by the first letter of the family part of the name. The browser loads only the shard a search needs.
+- `site/data/catalog/_state.json`: progress. The search page lists 20 names a page and cuts a query off at about 500 names, so the catalog is walked as a prefix tree (a prefix that reports 480 or more names is split by the next character). Each scheduled run first reads the families named in the last 30 days of changelogs, then keeps walking for 5 minutes, 3 to 8 requests at a time with a pause between each, and stops at the first sign of blocking. Until the walk is complete the page says so and links to the same search on Microsoft's catalog. A finished walk is repeated every 30 days.
+- Windows only: other platforms are never queried or stored.
