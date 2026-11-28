@@ -6,7 +6,14 @@
   <atom:link href="https://jahs1151.github.io/defender-update-tracker/feed.xml" rel="self" type="application/rss+xml"/>
   <description>New Defender security intelligence, engine, platform and Sense builds, Sense issue stages, detection alerts, Patch Tuesday and known-issue changes. Public sources only.</description>
   <language>en-us</language>
-  <lastBuildDate>Sat, 28 Nov 2026 15:39:26 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 28 Nov 2026 16:09:55 GMT</lastBuildDate>
+  <item>
+    <title>Security intelligence: 1.463.510.0 → 1.463.512.0 (+1 more)</title>
+    <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
+    <guid isPermaLink="false">defender-update-tracker-2026-11-28T16:09:55.857Z</guid>
+    <pubDate>Sat, 28 Nov 2026 16:09:55 GMT</pubDate>
+    <description>&lt;p&gt;Detected 28 Nov 2026, 16:09 UTC · 28 Nov 2026, 10:09 CST&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Security intelligence: 1.463.510.0 → 1.463.512.0&lt;/li&gt;&lt;li&gt;mpam-fe.exe: 1.463.510.0 → 1.463.512.0&lt;/li&gt;&lt;/ul&gt;</description>
+  </item>
   <item>
     <title>Threats with no Defender detection found: new DesktopOK (BleepingComputer)</title>
     <link>https://jahs1151.github.io/defender-update-tracker/#changes</link>
