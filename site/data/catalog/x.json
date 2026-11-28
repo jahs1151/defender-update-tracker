@@ -388,6 +388,8 @@
 ["Trojan:MSIL/XWormRAT.W!MTB","s","2024-04-23"],
 ["Trojan:MSIL/XWormRAT.X!MTB","s","2024-04-24"],
 ["Trojan:MSIL/XWormRAT.Z!MTB","s","2025-07-24"],
+["Trojan:MSIL/XWStealer!rfn","s","2025-07-09"],
+["Trojan:MSIL/XWStealer.DA!MTB","s","2023-07-21"],
 ["Trojan:PowerShell/XMRig!MSR","s","2025-12-15"],
 ["Trojan:PowerShell/XMRig.A!MTB","s","2025-09-30"],
 ["Trojan:PowerShell/Xworm!AMTB","s","2026-01-24"],

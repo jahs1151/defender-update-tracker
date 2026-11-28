@@ -369,6 +369,7 @@
 ["Trojan:MSIL/KeyLogger.SPQP!MTB","s","2022-12-26"],
 ["Trojan:MSIL/Keylogger.SPSE!MTB","s","2025-07-25"],
 ["Trojan:MSIL/KeyLogger.SPTS!MTB","s","2023-02-28"],
+["Trojan:MSIL/Keylogger.SR!MTB","s","2026-11-28"],
 ["Trojan:MSIL/KeyLogger.SSVP!MTB","s","2022-12-14"],
 ["Trojan:MSIL/KeyLogger.SVR!MTB","s","2022-11-24"],
 ["Trojan:MSIL/Keylogger.SWR!MTB","s","2025-05-20"],
@@ -544,5 +545,12 @@
 ["Trojan:Win64/KillAV.SK!MTB","s","2025-05-20"],
 ["Trojan:Win64/KillAV.SX!MTB","s","2026-06-25"],
 ["Trojan:Win64/KillAV.WD!MTB","s","2026-03-13"],
-["Trojan:Win64/KillAV.XX!MTB","s","2024-04-07"]
+["Trojan:Win64/KillAV.XX!MTB","s","2024-04-07"],
+["Trojan:Win64/Kryptik","s","2018-11-06"],
+["Trojan:Win64/Kryptik!AMTB","s","2025-08-06"],
+["Trojan:Win64/Kryptik!MSR","s","2020-04-18"],
+["Trojan:Win64/Kryptik!MTB","s","2021-03-25"],
+["Trojan:Win64/Kryptik.K!AMTB","s","2026-05-08"],
+["Trojan:Win64/Kryptik.MB!MTB","s","2021-12-14"],
+["Trojan:Win64/Kryptik.PGK!MTB","s","2025-05-20"]
 ]}

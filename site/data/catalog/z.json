@@ -1321,5 +1321,14 @@
 ["TrojanDownloader:Win32/Zusy.HNB!MTB","s","2025-07-25"],
 ["TrojanDownloader:Win32/Zusy.JJ!MTB","s","2024-02-14"],
 ["TrojanDownloader:Win32/Zusy.KK!MTB","s","2026-06-02"],
-["TrojanDownloader:Win32/Zusy.SIB!MTB","s","2022-04-29"]
+["TrojanDownloader:Win32/Zusy.SIB!MTB","s","2022-04-29"],
+["TrojanDownloader:Win64/Zusy!MTB","s","2023-12-11"],
+["TrojanDownloader:Win64/Zusy.AHB!MTB","s","2026-03-30"],
+["TrojanDownloader:Win64/Zusy.AUZ!MTB","s","2025-09-16"],
+["TrojanDownloader:Win64/Zusy.B!MTB","s","2026-11-28"],
+["TrojanDownloader:Win64/Zusy.C!MTB","s","2026-11-28"],
+["TrojanDownloader:Win64/Zusy.KK!MTB","s","2026-11-28"],
+["TrojanDownloader:Win64/Zusy.RPA!MTB","s","2025-07-25"],
+["TrojanDownloader:Win64/Zusy.RPB!MTB","s","2025-07-25"],
+["TrojanDownloader:Win64/Zusy.SXA!MTB","s","2026-11-28"]
 ]}
