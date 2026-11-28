@@ -1,5 +1,12 @@
 [
  {
+  "at": "2026-11-28T03:11:42.693Z",
+  "lines": [
+   "Security intelligence: 1.463.503.0 → 1.463.504.0",
+   "mpam-fe.exe: 1.463.503.0 → 1.463.504.0"
+  ]
+ },
+ {
   "at": "2026-11-28T01:37:21.661Z",
   "lines": [
    "Detection alerts: new Trojan:Python/PolinRider.A!HN in 1.463.503.0 (named in The Hacker News: PolinRider)"
