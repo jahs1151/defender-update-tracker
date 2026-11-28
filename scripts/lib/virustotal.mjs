@@ -4,8 +4,10 @@
 
 export const VT_LIMITS = { perMinute: 4, perDay: 500, cacheHours: 24 };
 
-const NON_WIN = /\b(?:android|androidos|andr|apk|dex|linux|elf|mirai|gafgyt|macos|osx|mach-?o|ios|unix)\b/i;
-const WIN = /\b(?:win(?:32|64|dows)?|msil|lnk|pe32|pe64|peexe|dll|vbs|vba|o97m|powershell|ps1|bat|cmd|js|jscript|html|msi|w97m|x97m)\b/i;
+import { NON_WINDOWS_WORDS, fileTypePlatform } from "./platform.mjs";
+
+const NON_WIN = NON_WINDOWS_WORDS;
+const WIN = /\b(?:win(?:32|64|dows)?|msil|lnk|pe32|pe64|peexe|dll|vbs|vba|o97m|powershell|ps1|bat|cmd|js|jscript|hta|html|msi|w97m|x97m)\b/i;
 
 /**
  * Which platform a VirusTotal file targets: "windows", "other" or "unknown". A ZIP or RAR is judged by
@@ -13,9 +15,14 @@ const WIN = /\b(?:win(?:32|64|dows)?|msil|lnk|pe32|pe64|peexe|dll|vbs|vba|o97m|p
  * a Windows shortcut stays Windows while a ZIP holding an Android dropper does not.
  */
 export function vtPlatform(attrs = {}) {
+  // The file type VirusTotal reports comes first: Android, ELF, Mach-O, iOS and shell scripts are out,
+  // PE files, MSI, LNK, Office documents and Windows scripts are in. Archives fall through to the checks below.
+  const byType = fileTypePlatform([attrs.type_description, attrs.type_tag].filter(Boolean).join(" "));
+  if (byType === "other") return "other";
+  if (byType === "windows") return "windows";
   const tags = [attrs.type_tag, ...(attrs.tags || []), attrs.type_description].filter(Boolean).join(" ").replace(/[-_]/g, " ");
   if (/\b(?:peexe|pedll|lnk|windows|win32|win64|msi)\b/i.test(tags)) return "windows";
-  if (/\b(?:android|apk|dex|elf|linux|macho|mach o|macos|ios|ipa|shell)\b/i.test(tags)) return "other";
+  if (/\b(?:android|apk|dex|elf|linux|macho|mach o|macos|ios|ipa|shell|bash)\b/i.test(tags)) return "other";
   const names = Object.values(attrs.last_analysis_results || {}).map((r) => r?.result || "").filter(Boolean).map((n) => n.replace(/[\/:._!-]/g, " "));
   const other = names.filter((n) => NON_WIN.test(n) && !WIN.test(n)).length;
   const win = names.filter((n) => WIN.test(n)).length;

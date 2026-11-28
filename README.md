@@ -1,6 +1,7 @@
 # Defender Update Tracker
 
-A static dashboard for Microsoft Defender on Windows 11 and Windows Server 2019, 2022 and 2025:
+A static dashboard for Microsoft Defender on Windows 11 and Windows Server 2019, 2022 and 2025. **Windows only**: detections, files, headlines and feature items for Linux, macOS, Android and iOS are left out (see "Windows-only filtering" below).
+
 
 - **Status**: current security intelligence, engine, platform and Sense (MsSense.exe) versions, the download packages, the monthly platform and engine releases with N-2 support, and a fleet compare box.
 - **Updates**: Patch Tuesday from the Security Update Guide, exploited vulnerabilities (CISA KEV plus a short hand-kept list), Windows release health known issues, Qualys QIDs for the current Patch Tuesday, and the Defender update channel settings.
@@ -65,3 +66,22 @@ npm run serve            # http://localhost:8080
 ## One-time setup
 
 In the repository settings, open **Pages** and set **Source** to **GitHub Actions**. After that, run **Actions → Refresh data and deploy → Run workflow** once, or wait for the next hourly run.
+
+## Windows-only filtering
+
+The rules live in `scripts/lib/platform.mjs` and are covered by `test/platform.test.mjs`.
+
+**Detection names** (`Type:Platform/Family`) are judged by the platform part.
+
+- Dropped: `Linux`, `MacOS`, `MacOS_X`, `OSX`, `Mac`, `AndroidOS`, `Android`, `iOS`, `iPhoneOS`, `iPadOS`, `Unix`, `FreeBSD`, `BSD`, `Solaris`, `AIX`, `SH`, `Bash`, `ELF`, `SymbOS`, and the Unix-side server scripts `PHP`, `Perl` and `Ruby`.
+- Kept: `Win32`, `Win64`, `WinNT`, `Win16`, `MSIL`, `VBS`, `VBA`, `JS`, `HTA`, `PowerShell`, `BAT`, `INF`, `LNK`, `ASP`, `O97M`, `X97M`, `W97M`, `HTML`, `Script`, `XML`, `Python`, `AutoIt`, `ALisp`, and the cross-platform formats `Java`, `PDF`, `SWF`, `NPM` and `PyPI`, which run on Windows too. A name with no platform part is kept.
+- Applied when each changelog page is read, so the per-build files, `detections.json`, `families.json`, alerts, coverage rows, "notable new detections" and the encyclopedia lookups never hold a non-Windows name. Data saved before the rule is cleaned on the next run. The browser repeats the check.
+
+**VirusTotal and public hashes** (no extra lookups are spent):
+
+- TweetFeed posts tagged `#android`, `#apk`, `#linux`, `#elf`, `#mirai`, `#macos` and similar are skipped before any lookup.
+- A saved file type (OTX or VirusTotal) that says Android, ELF, Mach-O, iOS or shell script is skipped before a VirusTotal lookup.
+- After a lookup, VirusTotal's file type decides first (kept: Win32 EXE, DLL, Windows Installer, Windows shortcut, scripts, Office documents, HTML; dropped: Android, ELF, Mach-O, iOS). Archives (ZIP, RAR, 7z, ISO) are judged by VirusTotal's tags and by what the engines call the file, so a ZIP holding a shortcut stays and a ZIP holding an Android dropper goes. An archive with no clear contents stays, because it cannot be shown to be non-Windows.
+- Dropped hashes are remembered in `excluded` so they are not picked again.
+
+**Other text**: Intune and roadmap items and vendor, news and community headlines whose title is about macOS, iOS, Android or Linux and not Windows are left out.

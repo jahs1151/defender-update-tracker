@@ -6,6 +6,9 @@
 //  - it must equal a Defender detection family exactly (letters and digits only, case-insensitive),
 //  - generic Defender families (Wacatac, Agent, Phish ...) and everyday words never count.
 // Anything else is "Unclear", never "Yes".
+//
+// Windows only: detection names for Linux, macOS, Android, iOS and Unix never enter an index (see platform.mjs).
+import { isWindowsDetection } from "./platform.mjs";
 
 /** Defender families that are heuristics or generic buckets, not a named threat. */
 const GENERIC_FAMILIES = new Set(
@@ -127,9 +130,15 @@ export function sameFamily(a, b) {
  * builds: [{ version, releasedAt, rows: [{ name, change }] }], oldest or newest first.
  */
 export function updateFamilyIndex(index = {}, builds = [], keepDays = 120, now = new Date()) {
-  const next = { ...index };
+  // Families and example names saved before the Windows-only rule are cleaned on every run.
+  const next = {};
+  for (const [k, v] of Object.entries(index)) {
+    const names = (v.names || []).filter(isWindowsDetection);
+    if (names.length) next[k] = { ...v, names };
+  }
   for (const b of builds) {
     for (const r of b.rows || []) {
+      if (!isWindowsDetection(r.name)) continue;
       const family = familyOf(r.name);
       if (!usableFamily(family)) continue;
       const key = compact(family);
@@ -166,7 +175,7 @@ export function detectionAlerts(builds = [], stories = [], { days = 14, now = ne
   const seen = new Set();
   for (const b of builds) {
     for (const r of b.rows || []) {
-      if (r.change !== "added") continue;
+      if (r.change !== "added" || !isWindowsDetection(r.name)) continue;
       const family = familyOf(r.name);
       if (!usableFamily(family)) continue;
       const hit = named.find((n) => sameFamily(n.name, family));
@@ -199,7 +208,7 @@ export function firstSeenByBuild(builds = [], index = {}, limit = 6) {
     const names = [];
     const seen = new Set();
     for (const r of b.rows || []) {
-      if (r.change !== "added" || /:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(r.name)) continue;
+      if (r.change !== "added" || !isWindowsDetection(r.name)) continue;
       const fam = familyOf(r.name);
       const key = compact(fam);
       if (!usableFamily(fam) || seen.has(key) || index[key]?.first !== b.version) continue;
@@ -218,10 +227,12 @@ export function firstSeenByBuild(builds = [], index = {}, limit = 6) {
  * { [version]: { releasedAt, names: [...] } }. Versions released more than keepDays ago are dropped.
  */
 export function updateDetectionIndex(index = {}, builds = [], keepDays = 30, now = new Date()) {
-  const next = { ...index };
+  // Versions saved before the Windows-only rule lose their non-Windows names here.
+  const next = {};
+  for (const [v, e] of Object.entries(index)) next[v] = { ...e, names: (e.names || []).filter(isWindowsDetection) };
   for (const b of builds) {
     if (!b?.version || !Array.isArray(b.rows)) continue;
-    next[b.version] = { releasedAt: b.releasedAt || next[b.version]?.releasedAt || "", names: [...new Set(b.rows.map((r) => r.name).filter(Boolean))] };
+    next[b.version] = { releasedAt: b.releasedAt || next[b.version]?.releasedAt || "", names: [...new Set(b.rows.map((r) => r.name).filter((n) => n && isWindowsDetection(n)))] };
   }
   const cutoff = new Date(now.getTime() - keepDays * 86400000).toISOString();
   for (const [v, e] of Object.entries(next)) if (e.releasedAt && e.releasedAt < cutoff) delete next[v];
@@ -274,7 +285,7 @@ export function parseEncyclopediaResults(html = "", threat = "") {
   const text = String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   const m = /(\d[\d,]*)\s+entries found/i.exec(text);
   const all = [...new Set(text.match(/\b[A-Z][A-Za-z]+:[A-Za-z0-9]+\/[A-Za-z0-9_.!-]{3,80}/g) || [])];
-  const names = all.filter((n) => (/^CVE-/i.test(threat) ? compact(n).includes(compact(threat)) : relatedFamily(threat, familyOf(n))));
+  const names = all.filter(isWindowsDetection).filter((n) => (/^CVE-/i.test(threat) ? compact(n).includes(compact(threat)) : relatedFamily(threat, familyOf(n))));
   return { answered: Boolean(m), count: m ? Number(m[1].replace(/,/g, "")) : 0, names: names.slice(0, 6) };
 }
 
@@ -302,9 +313,9 @@ export function coverageRows(items = [], detIndex = {}, lookups = {}, now = new 
         coverage = "Yes";
         detections = hits.slice(0, 4).map((h) => h.name);
         basis = `In Defender's detection changelog: ${hits[0].name} in security intelligence ${hits[0].version}${hits.length > 1 ? ` and ${hits.length - 1} more in the last 30 days` : ""}.`;
-      } else if (look?.names?.length) {
+      } else if (look?.names?.filter(isWindowsDetection).length) {
         coverage = "Yes";
-        detections = look.names.slice(0, 4);
+        detections = look.names.filter(isWindowsDetection).slice(0, 4);
         basis = "Named in Microsoft's malware encyclopedia.";
       } else if (look?.answered) {
         coverage = "Unclear";
@@ -327,7 +338,7 @@ export function kevRows(recent = [], detIndex = {}, lookups = {}, { days = 14, n
     .filter((v) => (v.dateAdded || "") >= since)
     .map((v) => {
       const hits = detectionsFor(detIndex, v.cve).map((h) => h.name);
-      const enc = lookups[compact(v.cve)]?.names || [];
+      const enc = (lookups[compact(v.cve)]?.names || []).filter(isWindowsDetection);
       const detections = [...new Set([...hits, ...enc])].slice(0, 4);
       return {
         cve: v.cve,

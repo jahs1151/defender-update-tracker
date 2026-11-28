@@ -12,6 +12,7 @@ import { parseUsClock, patchWindow } from "../site/assets/time.js";
 import { diffPulse, contentKey } from "./lib/diff.mjs";
 import { mergeSenseReleases, trackSenseIssues, senseSignal } from "./lib/sense.mjs";
 import { updateFamilyIndex, detectionAlerts, compact, firstSeenByBuild, updateDetectionIndex, coverageRows, kevRows, detectionsFor } from "./lib/threats.mjs";
+import { windowsRows, fileTypePlatform } from "./lib/platform.mjs";
 import { vtLookup, cleanKey, keyShape } from "./lib/virustotal.mjs";
 import * as Parse from "./lib/parsers.mjs";
 import { appendHistory, buildFeed } from "./lib/notify.mjs";
@@ -249,6 +250,7 @@ async function fillDetectionIndex(builds, changelog, zone, now) {
     try {
       read += 1;
       const p = Parse.parseChangelog(await S.getChangelogVersion(v));
+      p.rows = windowsRows(p.rows);
       const at = p.releasedRaw ? parseUsClock(p.releasedRaw, zone) : null;
       const releasedAt = at ? at.toISOString() : "";
       if (releasedAt && releasedAt < cutoff) {
@@ -272,18 +274,25 @@ async function addVirusTotal(hashes, prevData, now) {
   const prevByHash = new Map((prevData?.rows || []).map((r) => [r.hash, r.vtResult]));
   const rows = hashes.data.rows.map((r) => ({ ...r, vtResult: r.vtResult || prevByHash.get(r.hash) }));
   const key = cleanKey(process.env.VIRUSTOTAL_API_KEY || "");
-  const res = await vtLookup(rows, { key, budget: prevData?.vtBudget || {}, now });
+  // Rows whose saved file type already says Android, Linux, macOS or iOS are never sent to VirusTotal: that saves lookups.
+  const typed = (r) => fileTypePlatform(r.vtResult?.fileType || r.fileType) === "other";
+  const skipped = rows.filter(typed);
+  const res = await vtLookup(rows.filter((r) => !typed(r)), { key, budget: prevData?.vtBudget || {}, now });
+  res.rows = [...res.rows, ...skipped];
   const shape = key ? keyShape(key) : "";
   const vt = { no_key: "VirusTotal key not set", rejected: `VirusTotal rejected the key (${res.reason || "no reason given"}${shape ? `; ${shape}` : ""})`, limited: "VirusTotal limit reached; the rest are checked next run", ok: "" }[res.status.replace("-", "_")] || "";
-  const winRows = res.rows.filter((r) => r.vtResult?.platform !== "other");
+  // Windows only: a file is left out when VirusTotal's type or contents say Android, Linux, macOS or iOS, or when the
+  // saved file type (VirusTotal or OTX) already says so. Archives and unknown types stay until the contents are known.
+  const isOther = (r) => r.vtResult?.platform === "other" || fileTypePlatform(r.vtResult?.fileType || r.fileType) === "other";
+  const winRows = res.rows.filter((r) => !isOther(r));
   const analysed = winRows.filter((r) => r.vtResult?.found !== undefined).length;
   const gaps = winRows.filter((r) => r.vtResult?.gap).length;
-  // Files VirusTotal shows are for another platform leave the list and are remembered, so they are not picked again.
-  const other = res.rows.filter((r) => r.vtResult?.platform === "other");
-  const excluded = [...other.map((r) => ({ hash: r.hash, fileType: r.vtResult.fileType || "", at: now.toISOString() })), ...(prevData?.excluded || [])]
+  // Files shown to be for another platform leave the list and are remembered, so they are not picked again.
+  const other = res.rows.filter(isOther);
+  const excluded = [...other.map((r) => ({ hash: r.hash, fileType: r.vtResult?.fileType || r.fileType || "", at: now.toISOString() })), ...(prevData?.excluded || [])]
     .filter((e, i, a) => a.findIndex((x) => x.hash === e.hash) === i)
     .slice(0, 200);
-  const kept = res.rows.filter((r) => r.vtResult?.platform !== "other");
+  const kept = winRows;
   hashes.data = { ...hashes.data, rows: kept, excluded, vtStatus: res.status, vtBudget: res.budget, vtNote: vt };
   if (other.length) hashes.detail = `${hashes.detail} · ${other.length} non-Windows file${other.length === 1 ? "" : "s"} left out`;
   hashes.detail = `${hashes.detail} · VirusTotal: ${res.status === "no-key" ? vt : `${analysed} of ${winRows.length} analysed, ${gaps} that other engines detect and Microsoft does not${vt ? ` (${vt})` : ""}`}`;

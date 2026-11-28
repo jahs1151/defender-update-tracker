@@ -5,6 +5,7 @@ import { toIso, osTags, plain } from "./text.mjs";
 import { secondTuesday } from "../../site/assets/time.js";
 import { exeContents, wimPlatform } from "./packages.mjs";
 import { KB_URL, catalogOs, parseSenseKb } from "./sense.mjs";
+import { nonWindowsTitle, windowsRows, fileTypePlatform, taggedNonWindows } from "./platform.mjs";
 import { threatNamesIn, compact, parseEncyclopediaResults } from "./threats.mjs";
 
 export const URLS = {
@@ -109,7 +110,7 @@ export async function loadCommunity() {
     await new Promise((r) => setTimeout(r, 2500));
   }
   if (!packs.some((p) => p.ok)) return { ok: false, detail: packs.map((p) => `r/${p.sub}: ${p.error}`).join("; "), data: null };
-  const posts = packs.flatMap((p) => p.posts).sort((a, b) => (b.published || "").localeCompare(a.published || "")).slice(0, 30);
+  const posts = packs.flatMap((p) => p.posts).filter((p) => !nonWindowsTitle(p.title)).sort((a, b) => (b.published || "").localeCompare(a.published || "")).slice(0, 30);
   const failed = packs.filter((p) => !p.ok).map((p) => `r/${p.sub}`);
   return ok(`${posts.length} posts${failed.length ? ` (failed: ${failed.join(", ")})` : ""}`, { posts, subs: packs.map((p) => ({ sub: p.sub, ok: p.ok })) });
 }
@@ -151,7 +152,9 @@ export const getChangelogVersion = (v) => getText(`${URLS.changelog}?requestVers
 
 export async function loadChangelog() {
   try {
+    // Windows only: Linux, macOS, Android, iOS and Unix detections are dropped as each page is read.
     const parsed = P.parseChangelog(await getText(URLS.changelog));
+    parsed.rows = windowsRows(parsed.rows);
     if (!parsed.version) throw new Error("No version on the changelog page");
     // Earlier versions: the page takes ?requestVersion=. Keep the last 10 including the current one.
     const older = parsed.versions.filter((v) => v !== parsed.version).slice(0, 9);
@@ -159,13 +162,14 @@ export async function loadChangelog() {
     for (const v of older) {
       try {
         const p = P.parseChangelog(await getText(`${URLS.changelog}?requestVersion=${encodeURIComponent(v)}`, { retries: 1 }));
+        p.rows = windowsRows(p.rows);
         history.push({ version: p.version || v, releasedRaw: p.releasedRaw, rows: p.rows.slice(0, 120) });
       } catch {
         /* one missing version is fine */
       }
     }
     // The changelog clock is the same as the definitions clock; the collector converts it.
-    return ok(`${parsed.version} · ${parsed.rows.length} detections · ${history.length} versions kept`, {
+    return ok(`${parsed.version} · ${parsed.rows.length} Windows detections · ${history.length} versions kept`, {
       ...parsed,
       rows: parsed.rows.slice(0, 120),
       history,
@@ -404,7 +408,7 @@ export async function loadNews() {
   for (const item of packs.flatMap((p) => p.items)) {
     const names = threatNamesIn(item.title, item.summary);
     const key = item.url.replace(/[?#].*$/, "").replace(/\/$/, "");
-    if (!names.length || seenThreat.has(key) || item.source === "MSRC Security Update Guide") continue;
+    if (!names.length || seenThreat.has(key) || item.source === "MSRC Security Update Guide" || nonWindowsTitle(item.title)) continue;
     seenThreat.add(key);
     threatStories.push({ title: item.title, url: item.url, source: item.source, published: item.published, names });
   }
@@ -480,7 +484,7 @@ export async function loadVendorResearch(now = new Date()) {
   if (!packs.some((p) => p.ok)) return { ok: false, detail: packs.map((p) => `${p.source}: ${p.error}`).join("; "), data: null };
   const posts = packs
     .flatMap((p) => p.items)
-    .filter((i) => !i.published || i.published >= since)
+    .filter((i) => (!i.published || i.published >= since) && !nonWindowsTitle(i.title))
     .map((i) => ({ title: i.title, url: i.url, source: i.source, published: i.published, summary: i.summary.slice(0, 240), names: threatNamesIn(i.title, i.summary) }))
     .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
   const failed = packs.filter((p) => !p.ok);
@@ -619,7 +623,7 @@ export async function loadPublicHashes(previous) {
       const hash = String(r.value || "").toLowerCase();
       if (!/^[a-f0-9]{64}$/.test(hash) || seen.has(hash) || excluded.has(hash)) continue;
       // Posts tagged for another platform (#android, #apk, #linux, #mirai ...) are not Windows files.
-      if (/#?(?:android|apk|linux|elf|mirai|gafgyt|macos|osx|ios)\b/i.test((r.tags || []).join(" "))) continue;
+      if (taggedNonWindows(r.tags || [])) continue;
       seen.add(hash);
       picked.push({ hash, reportedAt: r.date ? toIso(`${String(r.date).replace(" ", "T")}Z`) : "", reporter: r.user || "", tags: (r.tags || []).join(" "), tweet: r.tweet || "" });
       if (picked.length >= 30) break;
@@ -631,7 +635,8 @@ export async function loadPublicHashes(previous) {
     for (const item of queue) {
       const res = await getJson(`https://otx.alienvault.com/api/v1/indicators/file/${item.hash}/analysis`, { timeoutMs: 15000, retries: 0 }).catch(() => null);
       const a = res ? P.parseOtxAnalysis(item.hash, res) : { hash: item.hash, analysed: false, fileType: "", defender: "", other: "" };
-      if (a.fileType && !/pe32|pe64|windows|win32|dll|executable|ms-dos/i.test(a.fileType)) continue;
+      // OTX names the file type: Android, ELF, Mach-O, iOS and shell scripts are left out. Archives stay until VirusTotal shows the contents.
+      if (a.fileType && fileTypePlatform(a.fileType) === "other") continue;
       out.push({ ...item, ...a, checkedAt: new Date().toISOString(), vt: `https://www.virustotal.com/gui/file/${item.hash}`, otx: `https://otx.alienvault.com/indicator/file/${item.hash}` });
     }
     const done = new Set(out.map((r) => r.hash));

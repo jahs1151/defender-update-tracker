@@ -1,5 +1,6 @@
 // Pure parsers: HTML/JSON/XML in, plain objects out. Tested against fixtures in test/fixtures.
 import { plain, tag, matchAfter, slug, toIso, osTags } from "./text.mjs";
+import { nonWindowsTitle } from "./platform.mjs";
 import { parseUsClock, versionMonth } from "../../site/assets/time.js";
 export { versionMonth };
 
@@ -217,6 +218,7 @@ export function parseIntuneWhatsNew(html, base) {
       const summary = plain(m[3]).slice(0, 600);
       const blob = `${name} ${summary}`;
       if (/\b(android|ios|ipados|macos|aosp|chromeos|linux)\b/i.test(blob) && !/windows/i.test(blob)) continue;
+      if (nonWindowsTitle(name)) continue;
       if (!/windows|defender|endpoint security|bitlocker|firewall|antivirus|compliance|attack surface|device control|epm|endpoint privilege/i.test(blob)) continue;
       items.push({ id: m[1] || slug(name), name, summary, url: `${base}#${m[1] || slug(name)}` });
     }
@@ -244,6 +246,7 @@ export function parseIntuneInDevelopment(html, base) {
     const blob = `${name} ${summary}`;
     if (!name || name.length < 8) continue;
     if (/\b(android|ios|ipados|macos)\b/i.test(blob) && !/windows/i.test(blob)) continue;
+    if (nonWindowsTitle(name)) continue;
     if (!/windows|defender|endpoint security|bitlocker|firewall|antivirus|compliance|endpoint privilege|\bepm\b|scope tag|agentic|policy configuration agent|security copilot/i.test(blob)) continue;
     if (items.some((i) => i.name === name)) continue;
     items.push({ id: slug(name), name, summary, url: base });
@@ -463,6 +466,6 @@ export function filterRoadmap(json) {
       release: r.publicDisclosureAvailabilityDate || r.generalAvailabilityDate || "",
       updated: toIso(r.modified || r.lastModified || ""),
     }))
-    .filter((r) => r.id && /\bdefender\b|\bintune\b/i.test(r.title) && !/outlook|exchange|\bowa\b|dynamics|purview|office 365|for cloud|for identity|cloud apps/i.test(r.title))
+    .filter((r) => r.id && !nonWindowsTitle(r.title) && /\bdefender\b|\bintune\b/i.test(r.title) && !/outlook|exchange|\bowa\b|dynamics|purview|office 365|for cloud|for identity|cloud apps/i.test(r.title))
     .map((r) => ({ ...r, url: `https://www.microsoft.com/microsoft-365/roadmap?id=${r.id}` }));
 }

@@ -529,7 +529,10 @@ function renderRoadmap() {
 }
 
 // ---------- Detections tab: changelog ----------
-const isWin = (n) => !/:(Android|MacOS|OSX|Linux|iOS|Unix)\w*\//i.test(n);
+// Windows only. The data files are already filtered when they are built; this is a second check in the browser.
+// Same rule as scripts/lib/platform.mjs: Linux, macOS, Android, iOS, Unix and Unix-side scripts (PHP, Perl, Ruby, shell) are not shown.
+const NON_WIN_PLATFORM = /^[^:\/]+:(?:Linux|MacOS(?:_X|X)?|OSX|Mac|AndroidOS|Android|iOS|iPhoneOS|iPadOS|Unix|FreeBSD|BSD|Solaris|AIX|SH|Bash|ELF|SymbOS|PHP|Perl|Ruby)\//i;
+const isWin = (n) => !NON_WIN_PLATFORM.test(n);
 
 function changelogHistory() {
   const clData = data("changelog");
@@ -595,9 +598,8 @@ function renderChangelog() {
   const before = buildRows(prev);
   if (cur.status === "idle") setTimeout(() => loadBuild(h));
   if (prev && before.status === "idle") setTimeout(() => loadBuild(prev));
-  const winOnly = pref.get("winOnly", true);
   const q = (state.threatQ || "").trim().toLowerCase();
-  const rows = cur.rows.filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q)));
+  const rows = cur.rows.filter((r) => isWin(r.name) && (!q || r.name.toLowerCase().includes(q)));
   const nAdded = h.added ?? cur.rows.filter((r) => r.change === "added").length;
   const nUpdated = h.updated ?? cur.rows.filter((r) => r.change === "updated").length;
   let delta = "";
@@ -609,10 +611,10 @@ function renderChangelog() {
     if (cur.status === "ok" && before.status === "ok") {
       const was = new Set(before.rows.map((r) => r.name));
       const now = new Set(cur.rows.map((r) => r.name));
-      const fresh = cur.rows.filter((r) => !was.has(r.name) && (!winOnly || isWin(r.name)));
-      const gone = before.rows.filter((r) => !now.has(r.name) && (!winOnly || isWin(r.name)));
+      const fresh = cur.rows.filter((r) => !was.has(r.name) && isWin(r.name));
+      const gone = before.rows.filter((r) => !now.has(r.name) && isWin(r.name));
       const li = (r, kind) => `<li><span class="${kind === "New" ? "diff-new" : "diff-gone"}">${kind}</span> ${link(r.url, r.name)}</li>`;
-      names = ` ${fresh.length} names only on ${esc(h.version)} · ${gone.length} only on ${esc(prev.version)}${winOnly ? " (Windows families)" : ""}.`;
+      names = ` ${fresh.length} names only on ${esc(h.version)} · ${gone.length} only on ${esc(prev.version)}.`;
       diffList = fresh.length || gone.length
         ? `<details class="diff"${fresh.length + gone.length <= 40 ? " open" : ""}><summary>New or removed versus ${esc(prev.version)}</summary>
             <p class="meta">Names on one build's changelog page and not the other's. A changelog page lists that build's additions and updates, not the full signature catalog, so "removed" means not repeated, not withdrawn.</p>
@@ -630,14 +632,13 @@ function renderChangelog() {
     table = `<div class="table-wrap"><table><thead><tr><th>Detection</th><th>Severity</th></tr></thead><tbody>${rows
       .map((r) => `<tr><td><span class="mono">${link(r.url, r.name)}</span><div class="meta">${esc(r.change)} · released ${h.releasedAt ? esc(stamp(h.releasedAt)) : "time not published"}</div></td><td>${r.severity ? pill(r.severity, SEV_TONE[String(r.severity).toLowerCase()] || "") : ""}</td></tr>`)
       .join("")}</tbody></table></div><p class="meta">All ${rows.length} rows shown.</p>`;
-  else table = `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(h.version)} matches "${esc(state.threatQ)}".` : cur.rows.length ? "Every detection in this build is for Android, macOS or Linux. Clear the checkbox to see them." : "Microsoft lists no detections for this build."}</p>`;
+  else table = `<p class="meta" style="margin-top:8px">${q ? `No detection in ${esc(h.version)} matches "${esc(state.threatQ)}".` : "Microsoft lists no Windows detections for this build."}</p>`;
   return `<div class="card">
     <p><strong>${esc(h.version)}</strong>${status} · ${h.releasedAt ? esc(stamp(h.releasedAt)) : na("Time not published")} · ${nAdded} added, ${nUpdated} updated</p>
-    ${cur.status === "ok" ? `<p class="meta">${cur.rows.filter((r) => isWin(r.name)).length} Windows-family names · ${cur.rows.length} including other platforms. The OS chips at the top do not change this list.</p>` : ""}
+    ${cur.status === "ok" ? `<p class="meta">${cur.rows.filter((r) => isWin(r.name)).length} Windows detection names. Windows only: Linux, macOS, Android and iOS detections are not tracked here. The OS chips at the top do not change this list.</p>` : ""}
     <div class="controls">
       ${history.length > 1 ? `<label class="field">Build <select id="si-version">${history.map((x, i) => `<option value="${esc(x.version)}" ${i === idx ? "selected" : ""}>${esc(x.version)}${i === 0 ? " (latest)" : ""}${x.releasedAt ? ` · ${esc(stamp(x.releasedAt).split(" · ")[0])}` : ""}</option>`).join("")}</select></label>` : ""}
       <label class="field" style="flex:1 1 220px">Threat name <input type="search" id="threat-q" value="${esc(state.threatQ || "")}" placeholder="e.g. Trojan:Win32/Xworm" spellcheck="false"></label>
-      <label><input type="checkbox" id="win-only" ${winOnly ? "checked" : ""}> Windows families only${cur.status === "ok" ? ` · ${cur.rows.filter((r) => isWin(r.name)).length}` : ""}</label>
     </div>
     ${delta}
     <div class="controls" style="margin:6px 0">
@@ -655,9 +656,8 @@ function renderChangelog() {
 function exportRows() {
   const { h } = selectedBuild();
   if (!h) return { version: "", rows: [] };
-  const winOnly = pref.get("winOnly", true);
   const q = (state.threatQ || "").trim().toLowerCase();
-  return { version: h.version, releasedAt: h.releasedAt || "", rows: buildRows(h).rows.filter((r) => (!winOnly || isWin(r.name)) && (!q || r.name.toLowerCase().includes(q))) };
+  return { version: h.version, releasedAt: h.releasedAt || "", rows: buildRows(h).rows.filter((r) => isWin(r.name) && (!q || r.name.toLowerCase().includes(q))) };
 }
 
 function renderTrend() {
@@ -788,7 +788,7 @@ function renderHashes() {
         <td class="meta">${esc(stamp(h.vtResult?.checkedAt || h.checkedAt || sec("hashes").lastOkAt || sec("hashes").checkedAt))}</td>
         <td>${link(h.vt, "VirusTotal")} · ${link(h.otx, "OTX")}</td></tr>`)
       .join("")}</tbody></table></div>` : "<p>No Windows hashes in the feed yet.</p>") : sectionError("hashes", "The public hash feed")}
-    <p class="meta" style="margin-top:8px">Third-party, unvetted data. VirusTotal is asked at most 4 times a minute and 500 times a day, and each answer is kept for 24 hours. The latest 20 Windows hashes are kept. A file for Android, Linux or macOS is left out: by its TweetFeed tags, or once VirusTotal shows what it is (a ZIP is judged by its contents).${d?.excluded?.length ? ` ${d.excluded.length} left out so far.` : ""}</p>
+    <p class="meta" style="margin-top:8px">Third-party, unvetted data. VirusTotal is asked at most 4 times a minute and 500 times a day, and each answer is kept for 24 hours. The latest 20 Windows hashes are kept. Windows only: a file for Android, Linux, macOS or iOS is left out: by its TweetFeed tags, or once VirusTotal shows what it is (a ZIP is judged by its contents).${d?.excluded?.length ? ` ${d.excluded.length} left out so far.` : ""}</p>
     <form id="hash-form" class="controls" style="margin-top:10px">
       <label class="field" style="flex:1 1 260px">Look up a hash <input type="text" id="hash-q" placeholder="MD5, SHA-1 or SHA-256" autocomplete="off" spellcheck="false"></label>
       <button type="submit" class="btn" style="align-self:end">Check Microsoft detection</button>
@@ -1284,7 +1284,6 @@ document.addEventListener("input", (e) => {
 document.addEventListener("change", (e) => {
   const t = e.target;
   if (t.id === "issue-scope") pref.set("issueScope", t.value);
-  else if (t.id === "win-only") pref.set("winOnly", t.checked);
   else if (t.id === "si-version") {
     pref.set("siPick", { version: t.value, latest: changelogHistory()[0]?.version || "" });
     rerenderChangelog();
