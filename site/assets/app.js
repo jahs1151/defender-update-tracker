@@ -257,7 +257,7 @@ function renderStatus() {
     .join("");
   const releaseTable = `<div class="card">
       <p>Microsoft supports the current platform and engine plus the two monthly releases before them (N-2). Older clients stop receiving security intelligence. Defender versions carry their build month (4.18.<strong>2610</strong>0.x is an October 2026 build), so this site estimates N-2 from that month code against the current platform ${currentPlatform ? `<code>${esc(currentPlatform)}</code>` : ""}.</p>
-      ${lag != null && lag > 2 ? `<div class="notice">Microsoft's release-notes page currently lists releases only up to ${esc(latestListed.label)}, ${lag} months behind the current platform. Use the month-code estimate and Fleet compare for recent builds.</div>` : ""}
+      ${lag != null && lag > 2 ? `<div class="notice">Microsoft's release-notes page currently lists releases only up to ${esc(latestListed.label)}, ${lag} months behind the current platform. Use the month-code estimate and Compare versions for recent builds.</div>` : ""}
       ${releases.length || currentRow ? `<div class="table-wrap"><table><thead><tr><th>Release notes entry</th><th>Platform</th><th>Engine</th><th>Released</th><th>Support today</th></tr></thead><tbody>${relRows}</tbody></table></div>` : sectionError("productUpdates", "The monthly release notes")}
       ${source("https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates", "Microsoft Defender Antivirus security intelligence and product updates")}
       ${source(data("productUpdates")?.url, "Monthly platform and engine release notes")}
@@ -282,33 +282,33 @@ function renderStatus() {
     section("versions", "Current Defender versions", cards, "intelligence"),
     section("packages", "Download packages", packages, "packages"),
     section("monthly", "Monthly platform and engine releases (N-2)", releaseTable, "productUpdates"),
-    section("fleet", "Fleet compare", renderFleet(releases, intel)),
+    section("compare", "Compare versions", renderCompareVersions(releases, intel)),
     section("sources", "Source health", `<div class="card"><ul class="list">${sources}</ul>${legend}</div>`),
   ].join("");
 }
 
-function renderFleet(releases, intel) {
+function renderCompareVersions(releases, intel) {
   // Only well-formed versions are ever kept; anything else saved by an older version of this page is dropped.
   // Values are kept only after someone types them (typed: true); until then SI defaults to the latest build.
-  const raw = pref.get("fleet", {});
+  const raw = pref.get("compare", {});
   const saved = Object.fromEntries(["platform", "engine", "si"].map((k) => [k, raw?.typed && VALID_VERSION.test(String(raw?.[k] || "")) ? raw[k] : ""]));
-  if (!raw?.typed && Object.keys(raw || {}).length) pref.set("fleet", {});
+  if (!raw?.typed && Object.keys(raw || {}).length) pref.set("compare", {});
   if (!saved.si && intel?.securityIntelligence) saved.si = intel.securityIntelligence;
   return `<div class="card">
-    <p>Paste versions from a device (Get-MpComputerStatus: AMProductVersion, AMEngineVersion, AntivirusSignatureVersion). Saved only in this browser.</p>
-    <form class="form-grid" id="fleet-form" autocomplete="off">
+    <p>Enter Defender versions to see how they compare with the current build (Get-MpComputerStatus shows AMProductVersion, AMEngineVersion and AntivirusSignatureVersion). Saved only in this browser.</p>
+    <form class="form-grid" id="compare-form" autocomplete="off">
       <label class="field">Platform <input type="text" name="platform" inputmode="decimal" placeholder="4.18.xxxxx.x" value="${esc(saved.platform)}"></label>
       <label class="field">Engine <input type="text" name="engine" inputmode="decimal" placeholder="1.1.xxxxx.x" value="${esc(saved.engine)}"></label>
       <label class="field">Security intelligence <input type="text" name="si" inputmode="decimal" placeholder="1.4xx.xxx.0" value="${esc(saved.si)}"></label>
     </form>
-    <div id="fleet-out" aria-live="polite" style="margin-top:10px">${fleetVerdict(saved, releases, intel)}</div>
+    <div id="compare-out" aria-live="polite" style="margin-top:10px">${compareVerdict(saved, releases, intel)}</div>
   </div>`;
 }
 
 const VALID_VERSION = /^\d+\.\d+\.\d+\.\d+$/;
 const invalid = (example) => `<span class="invalid">Not a valid version — use e.g. ${esc(example)}</span>`;
 
-function fleetVerdict(v, releases, intel) {
+function compareVerdict(v, releases, intel) {
   const out = [];
   const rank = (value, current) => {
     if (!value) return "";
@@ -976,7 +976,7 @@ function renderIntel() {
     .filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 14)
     .sort((a, b) => (b.published || "").localeCompare(a.published || ""));
   const chatterBody = `<div class="card">
-    <p>News and Reddit posts from the last 14 days that mention a false positive, a signature revision, a detection storm, or MsSense / SenseIR. One post is a lead. Several, plus quarantines on your pilot ring, are a reason to hold the broad ring.</p>
+    <p>News and Reddit posts from the last 14 days that mention a false positive, a signature revision, a detection storm, or MsSense / SenseIR. One post is a lead. Several are worth reading before trusting a new build.</p>
     ${chatter.length ? `<ul class="list">${chatter
       .slice(0, 10)
       .map((x) => `<li><span class="row-title">${link(x.url, x.title)}</span><div class="meta">${esc(x.where)} · ${x.published ? esc(stamp(x.published)) : "time not published"}</div></li>`)
@@ -1069,7 +1069,7 @@ function renderAlerts() {
   if (oob.length && state.tab !== "updates") alerts.push({ tone: "", html: `${oob.length} zero-day or out-of-band ${oob.length === 1 ? "story" : "stories"} in the last 7 days. ${go("out-of-band", "Read under Out-of-band and zero-day")}` });
   const posts = data("community")?.posts || [];
   const recentChatter = [...(data("news")?.items || []), ...posts].filter((x) => CHATTER.test(`${x.title} ${x.summary}`) && daysOld(x.published) <= 3);
-  if (recentChatter.length >= 2) alerts.push({ tone: "", html: `${recentChatter.length} posts in the last 3 days mention a possible bad detection or sensor problem. ${go("chatter", "Review before widening the broad ring")}` });
+  if (recentChatter.length >= 2) alerts.push({ tone: "", html: `${recentChatter.length} posts in the last 3 days mention a possible bad detection or sensor problem. ${go("chatter", "Review these posts")}` });
   for (const i of (data("sense")?.issues || []).filter((x) => x.stage && x.stage !== "Fix published").slice(0, 2)) {
     alerts.push({ tone: "", html: `Sense issue: ${esc(i.title)} (${esc(i.stage)}). ${go("sense-issues", "Sense issue tracker")}` });
   }
@@ -1159,7 +1159,7 @@ function route() {
     return;
   }
   // Deep link to a section: find which tab owns it.
-  const owner = { "out-of-band": "updates", "si-trend": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", fleet: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "threats", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", "kev-coverage": "threats", news: "intel", reddit: "intel" }[hash];
+  const owner = { "out-of-band": "updates", "si-trend": "threats", intro: "status", changes: "status", versions: "status", packages: "status", monthly: "status", compare: "status", sources: "status", "patch-tuesday": "updates", exploited: "updates", "known-issues": "updates", channels: "updates", compliance: "intune", "intune-weekly": "intune", "intune-dev": "intune", qualys: "updates", roadmap: "intune", hashes: "threats", changelog: "threats", features: "intel", chatter: "intel", sensor: "sense", "sense-issues": "sense", "sense-releases": "sense", "sense-kb": "sense", "sense-signal": "sense", "detection-alerts": "threats", "vendor-coverage": "threats", "kev-coverage": "threats", news: "intel", reddit: "intel" }[hash];
   if (owner) {
     state.tab = owner;
     render();
@@ -1272,11 +1272,11 @@ document.addEventListener("input", (e) => {
     renderSearch();
     return;
   }
-  if (t.closest("#fleet-form")) {
+  if (t.closest("#compare-form")) {
     const f = new FormData(t.form);
     const v = { platform: String(f.get("platform")).trim(), engine: String(f.get("engine")).trim(), si: String(f.get("si")).trim() };
-    pref.set("fleet", { typed: true, ...Object.fromEntries(Object.entries(v).map(([k, x]) => [k, VALID_VERSION.test(x) ? x : ""])) });
-    document.getElementById("fleet-out").innerHTML = fleetVerdict(v, data("productUpdates")?.rows || [], data("intelligence"));
+    pref.set("compare", { typed: true, ...Object.fromEntries(Object.entries(v).map(([k, x]) => [k, VALID_VERSION.test(x) ? x : ""])) });
+    document.getElementById("compare-out").innerHTML = compareVerdict(v, data("productUpdates")?.rows || [], data("intelligence"));
   }
 });
 
