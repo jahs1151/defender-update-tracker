@@ -1,6 +1,6 @@
 {
  "schema": 4,
- "checkedAt": "2026-11-28T11:06:05.319Z",
+ "checkedAt": "2026-11-28T12:02:35.466Z",
  "contentChangedAt": "2026-11-28T11:06:05.319Z",
  "changes": [
   {
@@ -26,8 +26,8 @@
    "label": "Download packages (go.microsoft.com)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-updates",
    "lastModified": "",
    "detail": "3 of 3 packages resolved · file lists for 2 · offline kit platform 4.18.26100.4",
@@ -101,8 +101,8 @@
    "label": "Security intelligence page",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions",
    "lastModified": "",
    "detail": "1.463.509.0 · engine 1.1.26100.4 · platform 4.18.26100.4",
@@ -121,8 +121,8 @@
    "label": "Platform and engine release list (Learn)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/msda-updates-previous-versions-technical-upgrade-support",
    "lastModified": "2026-11-17T23:39:38.000Z",
    "detail": "8 monthly releases listed, latest February 2026",
@@ -200,8 +200,8 @@
    "label": "Detection changelog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.microsoft.com/en-us/wdsi/definitions/antimalware-definition-release-notes",
    "lastModified": "",
    "detail": "1.463.509.0 · 122 detections · 10 versions kept",
@@ -1261,8 +1261,8 @@
    "label": "Sense (EDR sensor) build, Update Catalog",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.catalog.update.microsoft.com/Search.aspx?q=KB5005292",
    "lastModified": "",
    "detail": "Latest 10.8839.26080.2008 · Current Channel (Broad) · 1 version in the catalog · KB5005292 page names 10.8838 or later",
@@ -1403,8 +1403,8 @@
    "label": "Security Update Guide (MSRC API)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://msrc.microsoft.com/update-guide",
    "lastModified": "",
    "detail": "2026-Nov: 723 Windows CVEs, 35 Critical, 2 Defender or Intune · 2 months kept",
@@ -1413,20 +1413,20 @@
     "windowsTotal": 723,
     "critical": 35,
     "perOs": {
-     "srv2022": {
-      "total": 651,
-      "critical": 30
-     },
-     "win11": {
-      "total": 661,
-      "critical": 33
-     },
      "srv2019": {
       "total": 618,
       "critical": 28
      },
+     "srv2022": {
+      "total": 651,
+      "critical": 30
+     },
      "srv2025": {
       "total": 690,
+      "critical": 33
+     },
+     "win11": {
+      "total": 661,
       "critical": 33
      }
     },
@@ -1454,20 +1454,20 @@
       "windowsTotal": 723,
       "critical": 35,
       "perOs": {
-       "srv2022": {
-        "total": 651,
-        "critical": 30
-       },
-       "win11": {
-        "total": 661,
-        "critical": 33
-       },
        "srv2019": {
         "total": 618,
         "critical": 28
        },
+       "srv2022": {
+        "total": 651,
+        "critical": 30
+       },
        "srv2025": {
         "total": 690,
+        "critical": 33
+       },
+       "win11": {
+        "total": 661,
         "critical": 33
        }
       },
@@ -1547,8 +1547,8 @@
    "label": "CISA Known Exploited Vulnerabilities",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
    "lastModified": "2026-11-27T18:03:12.000Z",
    "detail": "19 Microsoft Windows or endpoint entries in 12 months · 27 CVEs of any vendor added in 14 days",
@@ -2522,8 +2522,8 @@
    "label": "Windows release health",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://learn.microsoft.com/en-us/windows/release-health/",
    "lastModified": "2026-11-25T18:07:11.000Z",
    "detail": "1 open across 5 pages",
@@ -2648,8 +2648,8 @@
    "label": "Intune what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://learn.microsoft.com/en-us/intune/whats-new/",
    "lastModified": "2026-11-17T18:35:20.000Z",
    "detail": "7 weeks with 24 Windows or security items · 14 in-development items",
@@ -2934,8 +2934,8 @@
    "label": "Defender for Endpoint what's new",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://learn.microsoft.com/en-us/defender-endpoint/whats-new-in-microsoft-defender-endpoint",
    "lastModified": "2026-11-25T23:37:19.000Z",
    "detail": "8 Windows items",
@@ -3034,8 +3034,8 @@
    "label": "News feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.microsoft.com/en-us/security/blog/",
    "lastModified": "",
    "detail": "13 relevant headlines from 5 feeds",
@@ -3320,8 +3320,8 @@
    "label": "Reddit (via Arctic Shift)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.reddit.com/r/DefenderATP/",
    "lastModified": "",
    "detail": "28 posts",
@@ -3572,8 +3572,8 @@
    "label": "Qualys Patch Tuesday QIDs",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://threatprotect.qualys.com/",
    "lastModified": "",
    "detail": "19 QIDs for 2026-Nov, 28 QIDs for 2026-Oct",
@@ -3669,13 +3669,220 @@
    "label": "Public hashes (TweetFeed + AlienVault OTX)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://tweetfeed.live/",
    "lastModified": "",
-   "detail": "8 Windows hashes kept, 5 analysed, 0 where another scanner names it and Defender does not · VirusTotal: 8 of 8 analysed, 2 that other engines detect and Microsoft does not",
+   "detail": "16 Windows hashes kept, 5 analysed, 0 where another scanner names it and Defender does not · VirusTotal: 16 of 16 analysed, 7 that other engines detect and Microsoft does not",
    "data": {
     "rows": [
+     {
+      "hash": "abacc47c42adddc6e72ccad4e0a5138e1226fcdb22a567b65b723e489d92ea7c",
+      "reportedAt": "2026-11-28T11:10:38.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126634871032311997",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.334Z",
+      "vt": "https://www.virustotal.com/gui/file/abacc47c42adddc6e72ccad4e0a5138e1226fcdb22a567b65b723e489d92ea7c",
+      "otx": "https://otx.alienvault.com/indicator/file/abacc47c42adddc6e72ccad4e0a5138e1226fcdb22a567b65b723e489d92ea7c",
+      "vtResult": {
+       "found": true,
+       "malicious": 3,
+       "total": 74,
+       "others": 3,
+       "microsoft": "",
+       "microsoftState": "undetected",
+       "gap": true,
+       "analysedAt": "2026-11-27T03:20:56.000Z",
+       "fileType": "ZIP",
+       "platform": "windows",
+       "checkedAt": "2026-11-28T12:03:01.690Z"
+      }
+     },
+     {
+      "hash": "6630b003766baed1fa86cea880d22e41dc416f63d800de3246941ede2396ad48",
+      "reportedAt": "2026-11-28T11:08:11.000Z",
+      "reporter": "skocherhan",
+      "tags": "",
+      "tweet": "https://x.com/skocherhan/status/2126634251953050044",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.463Z",
+      "vt": "https://www.virustotal.com/gui/file/6630b003766baed1fa86cea880d22e41dc416f63d800de3246941ede2396ad48",
+      "otx": "https://otx.alienvault.com/indicator/file/6630b003766baed1fa86cea880d22e41dc416f63d800de3246941ede2396ad48",
+      "vtResult": {
+       "found": false,
+       "checkedAt": "2026-11-28T12:03:16.978Z"
+      }
+     },
+     {
+      "hash": "4bb36c50fdd7719883d39c0662e457e2ac3e80547cee20bb4f4ff73b3038174c",
+      "reportedAt": "2026-11-28T11:05:32.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126633587063623846",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.519Z",
+      "vt": "https://www.virustotal.com/gui/file/4bb36c50fdd7719883d39c0662e457e2ac3e80547cee20bb4f4ff73b3038174c",
+      "otx": "https://otx.alienvault.com/indicator/file/4bb36c50fdd7719883d39c0662e457e2ac3e80547cee20bb4f4ff73b3038174c",
+      "vtResult": {
+       "found": true,
+       "malicious": 4,
+       "total": 72,
+       "others": 4,
+       "microsoft": "",
+       "microsoftState": "undetected",
+       "gap": true,
+       "analysedAt": "2026-11-28T12:00:54.000Z",
+       "fileType": "Win32 EXE",
+       "platform": "windows",
+       "checkedAt": "2026-11-28T12:03:33.509Z"
+      }
+     },
+     {
+      "hash": "6391a5810d89a7014d7891ae5e7bce6ba471a486c7d2c167db2a886792d0474a",
+      "reportedAt": "2026-11-28T11:02:28.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126632814791610748",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.633Z",
+      "vt": "https://www.virustotal.com/gui/file/6391a5810d89a7014d7891ae5e7bce6ba471a486c7d2c167db2a886792d0474a",
+      "otx": "https://otx.alienvault.com/indicator/file/6391a5810d89a7014d7891ae5e7bce6ba471a486c7d2c167db2a886792d0474a",
+      "vtResult": {
+       "found": true,
+       "malicious": 6,
+       "total": 72,
+       "others": 6,
+       "microsoft": "",
+       "microsoftState": "undetected",
+       "gap": true,
+       "analysedAt": "2026-11-28T07:34:20.000Z",
+       "fileType": "ZIP",
+       "platform": "windows",
+       "checkedAt": "2026-11-28T12:03:48.747Z"
+      }
+     },
+     {
+      "hash": "67e620db4704659b8bcd93a0254673f6a4a2a240043df80f7ee1670b65b0e495",
+      "reportedAt": "2026-11-28T11:02:28.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126632814791610748",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.692Z",
+      "vt": "https://www.virustotal.com/gui/file/67e620db4704659b8bcd93a0254673f6a4a2a240043df80f7ee1670b65b0e495",
+      "otx": "https://otx.alienvault.com/indicator/file/67e620db4704659b8bcd93a0254673f6a4a2a240043df80f7ee1670b65b0e495",
+      "vtResult": {
+       "found": true,
+       "malicious": 12,
+       "total": 72,
+       "others": 12,
+       "microsoft": "",
+       "microsoftState": "undetected",
+       "gap": true,
+       "analysedAt": "2026-11-28T09:32:46.000Z",
+       "fileType": "Win32 EXE",
+       "platform": "windows",
+       "checkedAt": "2026-11-28T12:04:03.939Z"
+      }
+     },
+     {
+      "hash": "8b2625f7b6696f51b1c7d23e71203f9dcec488f898b89c3dbae5bc96655c8a87",
+      "reportedAt": "2026-11-28T10:56:41.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126631357354791267",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.749Z",
+      "vt": "https://www.virustotal.com/gui/file/8b2625f7b6696f51b1c7d23e71203f9dcec488f898b89c3dbae5bc96655c8a87",
+      "otx": "https://otx.alienvault.com/indicator/file/8b2625f7b6696f51b1c7d23e71203f9dcec488f898b89c3dbae5bc96655c8a87",
+      "vtResult": {
+       "found": true,
+       "malicious": 0,
+       "total": 74,
+       "others": 0,
+       "microsoft": "",
+       "microsoftState": "undetected",
+       "gap": false,
+       "analysedAt": "2026-11-27T01:30:47.000Z",
+       "fileType": "Windows Installer",
+       "platform": "windows",
+       "checkedAt": "2026-11-28T12:04:19.509Z"
+      }
+     },
+     {
+      "hash": "b9f0cb6ad1d382c22d5853f03d8378399cd307bb5acc6556940c23da1762dfa8",
+      "reportedAt": "2026-11-28T10:46:30.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126628795884966167",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.808Z",
+      "vt": "https://www.virustotal.com/gui/file/b9f0cb6ad1d382c22d5853f03d8378399cd307bb5acc6556940c23da1762dfa8",
+      "otx": "https://otx.alienvault.com/indicator/file/b9f0cb6ad1d382c22d5853f03d8378399cd307bb5acc6556940c23da1762dfa8",
+      "vtResult": {
+       "found": true,
+       "malicious": 1,
+       "total": 74,
+       "others": 1,
+       "microsoft": "",
+       "microsoftState": "undetected",
+       "gap": true,
+       "analysedAt": "2026-11-26T18:55:01.000Z",
+       "fileType": "HTML",
+       "platform": "windows",
+       "checkedAt": "2026-11-28T12:04:34.711Z"
+      }
+     },
+     {
+      "hash": "f8ddbd33352eb801d62e50efdd28c555c716a540db0600afa8c3bd4c6488638d",
+      "reportedAt": "2026-11-28T10:40:02.000Z",
+      "reporter": "smica83",
+      "tags": "",
+      "tweet": "https://x.com/smica83/status/2126627170374107542",
+      "analysed": false,
+      "fileType": "",
+      "defender": "",
+      "other": "",
+      "checkedAt": "2026-11-28T12:02:38.866Z",
+      "vt": "https://www.virustotal.com/gui/file/f8ddbd33352eb801d62e50efdd28c555c716a540db0600afa8c3bd4c6488638d",
+      "otx": "https://otx.alienvault.com/indicator/file/f8ddbd33352eb801d62e50efdd28c555c716a540db0600afa8c3bd4c6488638d",
+      "vtResult": {
+       "found": true,
+       "malicious": 1,
+       "total": 72,
+       "others": 0,
+       "microsoft": "Program:Script/Wacapew.A!ml",
+       "microsoftState": "detected",
+       "gap": false,
+       "analysedAt": "2026-11-28T01:42:02.000Z",
+       "fileType": "JavaScript",
+       "platform": "unknown",
+       "checkedAt": "2026-11-28T12:04:49.953Z"
+      }
+     },
      {
       "hash": "ebfd12b01c8da9f0abff803a6aac6cb80654d8ebf9d7d58afbcff5b98dbc6706",
       "reportedAt": "2026-11-28T09:54:48.000Z",
@@ -3686,7 +3893,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-28T11:06:07.106Z",
+      "checkedAt": "2026-11-28T12:02:38.926Z",
       "vt": "https://www.virustotal.com/gui/file/ebfd12b01c8da9f0abff803a6aac6cb80654d8ebf9d7d58afbcff5b98dbc6706",
       "otx": "https://otx.alienvault.com/indicator/file/ebfd12b01c8da9f0abff803a6aac6cb80654d8ebf9d7d58afbcff5b98dbc6706",
       "vtResult": {
@@ -3713,7 +3920,7 @@
       "fileType": "LNK · MS Windows shortcut, Item id list present, Has command line arguments, Icon number=1, ctime=Mon Jan  1 00:00:00 1601, mtime=Mon Jan  1 00:00:00 1601, atime=Mon Jan  1 00:00:00 1601, length=0, window=hidenormalshowminimized",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-28T11:06:07.503Z",
+      "checkedAt": "2026-11-28T12:02:39.205Z",
       "vt": "https://www.virustotal.com/gui/file/6afa4283b2164247b05668c063698157f5af9a6449d7f2736758f3fd4d720152",
       "otx": "https://otx.alienvault.com/indicator/file/6afa4283b2164247b05668c063698157f5af9a6449d7f2736758f3fd4d720152",
       "vtResult": {
@@ -3740,7 +3947,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-28T11:06:08.725Z",
+      "checkedAt": "2026-11-28T12:02:40.376Z",
       "vt": "https://www.virustotal.com/gui/file/2360967336a462d12425140a6d6cb324996d1460b5eb25b06baaffb2f5878fda",
       "otx": "https://otx.alienvault.com/indicator/file/2360967336a462d12425140a6d6cb324996d1460b5eb25b06baaffb2f5878fda",
       "vtResult": {
@@ -3758,7 +3965,7 @@
       "fileType": "",
       "defender": "",
       "other": "",
-      "checkedAt": "2026-11-28T11:06:13.922Z",
+      "checkedAt": "2026-11-28T12:02:45.214Z",
       "vt": "https://www.virustotal.com/gui/file/f8626eb562d42fa42300198b92f4e42d173341c8ed7ab10c7af2ddc76a1e7174",
       "otx": "https://otx.alienvault.com/indicator/file/f8626eb562d42fa42300198b92f4e42d173341c8ed7ab10c7af2ddc76a1e7174",
       "vtResult": {
@@ -3890,7 +4097,7 @@
     "vtStatus": "ok",
     "vtBudget": {
      "day": "2026-11-28",
-     "used": 46
+     "used": 54
     },
     "vtNote": ""
    }
@@ -3899,8 +4106,8 @@
    "label": "Microsoft 365 roadmap",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.microsoft.com/microsoft-365/roadmap",
    "lastModified": "",
    "detail": "23 items stored, 21 for Defender for Endpoint or Intune",
@@ -4144,8 +4351,8 @@
    "label": "Vendor threat research feeds",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://unit42.paloaltonetworks.com/",
    "lastModified": "",
    "detail": "97 posts in 30 days from 12 of 12 vendors",
@@ -5049,8 +5256,8 @@
    "label": "Detection alerts and vendor coverage (worked out from the sources above)",
    "ok": true,
    "stale": false,
-   "checkedAt": "2026-11-28T11:06:05.319Z",
-   "lastOkAt": "2026-11-28T11:06:05.319Z",
+   "checkedAt": "2026-11-28T12:02:35.466Z",
+   "lastOkAt": "2026-11-28T12:02:35.466Z",
    "page": "https://www.microsoft.com/en-us/wdsi/threats/threat-search",
    "lastModified": "",
    "detail": "6 detection alerts · 30 threats: 10 Yes, 20 Unclear, 0 lookup failed, 0 queued · 27 KEV CVEs in 14 days · 205 changelog versions indexed (30 days)",
@@ -5070,7 +5277,7 @@
        "source": "The Hacker News",
        "published": "2026-11-26T15:13:41.000Z"
       },
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "version": "1.463.500.0",
@@ -5086,7 +5293,7 @@
        "source": "The Hacker News",
        "published": "2026-11-27T11:49:34.000Z"
       },
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "version": "1.463.500.0",
@@ -5102,7 +5309,7 @@
        "source": "The Hacker News",
        "published": "2026-11-27T11:49:34.000Z"
       },
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "version": "1.463.497.0",
@@ -5118,7 +5325,7 @@
        "source": "BleepingComputer",
        "published": "2026-11-26T15:23:28.000Z"
       },
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "version": "1.463.485.0",
@@ -5134,7 +5341,7 @@
        "source": "The Hacker News",
        "published": "2026-11-24T16:54:07.000Z"
       },
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "version": "1.463.485.0",
@@ -5150,7 +5357,7 @@
        "source": "BleepingComputer",
        "published": "2026-11-26T15:23:28.000Z"
       },
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      }
     ],
     "coverage": [
@@ -5168,7 +5375,7 @@
        "Backdoor:PowerShell/VinciRAT!MSR"
       ],
       "basis": "In Defender's detection changelog: Trojan:PowerShell/VinciRat.EF!MTB in security intelligence 1.463.500.0 and 2 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "ShinyHunters",
@@ -5221,7 +5428,7 @@
        "Trojan:Win32/ClickFix.JH6"
       ],
       "basis": "In Defender's detection changelog: Trojan:JS/ClickFix.ZYX!MTB in security intelligence 1.463.480.0 and 29 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "Warden",
@@ -5235,7 +5442,7 @@
        "Trojan:Win64/WardenStealer.BZ!MTB"
       ],
       "basis": "In Defender's detection changelog: Trojan:Win64/WardenStealer.BZ!MTB in security intelligence 1.463.115.0.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "ROMULUS",
@@ -5264,7 +5471,7 @@
        "Trojan:Win32/ClickFix.JH6"
       ],
       "basis": "In Defender's detection changelog: Trojan:JS/ClickFix.ZYX!MTB in security intelligence 1.463.480.0 and 29 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "LegionLoader",
@@ -5413,7 +5620,7 @@
        "Trojan:Win32/Anubis.JH"
       ],
       "basis": "In Defender's detection changelog: TrojanSpy:AndroidOS/Anubis!rfn in security intelligence 1.463.295.0 and 1 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "SlippyNunchucks",
@@ -5453,7 +5660,7 @@
        "Backdoor:PowerShell/VinciRAT!MSR"
       ],
       "basis": "In Defender's detection changelog: Trojan:PowerShell/VinciRat.EF!MTB in security intelligence 1.463.500.0 and 2 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "DesktopOK",
@@ -5494,7 +5701,7 @@
        "Trojan:Win64/Remus!MTB"
       ],
       "basis": "In Defender's detection changelog: Trojan:Win64/Remus.J!AMTB in security intelligence 1.463.509.0 and 22 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "PolinRider",
@@ -5511,7 +5718,7 @@
        "Trojan:NPM/PolinRider.DM!MTB"
       ],
       "basis": "In Defender's detection changelog: Trojan:Python/PolinRider.A!HN in security intelligence 1.463.503.0 and 11 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "ARTEX",
@@ -5539,7 +5746,7 @@
        "Trojan:Win64/KuboShell.DA!MTB"
       ],
       "basis": "In Defender's detection changelog: Backdoor:Win64/KuboShell!rfn in security intelligence 1.463.485.0 and 2 more in the last 30 days.",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "threat": "Volant",
@@ -5841,7 +6048,7 @@
        "Exploit:Python/CVE-2026-76466.ND!MTB"
       ],
       "coverage": "Detection found",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "cve": "CVE-2024-10441",
@@ -5869,7 +6076,7 @@
        "Exploit:Python/CVE-2026-40217.FD!MTB"
       ],
       "coverage": "Detection found",
-      "checkedAt": "2026-11-28T11:06:05.319Z"
+      "checkedAt": "2026-11-28T12:02:35.466Z"
      },
      {
       "cve": "CVE-2026-90436",
