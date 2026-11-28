@@ -1,7 +1,7 @@
 // VirusTotal lookups: no key, limits, 24-hour cache, gaps, and the key never leaving the request header.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { vtLookup, parseVtFile, cleanKey, keyShape } from "../scripts/lib/virustotal.mjs";
+import { vtLookup, parseVtFile, cleanKey, keyShape, vtPlatform } from "../scripts/lib/virustotal.mjs";
 
 const now = new Date("2026-11-27T18:00:00Z");
 const file = (ms, others) => ({
@@ -42,7 +42,7 @@ test("limits: 4 a minute, 500 a day, answers kept 24 hours, key only in the head
   const rows = [
     { hash: "a".repeat(64) },
     { hash: "b".repeat(64) },
-    { hash: "c".repeat(64), vtResult: { found: true, checkedAt: "2026-11-27T10:00:00.000Z" } },
+    { hash: "c".repeat(64), vtResult: { found: true, platform: "windows", checkedAt: "2026-11-27T10:00:00.000Z" } },
   ];
   const r = await vtLookup(rows, { key: "SECRET", now, fetchImpl, sleep: async (ms) => waits.push(ms) });
   assert.equal(seen.length, 2, "the hash checked 8 hours ago is not asked again");
@@ -74,4 +74,20 @@ test("a pasted key is cleaned, and a wrong shape is described without showing it
 test("a rejected key reports VirusTotal's reason code", async () => {
   const r = await vtLookup([{ hash: "a".repeat(64) }], { key: "BAD", now, fetchImpl: async () => ({ status: 401, ok: false, json: async () => ({ error: { code: "WrongCredentialsError", message: "Wrong API key" } }) }), sleep: async () => {} });
   assert.deepEqual([r.status, r.reason], ["rejected", "HTTP 401 WrongCredentialsError"]);
+});
+
+test("platform: an Android dropper in a ZIP is not Windows, an LNK in a ZIP is", () => {
+  const res = (names) => Object.fromEntries(names.map((n, i) => [`E${i}`, { category: "malicious", result: n }]));
+  assert.equal(vtPlatform({ type_tag: "zip", type_description: "ZIP", tags: ["zip", "contains-apk"], last_analysis_results: {} }), "other");
+  assert.equal(vtPlatform({ type_description: "ZIP", last_analysis_results: res(["Android.Trojan.Dropper", "Trojan:AndroidOS/Dropper.A", "A Variant Of Android/TrojanDropper.Agent"]) }), "other");
+  assert.equal(vtPlatform({ type_description: "ZIP", last_analysis_results: res(["Trojan.LNK.Agent", "LNK/Downloader.A", "Win32/Trojan"]) }), "windows");
+  assert.equal(vtPlatform({ type_description: "Windows shortcut", type_tag: "lnk" }), "windows");
+  assert.equal(vtPlatform({ type_description: "Win32 EXE", type_tag: "peexe" }), "windows");
+  assert.equal(vtPlatform({ type_description: "ZIP", last_analysis_results: res(["Generic.Malware"]) }), "unknown", "unknown stays in the list");
+});
+
+test("answers saved before the platform check are asked again", async () => {
+  const seen = [];
+  await vtLookup([{ hash: "e".repeat(64), vtResult: { found: true, checkedAt: "2026-11-27T17:00:00.000Z" } }], { key: "K", now, fetchImpl: async (u) => (seen.push(u), { status: 200, ok: true, json: async () => file(false, 1) }), sleep: async () => {} });
+  assert.equal(seen.length, 1);
 });

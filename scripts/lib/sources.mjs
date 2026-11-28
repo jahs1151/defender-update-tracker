@@ -610,18 +610,22 @@ async function loadQualysMonth(month) {
 export async function loadPublicHashes(previous) {
   try {
     const rows = await getJson("https://api.tweetfeed.live/v1/week/sha256", { timeoutMs: 30000 });
+    // Hashes VirusTotal showed to be Android, Linux or macOS files are never picked again.
+    const excluded = new Set((previous?.excluded || []).map((e) => e.hash));
     const picked = [];
     const seen = new Set();
     const newest = (Array.isArray(rows) ? rows : []).slice().sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
     for (const r of newest) {
       const hash = String(r.value || "").toLowerCase();
-      if (!/^[a-f0-9]{64}$/.test(hash) || seen.has(hash)) continue;
+      if (!/^[a-f0-9]{64}$/.test(hash) || seen.has(hash) || excluded.has(hash)) continue;
+      // Posts tagged for another platform (#android, #apk, #linux, #mirai ...) are not Windows files.
+      if (/#?(?:android|apk|linux|elf|mirai|gafgyt|macos|osx|ios)\b/i.test((r.tags || []).join(" "))) continue;
       seen.add(hash);
       picked.push({ hash, reportedAt: r.date ? toIso(`${String(r.date).replace(" ", "T")}Z`) : "", reporter: r.user || "", tags: (r.tags || []).join(" "), tweet: r.tweet || "" });
       if (picked.length >= 30) break;
     }
     // Re-check earlier hashes that had no analysis yet, then add today's new ones. Keep the latest 20.
-    const earlier = (previous?.rows || []).filter((r) => !seen.has(r.hash));
+    const earlier = (previous?.rows || []).filter((r) => !seen.has(r.hash) && !excluded.has(r.hash));
     const queue = [...picked, ...earlier.filter((r) => !r.analysed).slice(0, 6)];
     const out = [];
     for (const item of queue) {

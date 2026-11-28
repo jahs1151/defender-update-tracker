@@ -275,10 +275,18 @@ async function addVirusTotal(hashes, prevData, now) {
   const res = await vtLookup(rows, { key, budget: prevData?.vtBudget || {}, now });
   const shape = key ? keyShape(key) : "";
   const vt = { no_key: "VirusTotal key not set", rejected: `VirusTotal rejected the key (${res.reason || "no reason given"}${shape ? `; ${shape}` : ""})`, limited: "VirusTotal limit reached; the rest are checked next run", ok: "" }[res.status.replace("-", "_")] || "";
-  const analysed = res.rows.filter((r) => r.vtResult?.found !== undefined).length;
-  const gaps = res.rows.filter((r) => r.vtResult?.gap).length;
-  hashes.data = { ...hashes.data, rows: res.rows, vtStatus: res.status, vtBudget: res.budget, vtNote: vt };
-  hashes.detail = `${hashes.detail} · VirusTotal: ${res.status === "no-key" ? vt : `${analysed} of ${res.rows.length} analysed, ${gaps} that other engines detect and Microsoft does not${vt ? ` (${vt})` : ""}`}`;
+  const winRows = res.rows.filter((r) => r.vtResult?.platform !== "other");
+  const analysed = winRows.filter((r) => r.vtResult?.found !== undefined).length;
+  const gaps = winRows.filter((r) => r.vtResult?.gap).length;
+  // Files VirusTotal shows are for another platform leave the list and are remembered, so they are not picked again.
+  const other = res.rows.filter((r) => r.vtResult?.platform === "other");
+  const excluded = [...other.map((r) => ({ hash: r.hash, fileType: r.vtResult.fileType || "", at: now.toISOString() })), ...(prevData?.excluded || [])]
+    .filter((e, i, a) => a.findIndex((x) => x.hash === e.hash) === i)
+    .slice(0, 200);
+  const kept = res.rows.filter((r) => r.vtResult?.platform !== "other");
+  hashes.data = { ...hashes.data, rows: kept, excluded, vtStatus: res.status, vtBudget: res.budget, vtNote: vt };
+  if (other.length) hashes.detail = `${hashes.detail} · ${other.length} non-Windows file${other.length === 1 ? "" : "s"} left out`;
+  hashes.detail = `${hashes.detail} · VirusTotal: ${res.status === "no-key" ? vt : `${analysed} of ${winRows.length} analysed, ${gaps} that other engines detect and Microsoft does not${vt ? ` (${vt})` : ""}`}`;
 }
 
 /** Detection alerts and threat coverage, from the changelog, the news, the vendor feeds and CISA KEV. */
